@@ -1,0 +1,174 @@
+@startuml
+title 《40阶登山博弈游戏》系统用例图 v1.0（裁决闭合版）
+
+left to right direction
+skinparam shadowing false
+skinparam packageStyle rectangle
+skinparam actorStyle awesome
+
+actor "未登录使用者\nACT-01" as Visitor
+actor "本地账号使用者\nACT-02" as AccountUser
+actor "对局玩家（P1 / P2）\nACT-03" as Player
+actor "本地临时访客 Guest_P2\nACT-04" as LocalGuest
+
+LocalGuest --|> Player
+
+rectangle "40阶登山博弈游戏（网页系统）" {
+  package "账号与首页" {
+    usecase "UC-01\n注册本地账号" as UC01
+    usecase "UC-02\n登录、退出与切换" as UC02
+    usecase "UC-03\n查看首页与账号资料" as UC03
+    usecase "UC-08\n浏览角色与规则图鉴" as UC08
+    usecase "UC-09\n调整个性化设置" as UC09
+    usecase "UC-10\n控制悬浮音乐播放器" as UC10
+    usecase "UC-28\n挂载本地MP3" as UC28
+  }
+
+  package "对战入口" {
+    usecase "UC-04\n发起本地双人对战" as UC04
+    usecase "UC-05\n发起AI对战" as UC05
+    usecase "UC-06\n创建联机房间" as UC06
+    usecase "UC-07\n通过房间码加入" as UC07
+    usecase "UC-26\n联机房间准备就绪" as UC26
+  }
+
+  package "开局与初选" {
+    usecase "UC-25\n选择对局角色" as UC25
+    usecase "UC-11\n开局并确认抛硬币结果" as UC11
+    usecase "UC-12\n交替选取初始手牌" as UC12
+    usecase "UC-13\n快速随机补齐" as UC13
+  }
+
+  package "唯一准备阶段" {
+    usecase "UC-14\n完成唯一准备阶段" as UC14
+    usecase "UC-15\n用手牌换炸弹" as UC15
+    usecase "UC-16\n用炸弹换随机手牌" as UC16
+    usecase "UC-17\n布置、移动与撤回己方炸弹" as UC17
+    usecase "UC-18\n按住查看己方雷" as UC18
+    usecase "UC-19\n确认并锁定准备" as UC19
+  }
+
+  package "连续回合与结算" {
+    usecase "UC-20\n暗选并锁定出牌" as UC20
+    usecase "UC-21\n揭牌并结算登山回合" as UC21
+    usecase "UC-22\n查看公开状态与战斗日志" as UC22
+    usecase "UC-23\n查看整局结算并保存结果" as UC23
+    usecase "UC-24\n退出对局或返回首页" as UC24
+    usecase "UC-27\n联机超时自动代操作" as UC27
+  }
+
+  UC13 ..> UC12 : <<extend>>\n[使用测试辅助按钮]
+  UC15 ..> UC14 : <<extend>>\n[选择手牌换雷]
+  UC16 ..> UC14 : <<extend>>\n[选择雷换手牌]
+  UC17 ..> UC14 : <<extend>>\n[选择布雷、移动或撤回]
+  UC14 ..> UC19 : <<include>>
+  UC27 ..> UC25 : <<extend>>\n[联机选角超时：随机选角]
+  UC27 ..> UC12 : <<extend>>\n[联机选牌超时：随机取牌]
+  UC27 ..> UC19 : <<extend>>\n[联机准备45秒超时：保留成果并自动锁定]
+  UC27 ..> UC20 : <<extend>>\n[联机出牌超时：代出数量最多花色]
+  UC28 ..> UC10 : <<extend>>\n[用户选择本地MP3]
+
+  note right of UC02
+    首次打开处于未登录状态，仅显示登录/注册模态框。
+    无免登录首页；进入选角及对局后禁止切换或退出账号。
+  end note
+
+  note right of UC26
+    房间仅2个活跃席位，无观战席。
+    房主固定P1，加入者固定P2；双方就绪后开始选角。
+    房间闲置超过10分钟或房主退出即失效。
+    4～6位数字/字母码支持复制与手动输入；满员或已开局拒绝加入。
+  end note
+
+  note right of UC25
+    所有模式均先选角，再抛硬币及交替选牌。
+    12名常规角色与1名初始锁定融合角色；详细名单和技能留v1.1。
+  end note
+
+  note right of UC12
+    选牌及准备进行中，只公开公共牌库总张数。
+    双方均锁定准备后、首回合前，统一公开公共总数、
+    三种花色余量及双方手牌总张数。
+    私有信息不由UI或日志直接展示；允许数学或逻辑推算。
+  end note
+
+  note right of UC19
+    本地按选牌先手先准备并锁定，经交接遮罩再交后手。
+    AI及联机双方各自准备；本人锁定后不可撤销。
+    未锁定前可移动或撤回本人当前准备阶段布雷；
+    雷换牌只能消耗未布置库存雷。
+  end note
+
+  note right of UC21
+    本轮需出牌者全部锁定后统一亮牌。
+    本轮开始时无牌方跳过；锁定末张仍须结算本轮。
+    同阶单次只爆一枚。
+    达到40立即胜；否则最后一轮
+    完整结算后再比较最终阶数。
+  end note
+
+  note right of UC27
+    联机每步45秒，交替选牌每步15秒。
+    准备超时保留成果并自动锁定，
+    不额外代做兑换或布雷；衔接解释见正文3.9节。
+  end note
+
+  note right of UC23
+    本地P1为当前主账号，P2为Guest_P2；AI不独立建档。
+    三种模式均只写本客户端当前主账号的战绩和解锁。
+    本地/AI中断作废不计；联机一方退出或刷新，留存方胜。
+    不保存进行中对局，不支持联机断线续连。
+  end note
+
+  note right of UC28
+    内置合成器可独立播放全部六首曲目与音效。
+    本地MP3加载失败时静默回退内置合成器。
+    手动切歌锁定当前曲目，恢复自动或下一局才解除。
+  end note
+}
+
+Visitor -- UC01
+Visitor -- UC02
+
+AccountUser -- UC02
+AccountUser -- UC03
+AccountUser -- UC04
+AccountUser -- UC05
+AccountUser -- UC06
+AccountUser -- UC07
+AccountUser -- UC08
+AccountUser -- UC09
+AccountUser -- UC10
+
+Player -- UC10
+Player -- UC11
+Player -- UC12
+Player -- UC13
+Player -- UC14
+Player -- UC15
+Player -- UC16
+Player -- UC17
+Player -- UC18
+Player -- UC19
+Player -- UC20
+Player -- UC21
+Player -- UC22
+Player -- UC23
+Player -- UC24
+Player -- UC25
+Player -- UC26
+Player -- UC27
+Player -- UC28
+AccountUser -- UC28
+
+legend bottom
+  同一人可在首页扮演ACT-02，在对局中扮演ACT-03。
+  Guest_P2仅是本地对局临时席位，不具备账号身份，也不独立记录战绩。
+  房主、受邀者及先后手是场景角色，不是额外账号类型。
+  AI、LocalStorage、地图和播放器属于系统内部，不作为外部参与者。
+  include表示必需子目标，extend表示条件行为；两者不表示阶段顺序。
+  Q-01～Q-12已裁决关闭；角色名单与技能详细补充留v1.1。
+  本图仍属需求分析；UC-01～UC-28简述见01-requirements.md。
+endlegend
+
+@enduml
