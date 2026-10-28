@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>迭代1 · 首页只读夹具验收</title>
+  <link rel="stylesheet" href="/src/styles/theme.css">
+  <link rel="stylesheet" href="/src/styles/layout.css">
+</head>
+<body>
+  <div id="app"></div>
+  <output id="fixture-result" style="position:fixed;bottom:4px;left:8px;z-index:100;background:#fffdf1;color:#173f45;padding:5px 10px;font:12px sans-serif">正在检查只读夹具…</output>
+  <script type="module">
+    // Browser-only fixture: never reads or writes LocalStorage or production accounts.
+    import { Game } from '/src/controller/Game.js';
+    import { GameView } from '/src/view/GameView.js';
+    import { accountHistoryFixture } from './account-history.js';
+    import { REGULAR_CHARACTER_IDS } from '/src/model/AccountProfile.js';
+
+    const output = document.querySelector('#fixture-result');
+    const records = structuredClone(accountHistoryFixture.matchHistory);
+    records.push({ ...records[0], matchId: 'oldest-004', endedAt: '2026-10-25T10:00:00.000Z', endReason: '<img src=x onerror=alert(1)>' });
+    const profiles = {
+      FixtureA: { accountId: 'fixture-a', username: '只读夹具A', stats: { total: 4, wins: 2, losses: 1, draws: 1 }, unlockedCharacterIds: [...REGULAR_CHARACTER_IDS, 'CH-13'], matchHistory: records },
+      FixtureB: { accountId: 'fixture-b', username: '只读夹具B', stats: { total: 0, wins: 0, losses: 0, draws: 0 }, unlockedCharacterIds: [...REGULAR_CHARACTER_IDS], matchHistory: [] },
+    };
+    let current = null;
+    const manager = {
+      observeChanges: () => () => {},
+      getCurrentProfile: () => structuredClone(current),
+      login: async (name) => { current = profiles[name]; return structuredClone(current); },
+      switchAccount: async (name) => { current = profiles[name]; return structuredClone(current); },
+      logout: () => { current = null; },
+    };
+    const game = new Game(manager);
+    const view = new GameView(document.querySelector('#app'), game);
+    let checks = 0;
+    function check(condition, message) { if (!condition) throw new Error(message); checks += 1; }
+    try {
+      await game.submitAuth({ username: 'FixtureA', password: 'fixture-only' });
+      const items = [...document.querySelectorAll('.history-list > li')];
+      check(items.length === 4, '四条历史必须全部展示');
+      const dates = items.map(item => item.querySelector('time').dateTime);
+      check(dates.join() === [...dates].sort().reverse().join(), '历史必须降序');
+      check(items.every(item => /P1/.test(item.textContent) && /P2/.test(item.textContent)), '双方角色和席位必须显示');
+      check(items[3].textContent.includes('<img src=x onerror=alert(1)>') && !items[3].querySelector('img'), '存储文本必须安全显示');
+      check(document.querySelector('[data-stat="total"]').textContent === '4', '统计必须加载当前账号');
+      check(document.querySelector('[data-fusion]').textContent.includes('已解锁'), 'CH-13必须显示解锁');
+      check(document.querySelector('.unlocked-character-list').textContent.includes('莱茵多特/纳贝里士'), '名单必须包含已解锁融合');
+      game.openSwitchAccount();
+      await game.submitAuth({ username: 'FixtureB', password: 'fixture-only' });
+      check(document.querySelectorAll('.history-list > li').length === 0 && Boolean(document.querySelector('.history-empty')), '切号不能保留前账号历史');
+      check(document.querySelector('[data-stat="total"]').textContent === '0', '切号必须更新统计');
+      check(!document.querySelector('[data-fusion]').textContent.includes('已解锁'), '切号必须恢复新账号锁态');
+      check(!document.querySelector('.unlocked-character-list').textContent.includes('莱茵多特/纳贝里士'), '未解锁账号名单不能出现融合');
+      game.openSwitchAccount();
+      await game.submitAuth({ username: 'FixtureA', password: 'fixture-only' });
+      output.textContent = `PASS · ${checks} 项浏览器断言 · 只读夹具，不写入账号数据`;
+      output.dataset.result = 'pass';
+    } catch (error) {
+      output.textContent = `FAIL · ${error.message}`;
+      output.dataset.result = 'fail';
+      console.error(error);
+    }
+    if (import.meta.hot) import.meta.hot.dispose(() => { view.dispose(); game.dispose(); });
+  </script>
+</body>
+</html>

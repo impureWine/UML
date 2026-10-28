@@ -1,0 +1,15 @@
+{
+  "name": "climb40-genshin-game",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "40阶登山博弈 · 本地多账号与首页导航（迭代1）",
+  "engines": { "node": ">=22.12.0" },
+  "scripts": {
+    "dev": "vite --host 127.0.0.1 --port 5173 --strictPort",
+    "build": "vite build --emptyOutDir false",
+    "preview": "vite preview --host 127.0.0.1 --port 4173 --strictPort",
+    "test": "node --test"
+  },
+  "devDependencies": { "vite": "^7.2.2" }
+}

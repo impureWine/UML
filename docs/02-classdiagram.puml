@@ -1,0 +1,412 @@
+@startuml
+title 《40阶登山博弈游戏》系统分析类图（依据需求v1.1及本轮用户裁决）
+skinparam classAttributeIconSize 0
+skinparam packageStyle rectangle
+hide empty members
+
+package "账号、流程与联机控制" {
+  class "AccountManager\n账号管理" as AccountManager {
+    -- 职责 --
+    +注册与登录
+    +首页切号与退出
+    +保存已确认结果
+    +核验融合解锁
+    +测试解锁与重置
+  }
+  class "AccountProfile\n本地账号档案" as AccountProfile {
+    +账号标识与用户名
+    +汇总战绩
+    +已解锁角色
+  }
+  class "MatchRecord\n已完成对局记录" as MatchRecord {
+    +模式与本人结果
+    +双方角色及最终阶数
+    +结束时间
+  }
+  class "Settings\n账号持久化偏好" as Settings {
+    +音乐与音效音量及静音
+    +单曲循环或自动切歌偏好
+    +镜头自动跟随偏好
+  }
+  class "Game\n对局流程管理" as Game {
+    +当前阶段与模式
+    +回合号与硬币先后手
+    +候选结果与最终结果
+    -- 职责 --
+    +初始化新局与推进阶段
+    +协调准备与技能操作
+    +协调锁牌揭示及结算
+    +建立锚点与处理回溯
+    +确认终局与提交记账
+    +处理退出与重开
+  }
+  enum "GamePhase\n业务阶段" as GamePhase {
+    未登录
+    首页与模式选择
+    联机房间等待就绪
+    选角
+    抛硬币
+    交替初选
+    唯一开局准备
+    回合技能选择与操作
+    选牌与锁定
+    同时亮牌与结算
+    本轮结果与回溯窗口
+    终局确认
+    中断或作废
+  }
+  class "NetworkManager\n联机管理" as NetworkManager {
+    -- 职责 --
+    +创建加入与维护房间
+    +处理双方就绪
+    +同步合法状态与结果
+    +步骤计时与合法代操作
+    +处理离开与解散
+  }
+  class "RoomSession\n两席房间状态" as RoomSession {
+    +房间码与有效状态
+    +席位容量 = 2
+    +席位占用与就绪状态
+    +等待与闲置时间状态
+  }
+}
+
+package "棋盘、实体资源与回溯状态" {
+  class "MountainBoard\n0至40阶棋盘" as MountainBoard {
+    -- 职责 --
+    +提供阶位与地形信息
+  }
+  class "StepCell\n单个阶位" as StepCell {
+    +阶数与地形区域
+    +bombQueue（多枚炸弹队列）
+  }
+  class "Bomb\n单枚场上炸弹" as Bomb {
+    +局内炸弹标识
+  }
+  class "CardDeck\n公共牌库" as CardDeck {
+    +剩余实体牌
+    +总数与花色余量
+    -- 职责 --
+    +交替取牌
+    +等概率不放回抽牌
+  }
+  class "PlayingCard\n单张实体牌" as PlayingCard {
+    +局内唯一标识
+    +当前花色
+  }
+  class "CardLedger\n牌分区账本" as CardLedger {
+    +有效公开出牌历史
+    +秘密销毁区
+    -- 职责 --
+    +记录实体牌分区转移
+    +核对资源守恒
+    +恢复回溯账本
+  }
+  class "BattleLog\n公开事件日志" as BattleLog {
+    +合法公开事件
+    +已回溯的撤销标记
+    -- 职责 --
+    +记录可公开结果
+  }
+  class "RoundSnapshot\n本轮回溯锚点" as RoundSnapshot {
+    +双方位置与手牌花色
+    +库存雷及场上雷位置归属
+    +公共库与有效牌分区账本
+    +本轮锁牌与普通技能状态
+    +护盾连胜及首次效果状态
+    -- 职责 --
+    +保留本轮技能操作前状态
+    +支持同轮状态恢复
+  }
+}
+
+package "玩家、角色与规则" {
+  class "Player\n对局席位" as Player {
+    +席位与当前位置
+    +可用手牌与待揭示牌
+    +库存雷数量与总雷上限
+    +就绪准备技能与出牌锁定状态
+    -- 职责 --
+    +选角与确认技能操作
+    +准备兑换及布雷调整
+    +暗选并锁定出牌
+  }
+  class "AIPlayer\nAI席位" as AIPlayer {
+    +简单或困难难度
+    +指定参赛角色
+    -- 职责 --
+    +依据合法信息选择行动
+  }
+  class "Character\n本局角色实例" as Character {
+    +角色身份名称与元素
+    +是否融合角色
+    +skillComponents（技能组件列表）
+  }
+  abstract class "SkillComponent\n技能组件" as SkillComponent {
+    +sourceOrigin（原始能力来源）
+    +isSuppressed（是否被压制）
+    -- 职责 --
+    +检查来源压制与适用条件
+  }
+  abstract class "ActiveSkillComponent\n主动技能组件" as ActiveSkillComponent {
+    +本局剩余次数
+    -- 职责 --
+    +检查施放资格
+    +执行合法技能操作
+  }
+  abstract class "PassiveSkillComponent\n被动技能组件" as PassiveSkillComponent {
+    -- 职责 --
+    +判定触发与提供规则修正
+  }
+  class "JudgeRule\n规则裁决" as JudgeRule {
+    -- 职责 --
+    +判断猜拳与合法出牌
+    +计算移动与角色修正
+    +裁决落脚选雷及连锁
+    +判定候选登顶或耗尽结果
+  }
+}
+
+package "具体被动技能（11类）" {
+  class "WindScissorsBonus\n风·剪刀胜利加步" as WindScissorsBonus <<BARBATOS>>
+  class "WindFirstBombGrace\n风·首次踩雷免退" as WindFirstBombGrace <<BARBATOS>> {
+    +首次免退已用
+  }
+  class "RockVictoryBonus\n岩·石头胜利加步" as RockVictoryBonus <<MORAX>>
+  class "ThunderBombCapacity\n雷·初始雷与总上限" as ThunderBombCapacity <<BEELZEBUL>>
+  class "ThunderBombDiscard\n雷·所属雷爆炸弃牌" as ThunderBombDiscard <<BEELZEBUL>>
+  class "WaterVictoryBonus\n水·布胜利加步" as WaterVictoryBonus <<FOCALORS>>
+  class "FlameWinStreak\n火·连胜加步与焚毁" as FlameWinStreak <<HEBRIMU>> {
+    +连胜次数（含单向出牌获胜）
+  }
+  class "DivineSuppression\n冰·来源压制" as DivineSuppression <<VASHAKA>>
+  class "DeathRetreat\n死亡·对手爆炸退13" as DeathRetreat <<RONOVA>>
+  class "LifeExchangeBonus\n生命·准备1雷换至多3牌" as LifeExchangeBonus <<NABERIUS>>
+  class "GoldenFirstExchangeDiscount\n黄金·首次1牌换雷" as GoldenFirstExchangeDiscount <<GOLD_RHINEDOTTIR>> {
+    +首次成功优惠已用
+  }
+}
+
+package "具体主动技能（9类）" {
+  class "JadeShield\n岩·玉璋护盾" as JadeShield <<MORAX>> {
+    +每局1次
+    +剩余有效回合（含当轮共2回合）
+  }
+  class "NatureRecon\n草·瞬时私有侦测" as NatureRecon <<BUER>> {
+    +每局2次
+  }
+  class "WaterDefeatDraw\n水·当轮败局摸牌" as WaterDefeatDraw <<FOCALORS>> {
+    +每局2次
+    +本轮已激活
+  }
+  class "FreezeCard\n冰·本轮冻牌" as FreezeCard <<VASHAKA>> {
+    +每局1次
+    +本轮冻结牌型
+  }
+  class "TimeRewind\n时间·本轮回溯" as TimeRewind <<ISTAROTH>> {
+    +每局1次
+  }
+  class "SpaceOperation\n空间·移己方雷或换位" as SpaceOperation <<ASMODAY>> {
+    +每局共享2次
+    +移雷窗口暂扣状态
+  }
+  class "DeathCardBomb\n死亡·消耗1牌即时布雷" as DeathCardBomb <<RONOVA>> {
+    +每局1次
+  }
+  class "LifeReplenish\n生命·低手牌抽至多3张" as LifeReplenish <<NABERIUS>> {
+    +每局1次
+  }
+  class "AlchemyTransmutation\n黄金·转化1至2张手牌" as AlchemyTransmutation <<GOLD_RHINEDOTTIR>> {
+    +每局2次
+  }
+}
+
+package "地图、模型与音频表现" {
+  class "MountainMapRenderer\n笔直天梯与镜头表现" as MountainMapRenderer {
+    -- 职责 --
+    +呈现棋盘与角色位置
+    +高亮聚焦与镜头跟随
+    +显示当前授权雷位标记
+    +交接或失焦隐藏私有标记
+  }
+  class "CharacterModel3D\n角色模型与动作" as CharacterModel3D {
+    -- 职责 --
+    +呈现13角色指定造型
+    +呈现待机攀爬及进退动作
+    +呈现已生效技能特效
+  }
+  class "GenshinAudioManager\n音乐与音效表现" as GenshinAudioManager {
+    +真实播放状态与当前曲目
+    +当局手动锁曲状态
+    +本局已达最高音乐区间
+    -- 职责 --
+    +多轨合成六首BGM与交互音效
+    +场景切曲与淡变
+    +播放控制与恢复自动
+    +播放交互及战斗音效
+    +恢复受限播放与本地MP3失败回退
+  }
+}
+
+AccountManager "1" o-- "0..*" AccountProfile : 管理本地档案
+AccountProfile "1" *-- "1" Settings : 账号独立偏好
+AccountProfile "1" *-- "0..*" MatchRecord : 最近已完成记录
+Game ..> AccountManager : 读取当前账号／提交最终有效结果
+Game --> GamePhase : 唯一负责阶段推进
+Game "1" *-- "2" Player : 席位确定后的P1与P2
+AIPlayer --|> Player
+Game "1" *-- "1" MountainBoard
+Game "1" *-- "1" CardDeck
+Game "1" *-- "1" CardLedger
+Game "1" *-- "1" BattleLog
+Game "1" *-- "0..1" RoundSnapshot : 当前回合锚点
+Game "1" --> "1" JudgeRule : 委托规则裁决
+Game "0..1" --> "0..1" NetworkManager : 仅联机协作
+NetworkManager "1" *-- "0..1" RoomSession
+RoomSession "0..1" -- "1..2" Player : 当前占用P1房主／P2加入席
+
+MountainBoard "1" *-- "41" StepCell : 第0至40阶
+StepCell "1" -- "0..*" Bomb : bombQueue／场上雷所在阶
+Bomb "0..*" --> "1" Player : 唯一所有者
+CardDeck "0..1" -- "0..90" PlayingCard : 公共库分区
+Player "0..1" -- "0..90" PlayingCard : 可用手牌分区
+Player "0..1" -- "0..1" PlayingCard : 已锁定待揭示分区
+CardLedger "0..1" -- "0..90" PlayingCard : 有效公开出牌分区
+CardLedger "0..1" -- "0..90" PlayingCard : 秘密销毁分区
+CardLedger ..> CardDeck : 核对公共库转移
+CardLedger ..> Player : 核对手牌及待揭示转移
+
+Player "1" *-- "0..1" Character : 选角前可无／选角后独享1个实例
+Character "1" *-- "1..*" SkillComponent : skillComponents／组件列表
+ActiveSkillComponent --|> SkillComponent
+PassiveSkillComponent --|> SkillComponent
+SkillComponent ..> Player : 结合所属玩家状态
+Game ..> SkillComponent : 协调合法时点及效果
+JudgeRule ..> SkillComponent : 读取有效规则修正
+JudgeRule ..> MountainBoard : 裁决落脚与连锁
+JudgeRule ..> CardLedger : 记录实际牌耗
+TimeRewind ..> RoundSnapshot : 请求恢复当前回合锚点
+Game ..> RoundSnapshot : 建立锚点／恢复同一回合
+
+WindScissorsBonus --|> PassiveSkillComponent
+WindFirstBombGrace --|> PassiveSkillComponent
+RockVictoryBonus --|> PassiveSkillComponent
+ThunderBombCapacity --|> PassiveSkillComponent
+ThunderBombDiscard --|> PassiveSkillComponent
+WaterVictoryBonus --|> PassiveSkillComponent
+FlameWinStreak --|> PassiveSkillComponent
+DivineSuppression --|> PassiveSkillComponent
+DeathRetreat --|> PassiveSkillComponent
+LifeExchangeBonus --|> PassiveSkillComponent
+GoldenFirstExchangeDiscount --|> PassiveSkillComponent
+JadeShield --|> ActiveSkillComponent
+NatureRecon --|> ActiveSkillComponent
+WaterDefeatDraw --|> ActiveSkillComponent
+FreezeCard --|> ActiveSkillComponent
+TimeRewind --|> ActiveSkillComponent
+SpaceOperation --|> ActiveSkillComponent
+DeathCardBomb --|> ActiveSkillComponent
+LifeReplenish --|> ActiveSkillComponent
+AlchemyTransmutation --|> ActiveSkillComponent
+DivineSuppression ..> SkillComponent : 仅压制敌方NABERIUS来源
+
+MountainMapRenderer ..> Game : 读取合法可见状态
+MountainMapRenderer ..> MountainBoard : 呈现笔直天梯
+MountainMapRenderer ..> Player : 呈现合法可见玩家状态
+MountainMapRenderer "1" *-- "0..2" CharacterModel3D : 选角后的模型表现
+CharacterModel3D ..> Character : 读取角色造型
+CharacterModel3D ..> Game : 仅呈现已裁决动作与效果
+GenshinAudioManager ..> Game : 读取场景及领先阶数
+GenshinAudioManager ..> Settings : 读取持久化音频偏好
+MountainMapRenderer ..> Settings : 读取镜头偏好
+
+note right of Game
+  Game管理阶段，表现对象不推进业务。
+  每轮：双方技能操作完成→锁牌→统一亮牌
+  →败方补牌→移动与雷效果→结果／回溯。
+  技能后双方均无牌时跳过锁牌，仍进入结果／回溯。
+  回溯成功返回同一回合技能操作前；
+  否则确认本轮，再进入下一轮或确认终局。
+  仅最终有效结果计战绩／解锁。
+end note
+
+note bottom of RoundSnapshot
+  锚点在本轮任何技能操作之前，仅供当前局使用。
+  恢复资源、账本、普通技能次数与关联状态；
+  所有已消耗时间回溯次数和已获知信息事实不恢复。
+  可撤销本轮候选终局，不跨轮或撤销联机离开结果；
+  不持久化未完局，不提供断线续局。
+end note
+
+note bottom of StepCell
+  仅1至39阶可布雷；场上每雷只在1格且只归1人。
+  队列不规定同归属FIFO；按规则优先敌雷，
+  每次落脚最多处理1枚，其他雷保留。
+  库存加本人场上雷遵守默认4／雷系5的上限。
+end note
+
+note bottom of CardLedger
+  五类分区互斥且合计90张；每张实体牌恰属其中之一。
+  锁牌从可用手牌转入待揭示，不提前进入公开历史；
+  消耗／弃牌进秘密区，回溯恢复分区，转化不改总数。
+end note
+
+note right of JudgeRule
+  对手无牌时，单向出牌视为当回合获胜。
+  正常应用风／岩／水的对应胜利步数加成；
+  火系计入连胜，第2次连续获胜起正常加2步并焚雷。
+end note
+
+note bottom of LifeExchangeBonus
+  未被压制时，库存1雷换牌仍要求公共库至少2张：
+  剩2张取2张，剩至少3张取3张；剩0或1张拒绝。
+  被压制时恢复普通1雷换2牌，公共库不足2张拒绝。
+end note
+
+note right of LifeReplenish
+  未被压制、手牌少于10张且尚有次数时：
+  公共库剩1或2张取剩余全部，剩至少3张取3张；
+  公共库为0张或受到压制时禁用。
+  均按剩余实体牌等概率不放回抽取。
+end note
+
+note right of SkillComponent
+  具体类的构造型标注表示sourceOrigin的取值。
+  每位玩家独享Character及其组件，次数与标记不共享。
+  融合组合四个独立组件：
+  黄金首次优惠＋AlchemyTransmutation（2次），
+  LifeExchangeBonus（换牌收益）＋LifeReplenish（1次抽至多3张）。
+  瓦沙嘉只令敌方NABERIUS组件isSuppressed为真；
+  先压制再计算初始化／兑换／主动资格，黄金仍有效。
+end note
+
+note right of SpaceOperation
+  移雷仅显示与移动己方雷；首次显示暂扣1次，
+  同窗口不重复扣，成功保留扣次，明确取消返还。
+  换位与移雷共享次数，分别检查各自合法条件。
+end note
+
+note bottom of MountainMapRenderer
+  保留指定对象名；按FR-12呈现笔直天梯，非盘山。
+  界面、模型及AI仅使用公开／本人／技能合法授权信息；
+  不读取或直显未经授权的敌方牌、库存及暗雷。
+  公开日志仅记录可公开事件，不记录私有情报。
+  侦测只给施法者时点情报，回溯后旧标记不冒充当前状态。
+end note
+
+note bottom of GenshinAudioManager
+  Settings只持久化偏好；当局锁曲及最高音乐区间归此对象。
+  手动锁曲至恢复自动或新局；新局重置音乐区间。
+end note
+
+legend bottom
+  分析层：15个指定核心对象、8个支持对象、2个抽象技能中间类及20个具体技能类。
+  属性表示业务状态，“职责”仅为抽象操作名称；不规定数据类型、参数或具体技术方案。
+  角色配置、数值及结算细节见02-analysis.md第3节与需求v1.1第3节／FR-01至FR-76。
+  单向获胜及生命抽牌余量边界以02-analysis.md记录的本轮用户裁决为准，
+  替代需求v1.1对应旧表述；其余规则不变。
+  账号只保存设置、解锁与已完成记录；Guest_P2和AI不独立建档，房间最多两席且无观战。
+  当前仅系统分析，待用户确认；不据此进入系统设计或程序开发。
+endlegend
+
+@enduml
