@@ -24,7 +24,7 @@ function makeManager() {
   };
 }
 
-test('未登录不能导航，登录后五个占位页与返回首页生效', async () => {
+test('未登录不能导航，登录后五个页面与返回首页生效', async () => {
   const game = new Game(makeManager());
   assert.equal(game.getSnapshot().phase, 'AUTH');
   assert.throws(() => game.navigate('local'), /登录/);

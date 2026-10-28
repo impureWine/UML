@@ -1,6 +1,6 @@
 const PAGES = new Set(['home', 'local', 'ai', 'online', 'guide', 'settings']);
 
-/** Iteration 1 orchestrator: authentication and navigation only. */
+/** Authentication, navigation and account-scoped map preferences; no battle rules. */
 export class Game {
   constructor(accountManager) {
     this.accountManager = accountManager;
@@ -123,6 +123,18 @@ export class Game {
       this.state.storageError = error.message;
     }
     this.emit();
+  }
+
+  async setCameraAutoFollow(value) {
+    this.requireHome();
+    if (typeof value !== 'boolean') throw new TypeError('镜头跟随必须是开关值。');
+    if (this.state.auth.open) throw new Error('请先完成账号切换。');
+    const ownerId = this.state.profile.accountId;
+    const profile = await this.accountManager.saveSettings({ cameraAutoFollow: value });
+    if (this.state.profile?.accountId === ownerId) {
+      this.state.profile = profile;
+      this.emit();
+    }
   }
 
   dispose() {

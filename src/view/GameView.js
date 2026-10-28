@@ -1,3 +1,5 @@
+import { MountainMapPanel } from './MountainMapPanel.js';
+
 const ROUTES = {
   local: { title: '本地双人对战', eyebrow: '同席相逢', description: '本地双人对战尚未开放。' },
   ai: { title: 'AI对战', eyebrow: '与智交锋', description: 'AI对战尚未开放。' },
@@ -234,13 +236,23 @@ export class GameView {
     const page = authenticated && ROUTES[snapshot.page] ? snapshot.page : 'home';
     const key = `${page}:${authenticated ? profile.accountId : 'auth'}`;
     if (this.pageKey !== key) {
+      this.mapPanel?.dispose();
+      this.mapPanel = null;
       this.pageKey = key;
       if (page === 'home') this.renderHome();
+      else if (['local', 'ai', 'online'].includes(page)) {
+        this.mapPanel = new MountainMapPanel(this.main, {
+          title: ROUTES[page].title,
+          autoFollow: profile.settings.cameraAutoFollow,
+          onAutoFollow: (value) => this.game.setCameraAutoFollow(value),
+        });
+      }
       else this.renderPlaceholder(page);
       if (authenticated && previous && previous.page !== snapshot.page && !snapshot.auth?.open) {
         this.main.querySelector('h1')?.focus({ preventScroll: true });
       }
     }
+    if (this.mapPanel) this.mapPanel.setAutoFollow(profile.settings.cameraAutoFollow);
     if (page === 'home') this.updateHome(profile, fusionUnlocked);
     this.updateAuth(snapshot);
   }
@@ -416,6 +428,7 @@ export class GameView {
     if (this.disposed) return;
     this.disposed = true;
     this.unsubscribe?.();
+    this.mapPanel?.dispose();
     this.events.abort();
     this.surface.inert = false;
     if (this.dialog.open) this.dialog.close();

@@ -1,5 +1,6 @@
 import './styles/theme.css';
 import './styles/layout.css';
+import './styles/mountain.css';
 import { Game } from './controller/Game.js';
 import { GameView } from './view/GameView.js';
 import { AccountManager } from './utils/AccountManager.js';
