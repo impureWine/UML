@@ -2,12 +2,12 @@
 
 | 文档属性 | 内容 |
 | --- | --- |
-| 版本 | v1.2（Godot 4混合架构与第一人称视角） |
-| 日期 | 2026-10-28（Asia/Hong_Kong） |
+| 版本 | v1.4（原生Web 2.5D与角色名字铭牌/元素信标） |
+| 日期 | 2026-10-29（Asia/Hong_Kong） |
 | 所属阶段 | 第三阶段：系统设计 |
-| 状态 | 第7步（迭代1）已实现并保留；第8～16步按Godot方案实施 |
-| 需求依据 | [需求分析 v1.1](01-requirements.md)、[已确认的系统分析及规则勘误](02-analysis.md)、[分析类图](02-classdiagram.puml)，以及本轮系统设计要求 |
-| 本次交付 | 本次仅同步设计与计划；Godot工程及桥接为待实施设计 |
+| 状态 | 第7步（迭代1）已实现并保留；第8～16步按原生Web 2.5D方案实施 |
+| 需求依据 | [需求分析 v1.2](01-requirements.md)、[已确认的系统分析及规则勘误](02-analysis.md)、[分析类图](02-classdiagram.puml)，以及本轮系统设计要求 |
+| 本次交付 | 仅同步原生Web 2.5D设计与计划；后续功能按迭代实施与验收 |
 
 ## 1. 设计依据、覆盖关系与技术选择
 
@@ -23,17 +23,20 @@
 
 不增加聊天、观战、公网匹配、云账号、外部数据库、未完局存档、断线续连或新的角色技能。本次调整第8步（迭代2）至第16步（迭代10）的实现技术，既定规则及逐轮人工验收流程继续适用。
 
-### 1.2 主要技术取舍
+### 1.2 主要技术取舍（本轮定案）
 
-| 设计点 | 采用方案及理由 | 需求允许的其他路线 |
-| --- | --- | --- |
-| 页面与地图 | 完整保留第7步首页UI、白昼天空岛动态视觉和本地多账号登录/注册/切换；第8～16步全部游戏界面、0～40阶笔直3D天梯、13名《原神》角色与特效由Godot Engine 4.x实现；对局默认采用当前行动角色第一人称视角（First-Person Perspective, FPP） | 首页复用现有HTML/CSS/JavaScript，Godot使用GDScript、.tscn场景和.gd脚本 |
-| 控制结构 | Godot内部采用View / Controller / Model / Utils分层；Game编排流程，JudgeRule及技能对象执行领域规则 | 浏览器Game仅负责既有首页导航及桥接，不并行运行另一套对局引擎 |
-| 联机通信 | Godot NetworkManager执行房间、权威定序及同步；默认经浏览器适配器转发BroadcastChannel / LocalStorage消息，保留同浏览器同源双窗口范围 | WebSocket为可替换传输，需配置本机/局域网端点；不自动扩大为公网匹配 |
-| 本地持久化 | 复用AccountManager、AccountProfile、LocalStorageStore、Web Crypto、Web Locks及climb40.accounts.v1 | 浏览器是唯一账号写入方，Godot只接收安全投影并请求保存 |
-| 音频 | BGM、六曲合成、可选MP3与SFX统一由Godot AudioServer、AudioStreamPlayer、AudioStreamGenerator及音频总线实现 | JavaScript仅协助手势和文件字节传输；本地MP3仍为可选音源 |
+放弃Godot引擎、全3D路线与第一人称视角限制，统一采用原生Web 2.5D立体渲染技术栈：HTML5 Canvas + SVG/Canvas角色名字铭牌与元素信标 + CSS3 3D 视差光影 + Web Audio API。与第7步（迭代1）已完成的白昼天空岛首页UI及AccountManager本地账号系统处于同一前端工程，实现100%原生无缝切换。
 
-第7步已实现成果完整复用；现有Three.js地图预览保留为历史参考，第8步起以Godot重新实现并验收。本次仅更新文档，不删除源文件、不安装引擎或生成工程。
+| 设计点 | 采用方案 |
+| --- | --- |
+| 页面与地图 | 沿用HTML/CSS/JavaScript ES Modules与Vite；Canvas绘制透视阶梯、云海和粒子，CSS3 3D组织分层视差与光影，DOM承载HUD |
+| 角色 | CharacterTokenRenderer使用Canvas/SVG绘制13名角色全名鎏金铭牌/神之眼棋子信标；图标、主题色、P1/P2角标和四类状态动画统一，无人体造型建模 |
+| 控制结构 | 单一JavaScript Game与View / Controller / Model / Utils四层；统一领域规则、技能及授权投影 |
+| 联机 | NetworkManager直接使用BroadcastChannel / LocalStorage；保持同浏览器同源双窗口范围 |
+| 持久化 | 直接复用AccountManager、AccountProfile、LocalStorageStore、Web Crypto、Web Locks与climb40.accounts.v1 |
+| 音频 | 同一Web Audio API音频管理器负责首页与游戏、六曲合成、可选MP3与SFX |
+
+现有Three.js预览及历史证据保留作参考，不作为新2.5D方案已通过的证据。本次只更新文档，不删除文件，后续逐轮实现和验收。
 
 ## 2. 总体架构与模块职责
 
@@ -41,16 +44,16 @@
 
 | 层 | 主要类 | 职责 | 对外边界 |
 | --- | --- | --- | --- |
-| View：视图与3D建模渲染层 | GameView、MountainMapRenderer、CharacterModel3D | 浏览器保留登录/首页；Godot Control负责选角、选牌、准备、技能/出牌、图鉴、设置及结果界面；Node3D负责3D地图、角色动画、交接遮罩和授权标记 | 只提交操作意图，读取展示快照及表现事件；不持有修改公共牌库、暗雷、技能次数或战绩的权限 |
+| View：视图与2.5D地图/信标渲染层 | GameView、MountainMapRenderer、CharacterTokenRenderer | 复用登录/首页，DOM实现游戏HUD、图鉴与设置，Canvas/SVG实现地图、名字铭牌与元素信标、动画、交接遮罩及授权标记，CSS3 3D提供视差光影 | 仅提交意图、消费授权快照和事件，不修改牌库、暗雷、次数或战绩 |
 | Controller：控制器层 | Game、NetworkManager | Game 管理状态机、命令门禁、事务和回合；NetworkManager 管理两席房间、通信定序、计时、退出与超时意图 | 统一调用领域对象；只在结果不可再回溯时请求账号记账；网络消息不能直接驱动模型任意赋值 |
-| Model：数据模型与技能层 | Player、AIPlayer、Character、SkillComponent及其子类、MountainBoard、StepCell、Bomb、CardDeck、PlayingCard、JudgeRule、CardLedger、BattleLog、RoundSnapshot、RoomSession、AccountProfile、MatchRecord、Settings | 保存领域状态、执行角色能力及规则、表达资源账本、房间及账号档案值 | 不操作DOM、Godot渲染节点、音频总线或LocalStorage；AI策略只接收自己的授权信息副本 |
+| Model：数据模型与技能层 | Player、AIPlayer、Character、SkillComponent及其子类、MountainBoard、StepCell、Bomb、CardDeck、PlayingCard、JudgeRule、CardLedger、BattleLog、RoundSnapshot、RoomSession、AccountProfile、MatchRecord、Settings | 保存领域状态、执行角色能力及规则、表达资源账本、房间及账号档案值 | 不操作DOM、Canvas/SVG渲染对象、音频总线或LocalStorage；AI策略只接收自己的授权信息副本 |
 | Utils：音频、账号存储与通用工具层 | AccountManager、LocalStorageStore、InformationProjector、RandomSource、GenshinAudioManager、ScoreSynthesizer、LocalMp3Source | 账号服务与持久化、权限投影、公平随机、音乐与音效播放 | 按Controller请求工作；音频不改胜负，存储不保存进行中的Game，投影不返回可修改的模型引用 |
 
-AccountManager是保留在浏览器端的账号业务服务，放在Utils账号存储子模块；Godot Game通过第2.4节桥接请求其接口，后文直接调用写法均表示这一协作关系；它对 AccountProfile、Settings、MatchRecord 执行持久化协调，但不代替 Game 推进对局。AIPlayer 继承 Player，是具有受限决策入口的领域特化对象，不形成第三席。
+AccountManager是保留在浏览器端的账号业务服务，放在Utils账号存储子模块；Game按第2.4节直接调用其接口，后文直接调用写法均表示这一协作关系；它对 AccountProfile、Settings、MatchRecord 执行持久化协调，但不代替 Game 推进对局。AIPlayer 继承 Player，是具有受限决策入口的领域特化对象，不形成第三席。
 
 ```mermaid
 flowchart TB
-  V[View：GameView / 地图 / 角色模型]
+  V[View：GameView / 地图 / 角色信标]
   C[Controller：Game / NetworkManager]
   M[Model：玩家 / 牌雷 / 技能组合 / 规则 / 账本]
   U[Utils：账号存储 / 授权投影 / 随机 / 音频]
@@ -63,54 +66,44 @@ flowchart TB
 
 ### 2.2 分析对象到设计对象
 
-保留分析中的全部核心类、8个支持类、两个抽象技能中间类及20个具体技能类。新增的 GameView、LocalStorageStore、InformationProjector、RandomSource、ScoreSynthesizer、LocalMp3Source 只拆分已有页面、存储、保密、随机及音源职责，不增加用户功能。角色外观、曲目、地形、命令和事件采用数据规格，不额外包装为大量业务类。
+保留分析中的全部核心类、8个支持类、两个抽象技能中间类及20个具体技能类。新增的 GameView、LocalStorageStore、InformationProjector、RandomSource、ScoreSynthesizer、LocalMp3Source 只拆分已有页面、存储、保密、随机及音源职责，不增加用户功能。角色信标规格、曲目、地形、命令和事件采用数据规格，不额外包装为大量业务类。
 
 Controller 单向掌握领域修改权。一次交互的标准流程为：GameView 提交命令 → Game 检查账号绑定、阶段、席位、次数、目标与资源 → 领域对象计算变更 → 校验通过后一起提交 → InformationProjector 生成公开及本人数据 → 页面、地图和音频消费结果。失败操作返回明确原因且不部分扣费。
 
-### 2.3 混合工程结构与实现归属
+### 2.3 同一原生Web工程结构与实现归属
 
-在项目根目录建立完整Godot工程，源码与Web导出产物分开：
+沿用现有src、Vite入口和账号实现，以下路径为后续拟扩展模块，不代表已实现。
 
 ```text
-src/                              # 保留第7步首页、天空岛视觉、账号及存储实现
-  utils/GodotHostBridge.js         # 拟新增：嵌入生命周期、入口路由、账号请求及回执
-public/godot/                     # Web导出JS/WASM/PCK；不能代替Godot工程源码
-godot_project/
-  project.godot                   # 启动场景、输入、Autoload、Compatibility渲染
-  export_presets.cfg              # Web嵌合导出配置
-  scenes/                        # Main.tscn、GameView.tscn、MountainMap.tscn、FirstPersonRig.tscn等
-    characters/                  # 13个独立角色.tscn及viewmodels/下13份第一人称手部/持物.tscn
-    ui/                          # CharacterGuide.tscn、Settings.tscn等
-  scripts/                       # Game.gd、NetworkManager.gd及各层子目录
-    bridge/WebAccountBridge.gd   # 与宿主交换JSON；不自行修改账号库
-    model/                       # 玩家、牌雷、棋盘、快照、记录值及skills/*.gd
-    utils/                       # 投影、随机、音频等.gd
-  resources/                     # 材质、六曲乐谱、角色只读规格
-  tests/                         # GDScript规则、场景与集成检查
+src/
+  main.js                         # 复用入口与内部路由
+  controller/Game.js              # 复用既有控制器，扩展单一流程编排
+  NetworkManager.js               # 同源双窗口通信
+  view/
+    GameView.js                   # 保留首页，扩展HUD/图鉴/设置
+    MountainMapRenderer.js        # Canvas透视、视差与授权标记
+    CameraController.js          # 第三人称跟随、全局及五焦点
+    CharacterTokenRenderer.js         # SVG/Canvas全名铭牌、权能图标与席位角标
+    CharacterAnimations.js
+    CharacterEffects.js
+  model/                          # 既有账号对象及后续领域/技能模块
+  utils/                          # 复用账号存储，扩展投影/随机/音频
+  resources/                      # 角色信标规格、乐谱与SFX规格
+  styles/                         # CSS3 3D视差光影与界面
+tests/                            # 根目录规则/集成测试与内存夹具
 ```
 
-Godot Web导出嵌入现有首页容器。默认采用Compatibility渲染器与单线程Web导出；若启用线程，另行配置跨源隔离并核验宿主页兼容性。实际Godot 4.x小版本与导出模板须固定匹配。WASM/PCK按需加载，Vite构建不替代Godot导出。首页首屏与Godot冷启动/缓存启动分别测量；宿主负责容器尺寸、焦点和引擎加载反馈。
+首页、游戏、图鉴、设置与音频共享同一JavaScript应用和安全档案，不创建第二套Game、账号库或音频管理器。地图与角色通过授权事件消费领域结果，不反向结算规则。
 
-Game、GameView（对局部分）、MountainMapRenderer、CharacterModel3D、AIPlayer、NetworkManager、牌雷规则、20个技能组件和全部音频对象均落在Godot .gd/.tscn。现有AccountManager、LocalStorageStore、AccountProfile、Settings继续保留在浏览器；Godot内的档案/偏好仅为传输值副本。新增接口按迭代扩展，不能将设计方法当作现有代码已具备。
+### 2.4 原生路由、账号调用与往返流程
 
-### 2.4 账号桥接协议与往返流程
+既有五入口映射local、ai、online、guide、settings内部路由。进入时取得当前安全档案与偏好，绑定会话并挂载视图；资源准备成功才启用交互，失败保留首页和重试入口。通过同一前端路由与直接账号调用完成切换。
 
-主路线为JavaScriptBridge：Godot通过get_interface()访问宿主白名单接口，用create_callback()注册并保留回调引用，宿主经回调传入JSON；不依赖任意GDScript直调。备用WebSocket或LocalStorage桥接沿用同一消息协议；WebSocket需明确服务端点，LocalStorage用独立临时消息键，不能覆盖账号键，且同窗口写入需主动派发（storage事件只通知其他窗口）。
+Game直接调用AccountManager的bindMatchOwner、saveSettings、setFusionTestUnlock、commitCompletedMatch等设计接口，按迭代扩展。视图只读publicSnapshot/InformationProjector安全副本，不接收credential、salt、派生校验值或其他账号资料。异步任务携带sessionId、requestId和绑定accountId，适用时携带matchId、revision及attemptId；拒绝过期会话、跨账号和重复提交。
 
-封套统一包含protocolVersion、sessionId、requestId、type、accountId、payload；对局消息另带matchId、localSeat，适用时带revision、attemptId。宿主核验结构、大小、当前会话、账号、席位及消息类型，拒绝旧会话或跨账号写入。此协议保证本地一致性，不声称防F12篡改。
+对局期间冻结切号/退出账号，回写使用原绑定accountId。不可回溯终局立即请求保存，按(accountId, matchId)幂等，战绩、统计及核验后的解锁同事务更新；失败明确提示且可重试，不重复裁决。返回首页时刷新统计、锁态与设置，释放输入、动画帧、计时、订阅和私有展示，恢复原首页与天空岛视觉，不重新登录。未完局和联机退出沿用既定规则；未保存结果只在本窗口保留重试队列，不承诺刷新恢复。
 
-| 消息 | 方向及数据 | 处理契约 |
-| --- | --- | --- |
-| engine_ready / initialize / initialized | 引擎就绪→宿主发送route、mode、账号投影及偏好→Godot确认 | 完成握手才启用场景交互；加载失败保留可用首页，允许重试 |
-| profile_updated | 宿主→Godot：安全AccountProfile副本 | 使用现有getCurrentProfile()/publicSnapshot()；包含accountId、username、stats、unlockedCharacterIds、settings、matchHistory、revision，历史可按需裁剪；绝不传密码、credential、salt、派生校验值或其他账号数据 |
-| settings_update / fusion_test_unlock | Godot→宿主：设置patch或测试解锁意图 | 按阶段、账号及字段校验，经AccountManager事务保存，再回传最新投影；测试接口在对应迭代扩展 |
-| match_completed | Godot→宿主：不可回溯MatchRecord、双方角色、本人席位及最终结果依据 | 校验与绑定局一致后调用待扩展commitCompletedMatch；战绩、统计及核验后的隐藏角色解锁同事务更新；不接受任意档案覆盖、直接设置胜场或解锁列表 |
-| save_ack / save_error | 宿主→Godot：对应requestId、matchId、保存状态和最新投影/错误 | 按(accountId, matchId)幂等；失败不伪报成功，重试使用相同matchId，不再次裁决 |
-| return_home / home_ack | Godot请求返回，宿主处理待保存结果、刷新首页并释放绑定 | 图鉴/设置不产生战绩；本地/AI未完局先确认作废，联机按离开规则终结；已完成结果不重复记账 |
-
-五个既有入口一一映射为Godot路由：local（本地双人）、ai（AI对战）、online（联机房间）、guide（角色与规则图鉴）、settings（设置）。点击时取得当前安全档案并绑定会话→等待engine_ready→initialize→进入对应.tscn；对战选角时进一步绑定matchId/席位。图鉴与设置同样接收解锁与偏好，但不启动对局。各模式按后续迭代逐步可用，接通桥接不等于AI/联机已经完成。
-
-进入Godot期间冻结切号/退出，回写使用原绑定accountId，不能在异步回调里改用新的当前账号。正常终局立即请求保存，无须等返回首页；保存失败提供重试。若用户明确选择带未保存结果返回，宿主保留本窗口待重试队列并在首页提示，刷新后恢复不在承诺范围内。返回时停止场景输入、私有展示、计时及订阅，恢复原首页与天空岛动态视觉，刷新战绩、隐藏角色锁态和设置，不重新登录或重建账号库。
+图鉴与设置不产生战绩，各模式按对应迭代逐步开放；原生导航接通不等于AI或联机已完成。
 
 ## 3. 公共设计契约与数据边界
 
@@ -144,7 +137,7 @@ Game、GameView（对局部分）、MountainMapRenderer、CharacterModel3D、AIP
 | AccountManager | 当前窗口的 currentAccountId、登录档案摘要、对局账号锁；依赖 LocalStorageStore，不保存Game快照 | register：验证并创建账号；login：口令校验及装载；logout/switchAccount：仅首页操作；bindMatchOwner/releaseMatchOwner：锁定/释放账号；saveSettings；commitCompletedMatch；setFusionTestUnlock；getSelectableCharacters | GameView发请求，经阶段校验后使用存储事务；登录成功通知Game进入首页；终局接收Game提供的已确认结果 |
 | LocalStorageStore | 存储键、schemaVersion、同源写锁名称、当前读取版本、存储错误状态 | readEnvelope、validateEnvelope、withWriteLock、writeEnvelope、observeChanges | 在命名Web Lock内重读最新档案、修改副本、校验并一次setItem；成功后更新缓存，storage事件使其他窗口重读，不改变其登录身份 |
 | AccountProfile | accountId、username、credential、stats、unlockedCharacterIds、settings、matchHistory、revision | verifyCredential、hasUnlocked、applySettings、appendConfirmedRecord、applyUnlock | 由AccountManager创建/修改；不自行访问LocalStorage；统计与历史由同一次提交更新 |
-| MatchRecord | matchId、mode、ownerSeat、result、P1/P2角色、P1/P2最终阶数、endedAt、endReason | fromConfirmedResult、validate、isSameMatch | Game形成已确认结果后转换为账号视角记录；若选角未完成便联机离开，未选择角色明确记“未选择”，不虚构模型或解锁 |
+| MatchRecord | matchId、mode、ownerSeat、result、P1/P2角色、P1/P2最终阶数、endedAt、endReason | fromConfirmedResult、validate、isSameMatch | Game形成已确认结果后转换为账号视角记录；若选角未完成便联机离开，未选择角色明确记“未选择”，不虚构角色信标或解锁 |
 | Settings | BGM/SFX各自音量与静音、自动切歌/循环偏好、镜头自动跟随 | validate、updateAudio、updateCamera、toPreferences | AccountManager按账号保存；GameView/播放器读同一份值；当局手动锁曲、播放进度、音频文件和最高音乐区间不放入该对象 |
 
 ### 4.2 LocalStorage 数据组织
@@ -295,7 +288,7 @@ RoundSnapshot在本轮任何技能之前捕获：双方阶数、牌实体及花�
 
 | 类 | 职责及主要属性 | 主要方法 | 交互流程 |
 | --- | --- | --- | --- |
-| MountainBoard | 固定41个StepCell；按阶管理地形和部署雷，不持有相机/模型 | initialize、getCell、placeBomb、moveBomb、removeBomb、getOwnedBombs | Game/技能提交合法布置请求；JudgeRule读取落点；Renderer只读其授权投影 |
+| MountainBoard | 固定41个StepCell；按阶管理地形和部署雷，不持有相机/信标 | initialize、getCell、placeBomb、moveBomb、removeBomb、getOwnedBombs | Game/技能提交合法布置请求；JudgeRule读取落点；Renderer只读其授权投影 |
 | StepCell | index、terrainZone、bombQueue；0/40禁布雷，1～39支持多雷 | addBomb、removeBomb、listBombsForRule | 由MountainBoard维护；选雷由JudgeRule执行，不向普通View暴露队列 |
 | Bomb | bombId、ownerSeat、stepIndex、部署/有效状态 | relocate、markDestroyed | 准备或死亡技能建立；空间移动保留ownerSeat；爆炸/焚毁后退出原所有者总量 |
 | PlayingCard | cardId、suit、当前分区 | transformSuit | CardDeck创建90张；移区由CardLedger管理；炼金仅改同一实体花色 |
@@ -313,7 +306,7 @@ JudgeRule不持久化玩家状态，主要方法为 evaluateOutcome、validatePl
 
 | 类 | 职责及主要属性 | 主要方法 | 交互流程 |
 | --- | --- | --- | --- |
-| Character | characterId、名称/元素、isFusion、只读外观规格、skillComponents；局内实例独立 | createForMatch、getActiveSkills、getPassiveSkills、getEffectiveComponents、captureSkillState | 选角确认后挂载新组件；与同角色对手不共享次数；模型读取外观规格，规则读取有效组件 |
+| Character | characterId、名称/元素、isFusion、只读信标规格、skillComponents；局内实例独立 | createForMatch、getActiveSkills、getPassiveSkills、getEffectiveComponents、captureSkillState | 选角确认后挂载新组件；与同角色对手不共享次数；信标渲染器读取信标规格，规则读取有效组件 |
 | SkillComponent（抽象） | skillId、ownerSeat、sourceOrigin、isSuppressed、技能类型及局内状态 | checkSuppression、checkContext、describeState、captureState、restoreState | 所有施放/触发入口统一先检查来源压制；不能只在UI禁用 |
 | ActiveSkillComponent（抽象） | maxUses、usedUses、pendingReservation、适用阶段及条件 | canActivate、validateTarget、activate、reserveUse、commitUse、cancelReservation | Game在合法窗口调用；验证完成后原子生效与计次；空间首次披露使用暂扣例外，时间技能使用结果区例外 |
 | PassiveSkillComponent（抽象） | 触发条件、首次标记/持续状态等派生字段 | canTrigger、provideModifier、onDomainEvent | Rule/Game在初始化、兑换、判胜、落脚等指定钩子调用；压制组件不返回收益 |
@@ -376,13 +369,13 @@ Character与SkillComponent为整体—部分组合关系；融合复用组件类
 | LifeExchangeBonus | 库≥2时取至多3 | 禁止被动收益，恢复普通1库存雷换2，仍须库≥2 |
 | LifeReplenish | 独立1次，手牌<10且库非空 | 禁用并显示来源压制原因，不耗次数，也不扣黄金次数 |
 
-UI只表现这一校验结果，不能通过隐藏按钮而保留后台生命收益；新局重新实例化和计算压制，不把某一局受压制状态写入账号永久解锁数据。账号解锁、技能使用资格、角色模型外观是三种独立状态。
+UI只表现这一校验结果，不能通过隐藏按钮而保留后台生命收益；新局重新实例化和计算压制，不把某一局受压制状态写入账号永久解锁数据。账号解锁、技能使用资格、角色信标主题是三种独立状态。
 
-## 7. View：界面、地图与13角色立体建模
+## 7. View：界面、地图与13角色名字铭牌与元素信标
 
 ### 7.1 GameView：页面与操作面板
 
-登录/注册及首页保留现有src/view/GameView.js实现与视觉；下列其余页面使用Godot Control/CanvasLayer、.tscn与GDScript signals实现。原首页五个按钮仅接入第2.4节桥接，不重做首页。
+登录/注册及首页保留现有src/view/GameView.js实现与视觉；下列其余页面使用DOM、Canvas/SVG与JavaScript事件实现。原首页五个按钮仅接入第2.4节模块协作，不重做首页。
 
 | 设计项 | 内容 |
 | --- | --- |
@@ -395,7 +388,7 @@ UI只表现这一校验结果，不能通过隐藏按钮而保留后台生命收
 | --- | --- |
 | 登录/注册 | 首次显示模态框，输入校验及成功/失败状态；登录成功才展示可操作首页 |
 | 首页 | 当前账号栏、战绩摘要、本地双人、AI、房间码联机、角色与规则图鉴、设置；右上角旋曜玉帛播放器与其他场景共用 |
-| 选角/图鉴 | 13角色独立3D预览与名称、元素/阵营、主动/被动、条件、次数和来源压制说明；融合锁定标识；选角提供当前账号测试解锁/重置；AI模式提供难度及手动角色选择 |
+| 选角/图鉴 | 13角色独立2.5D预览与名称、元素/阵营、主动/被动、条件、次数和来源压制说明；融合锁定标识；选角提供当前账号测试解锁/重置；AI模式提供难度及手动角色选择 |
 | 房间 | 房间码、复制/手输、P1/P2占位、各自就绪、连接/等待/失效状态；不出现第三席位或观战入口 |
 | 交替选牌 | 当前取牌方、公共总张数、本人花色及已取数量、单张选择与快速随机补齐；对手视图只有规则允许的完成状态，不出现牌库花色分项或对手所选花色 |
 | 唯一准备 | 本人手牌、本人库存/总雷额度、双向兑换、布雷/移雷/撤回、确认锁定；对方库存和暗雷不出现在普通界面；锁定后关闭本人普通操作 |
@@ -404,73 +397,75 @@ UI只表现这一校验结果，不能通过隐藏按钮而保留后台生命收
 | 设置/播放器 | 共用当前账号Settings；设置页也有测试解锁/重置；本地MP3挂载、暂停/静音/音量及自动切歌状态明确区分 |
 | 终局/重开 | 显示候选结果与可用回溯，确认后显示最终结果、持久化成功/失败；本地/AI退出或重开二次确认，联机按退出规则处理 |
 
-私有操作交接前必须先清空手牌组成、技能情报、己方雷标记及预选草稿，再显示不透明遮罩；下一位点击交接确认后才装载其PrivateView。按住查看在松开、指针取消、窗口失焦、遮罩出现、阶段结束或回溯时立即隐藏。遮罩期间不能透过3D标签、提示浮层或键盘焦点读到前一操作者信息。
+私有操作交接前必须先清空手牌组成、技能情报、己方雷标记及预选草稿，再显示不透明遮罩；下一位点击交接确认后才装载其PrivateView。按住查看在松开、指针取消、窗口失焦、遮罩出现、阶段结束或回溯时立即隐藏。遮罩期间不能透过2.5D标签、提示浮层或键盘焦点读到前一操作者信息。
 
 ### 7.2 MountainMapRenderer：笔直立体天梯与镜头
 
 | 设计项 | 内容 |
 | --- | --- |
-| 职责 | 把固定阶号及已裁决事件转换为可读的笔直天梯3D地图、角色站位、授权标记和镜头运动；不结算游戏规则 |
-| 主要属性 | Godot Node3D、Camera3D、WorldEnvironment、Compatibility渲染器；41阶空间锚点及局部朝向；山林/冰雪/天空岛地貌节点；云海粒子；P1/P2模型引用；镜头当前/目标位置、viewMode（FPP/TACTICAL）、viewSeat、focusMode、autoFollow、眼位锚点、俯仰/偏航、Viewmodel及震屏队列；台阶高亮；授权标记集合；表现队列及attemptId |
+| 职责 | 把固定阶号及已裁决事件转换为可读的笔直天梯2.5D地图、角色站位、授权标记和镜头运动；不结算游戏规则 |
+| 主要属性 | Canvas 2D上下文、SVG角色层、CSS3 3D视差层；41阶空间锚点及三段地貌；云海粒子；P1/P2信标；CameraController焦点、缩放、autoFollow；台阶高亮、授权标记、表现队列及attemptId |
 | 主要方法 | initializeScene、buildPath、buildTerrainZones、applyAuthorizedView、highlightSteps、playMovement、playExplosion、showAuthorizedMarkers、hidePrivateMarkers、focusTarget、setAutoFollow、updateFrame、resetAfterRewind、resize、dispose |
-| 交互流程 | Game提交规则结果 → InformationProjector输出位置及授权表现事件 → Renderer排队播放 → 每帧更新相机、模型与粒子；台阶点击反向产生目标意图给Game校验 |
+| 交互流程 | Game提交规则结果 → InformationProjector输出位置及授权表现事件 → Renderer排队播放 → 每帧更新相机、信标与粒子；台阶点击反向产生目标意图给Game校验 |
 
-**路径与地貌。** MountainBoard仅认识阶号，Renderer为0～40各建立一个空间锚点；各阶沿同一笔直轴线连续向上延伸，具备真实立体高度、进深和石阶厚度，统一朝向山顶。对局默认从行动角色双眼位置沿天梯向上仰望第40阶天空岛大门；两侧沿直线阶梯布置高耸入云的多立克式白石廊柱与翻涌云海，柱列不得遮住台阶及对手。战术俯瞰与图鉴观察作为辅助视角，路径本身保持笔直。模型移动沿这些锚点表现；游戏中的前进5步仍只在第5步终点进行一次普通落脚判定。空间高度及动画插值均不能改变相邻阶关系。
+**路径与地貌。** 参照《原神》白昼开门启动界面，从近景山脚第0阶沿笔直天梯大道通向远方苍穹高处第40阶天空之门。41阶空间锚点以透视缩放、遮挡、石阶顶面/立面厚度及定向光影表现纵深。两侧布置多层视差滚动的巨型白石廊柱、断梁、丁达尔圣光与翻涌云海，近景移动快、远景慢，避免遮挡阶号和交互目标。三段地貌、终点门/王座保留；表现插值不改变相邻阶关系或落脚判定。
 
 | 阶段区域 | 空间与材质表现 | 识别要求 |
 | --- | --- | --- |
 | 0～15 | 第0阶山脚平台接入笔直上升的林间石阶，石材、植被与山壁分层 | 起点0清楚可见；台阶编号与角色不被植被遮挡 |
 | 16～30 | 覆雪石阶/冰阶、雪山腰与冷色薄雾，延续同一有序路径 | 冰雪材质不能抹去编号、站位及合法目标高亮 |
-| 31～40 | 云海上方浮空玉阶、白昼天空岛圣殿，第40阶终点门与王座 | 31～39仍是可布雷阶；40明确为不可布雷终点，登顶模型停40 |
+| 31～40 | 云海上方浮空玉阶、白昼天空岛圣殿，第40阶终点门与王座 | 31～39仍是可布雷阶；40明确为不可布雷终点，登顶信标停40 |
 
-云海以GPUParticles3D或MultiMeshInstance3D受控数量的粒子/实例和分层透明效果形成纵深；远山与建筑属于背景层。台阶编号采用清楚可读的标签与关键阶位提示，手动全局视角能理解0到40的连续关系。相机视角下被山体遮住的阶位，可通过五种聚焦方式查看；不把所有阶位挤在同一平面。
+云海采用Canvas云层/粒子与CSS透明层受控叠加，以SVG/CSS渐变和Canvas光束模拟丁达尔圣光，统一透视和视差参数，全局可读0～40连续关系。
 
-**站位与动画。** 每阶锚点附带局部左右偏移。P1/P2同阶时分别站两侧，保留本席标识；离开同阶后平滑恢复各自站位。逻辑位置由Game即时提交，模型位置按动画渐进；动画队列不反写Player.position。爆炸回退沿裁决路径播放，不能因动画经过台阶而额外查雷。回溯先使旧attempt的前进/爆炸/登顶动画失效，再同步恢复位置、护盾及其他可见状态。
+**站位与动画。** 每阶锚点附带局部左右偏移。P1/P2同阶时分别站两侧，保留本席标识；离开同阶后平滑恢复各自站位。逻辑位置由Game即时提交，信标位置按动画渐进；动画队列不反写Player.position。爆炸回退沿裁决路径播放，不能因动画经过台阶而额外查雷。回溯先使旧attempt的前进/爆炸/登顶动画失效，再同步恢复位置、护盾及其他可见状态。
 
-**相机模式。** Camera3D默认采用当前行动角色FPP，眼位由角色双眼之间的EyeAnchor（Marker3D）给出，初始朝向沿笔直天梯向上仰望第40阶天空岛大门。FirstPersonRig将阶位锚点、眼高、自由观察和表现偏移分层叠加；不将相机绑定到抖动的头骨动画上。支持平视、俯仰与回头观察，可直接看到台阶上对手完整的3D模型；同阶仍左右分立。鼠标观察与卡牌/HUD交互有明确切换，释放指针不提交游戏操作，窗口失焦时清除私有标记并释放捕获。
+**相机模式。** 地图采用2.5D立体纵深透视，默认第三人称平滑跟随，完整展示角色。CameraController维护当前/目标位置、缩放、焦点和插值，统一驱动Canvas投影与CSS视差层。支持全局俯瞰、山脚、山顶、P1、P2五种聚焦；autoFollow关闭后保留手动焦点，不强制眼位绑定或准备结束复位。
 
-viewMode为FPP或TACTICAL。保留可见的“战术俯瞰 / 返回第一人称”切换按钮，开局准备阶段可切入俯瞰，通过屏幕射线拾取远端1～39阶进行精确布雷；保留山脚、山顶、P1、P2、全局五焦点及缩放作为TACTICAL的辅助能力。退出准备阶段恢复FPP，其他阶段的辅助查看不改变默认模式及操作权限。已有autoFollow偏好用于战术镜头，关闭它不能解除FPP与本人眼位的绑定。视角切换不改变阶位、技能次数、行动顺序或可见信息，俯瞰也不显示未授权暗雷。
+选阶采用当前投影台阶多边形命中检测，按深度处理重叠；准备阶段可在全局俯瞰准确选择远端1～39阶。视角切换不改变阶位、技能次数、行动顺序或授权数据，不显示未授权暗雷。
 
-本地同屏交接时，先清空私有界面并遮罩，再切换行动席位的眼位、Viewmodel及授权投影，确认后揭开遮罩。AI自动行动时保持人类玩家眼位；联机每端固定本人眼位，轮到对手时观看对手完整模型的公开动作，不跳入对手私有视角。双方独立确认/锁牌时不因先后锁定切换观察席位或泄露花色；本地无唯一行动方时保留最后已确认观察席位，下一次交接再切换。
+本地交接先清私有展示并遮罩，确认后加载下一席投影与跟随目标。AI回合保持人类选定焦点，联机两端独立控制镜头；公开动作可见，私有数据按本人席位隔离，先锁牌不强制切镜头或泄露花色。
 
-**第一人称移动与爆炸。** 接收裁决后的起点、终点及路径，按每阶起跳—腾空—落脚播放连续抛物线镜头起伏，Viewmodel同步摆动，视觉逐阶经过不额外查雷。实际踩中炸弹时播放贴脸爆炸粒子、Camera Shake的强烈短时位移/旋转震屏，以及快速向后倒退10格的空间冲击；实际退格按规则裁决（死亡修正13格、最低0阶），不固定播放虚假的10格路径。火焚毁与完整护盾不播放实际受爆击退，风免退仍可表现爆炸但不后退；连锁逐次消费真实事件。震屏叠加在独立CameraShake节点，结束归零，不累积改变眼位和观察方向；手牌、倒计时、确认按钮保持可读。回溯或旧attempt取消时停止抛物线、后退、震屏及粒子，恢复新授权眼位；这些动画不触发领域修改。
+**移动与爆炸。** 信标依授权路径逐阶跳跃，镜头平滑跟随；实际踩雷震动并退10/13格且最低0，火/完整盾无实际击退，风免退可爆炸但不退。视觉经过格不额外查雷，回溯取消旧attempt轨迹/粒子/震动并恢复授权位置。
 
 **炸弹预警与选格。** 普通地图不持有敌方暗雷清单。标记分为按住查看的己方雷、布耶尔当次授权范围情报、阿斯莫代移雷窗口内的己方雷，以及已实际公开的爆炸事件。侦测去重坐标不附加归属、同阶数量或实时追踪；历史爆炸标记不代表该阶当前仍有雷。
 
 空间技能只给出己方可选源雷；目标候选格不能通过“空格绿色/敌雷红色”泄露敌雷。用户提出目标后由Game检查全场是否为空，不合法时仅提示目标当前不可用，不返回敌方归属或雷数量。允许玩家依据规则和合法反馈推算。普通准备布雷允许同阶多雷，不使用额外的空格限制。目标选择、特效和提示都遵守同一InformationProjector授权规则。
 
-### 7.3 CharacterModel3D：共同骨骼与独立造型
+### 7.3 CharacterTokenRenderer：角色名字铭牌与元素信标
+
+取消复杂角色人偶立体建模，不再绘制13名角色的人体、五官、发型与服饰模型。角色视觉统一由CharacterTokenRenderer呈现为《原神》风格鎏金悬浮角色名字铭牌／元素神之眼棋子信标；40阶2.5D直线天梯地图（0～40共41个阶位）、选角台、图鉴页和结算弹窗共用同一角色规格。
+
+每个信标必须清晰显示角色全名、所属元素/权能图标与主题配色、P1/P2玩家归属角标；不得仅以颜色区分角色或席位，长名称尤其“莱茵多特/纳贝里士”必须完整可读，可自适应宽度或换行，不以省略号代替。选角按当前选择席位显示角标，图鉴无真实玩家绑定时使用明确标注“预览”的P1/P2示例；结算按实际参赛席位展示。融合铭牌采用左黑金＋右翠白双色渐变，双权能图标可辨。
+
+保留四类状态动画与技能特效：待机微浮呼吸、逐阶跳跃攀爬轨迹、踩雷震动与实际回退、技能释放/被动触发时的专属元素光环或法阵。保留出牌、登顶与回溯衔接，同阶双信标左右错位；技能次数、护盾、连胜、冻结与来源压制仍由真实规则驱动。无主动角色只播放真实被动，不生成虚构按钮。私有侦测、暗雷和手牌不能经光环、颜色、轨迹或镜头泄露。
 
 | 设计项 | 内容 |
 | --- | --- |
-| 职责 | 以.tscn、Node3D、MeshInstance3D、Skeleton3D、AnimationPlayer/AnimationTree按角色规格构建立体几何与材质，控制骨骼/部件动画和技能特效；将Character及有效组件的展示状态转为表现 |
-| 主要属性 | characterId、appearanceSpec、根节点；躯干/头部/四肢关节；发型/饰品节点；衣裙/披风节点；翼环/武器/持物节点；animationState、动画进度、当前阶位锚点、特效节点、可见技能状态及attemptId |
-| 主要方法 | buildCharacter、buildHair、buildCostume、buildAccessories、bindSkeleton、setIdle、playClimbJump、playKnockback、playLanding、playSkillEffect、playSummit、applyVisibleSkillState、setSeatOffset、cancelAttempt、resetPose、dispose |
-| 交互流程 | Character只读外观规格 → 共同关节体系挂载角色独立部件 → Renderer给站位和动画事件 → 模型播放；技能条件与次数来自授权组件状态，不由模型推断或消耗 |
+| 职责 | 在地图、选角台、图鉴和结算弹窗绘制鎏金悬浮铭牌/神之眼棋子信标，显示全名、权能图标、主题配色和席位，消费授权状态及动画事件 |
+| 主要属性 | characterId、tokenSpec（fullName、powerIcon、themeColors、fusionSides）、seat、context、stepAnchor、animationState、visibleSkillState、attemptId |
+| 主要方法 | buildToken、setContext、setSeat、setIdle、playClimbJump、playKnockback、playLanding、playSkillEffect、playSummit、applyVisibleSkillState、setSeatOffset、cancelAttempt、resetPose、resize、dispose |
+| 交互流程 | 角色目录提供只读tokenSpec → Game/InformationProjector提供席位、位置和授权事件 → Renderer播放；不持有另一套技能次数，不反写领域位置 |
 
-头部、躯干、肩肘腕、髋膝踝使用共同骨骼约定，发辫、衣袖、裙摆、披风、羽翼和光环以附属节点形成独立层次。发型使用可辨体积和轮廓，服饰有前后层及材质分区，持物绑定手部或悬浮节点，翼环采用实际立体布局。可以复用底层几何和关节，13角色仍须具备下表独立规格，不能只以通用人偶换色或平面立绘替代。
+| 角色 | 图标、主题配色与角标 |
+| --- | --- |
+| CH-01 巴巴托斯 | 风纹神之眼图标；青绿；P1/P2角标 |
+| CH-02 摩拉克斯 | 岩晶神之眼图标；珀金；P1/P2角标 |
+| CH-03 巴尔泽布 | 雷纹神之眼图标；紫电；P1/P2角标 |
+| CH-04 布耶尔 | 草叶神之眼图标；翠绿；P1/P2角标 |
+| CH-05 芙卡洛斯 | 水滴神之眼图标；湛蓝；P1/P2角标 |
+| CH-06 赫布里穆 | 火焰神之眼图标；赤金；P1/P2角标 |
+| CH-07 瓦沙嘉 | 冰晶神之眼图标；银蓝；P1/P2角标 |
+| CH-08 伊斯塔露 | 日晷权能图标；纯白鎏金；P1/P2角标 |
+| CH-09 阿斯莫代 | 空间立方权能图标；暗红；P1/P2角标 |
+| CH-10 若娜瓦 | 死亡之眼权能图标；黑红；P1/P2角标 |
+| CH-11 纳贝里士 | 生命叶冠权能图标；翠白；P1/P2角标 |
+| CH-12 “黄金”莱茵多特 | 炼金四角星权能图标；黑金；P1/P2角标 |
+| CH-13 莱茵多特/纳贝里士 | 炼金四角星＋生命叶冠双权能图标；左黑金＋右翠白双色渐变；P1/P2角标 |
 
-| 角色 | 必备发型/服装/翼环与持物 | 主要技能表现绑定 |
-| --- | --- | --- |
-| CH-01 巴巴托斯 | 青绿双辫、翠绿风神斗篷、天空之琴 | 风流、剪刀获胜飞跃、首次踩雷乘风免退 |
-| CH-02 摩拉克斯 | 棕黑长发与琥珀发梢、黑金礼服、玉璋护盾光环 | 护盾开启/持续/消退、平局推进；剩余有效回合与组件一致 |
-| CH-03 巴尔泽布 | 紫罗兰长麻花辫、紫金振袖、雷光百眼轮、梦想一心太刀 | 雷光、实际爆炸附加弃牌的公开反馈；不标出未授权雷位 |
-| CH-04 布耶尔 | 白绿精灵侧马尾、须弥短裙、虚空法阵 | 侦测动作；侦测结果仅本人授权视图显示 |
-| CH-05 芙卡洛斯 | 蓝白双色水母头、枫丹礼帽与燕尾服、水滴权杖 | 当轮技能激活与实际败局补牌的水效 |
-| CH-06 赫布里穆 | 炽焰红金渐变长发、纳塔战衣、太阳圣火光轮 | 连胜增强、所选落脚雷焚毁；只表现实际有效结果 |
-| CH-07 瓦沙嘉 | 极光银蓝长发、冰雪皇冠、冰晶女皇长袍 | 冻结牌型、纳贝里士来源压制提示 |
-| CH-08 伊斯塔露 | 银白长发、三对纯白圣洁六翼、金色日晷光环 | 时间回溯及恢复后的站位/姿态，不继续旧候选登顶动画 |
-| CH-09 阿斯莫代 | 白发金瞳、黑红披风、悬浮暗红空间立方体 | 合法移雷/位置互换；不得通过特效连线公开暗雷坐标 |
-| CH-10 若娜瓦 | 黑红长发、猩红之瞳、暗黑骨翼与猩红之眼 | 以牌布雷动作及对手实际13格回退；布置位置不公开 |
-| CH-11 纳贝里士 | 翠金长发、生命王冠、纯白羽翼 | 生命补牌与受压制状态；抽到花色不向对手展示 |
-| CH-12 “黄金”莱茵多特 | 冷艳金发、黑金炼金术士华服、黄金四角星矩阵 | 炼金转化、首次优惠状态；转化前后花色仅本人可见 |
-| CH-13 莱茵多特/纳贝里士 | 左侧黑金炼金、右侧翠白羽翼的双生融合形态，两侧轮廓和材质清楚不同 | 黄金/生命组件分别展示，对冰仅生命侧受压制，不整模隐藏或熄灭黄金特效 |
+**渲染与接入。** 使用Canvas/SVG绘制鎏金边框、悬浮铭牌、元素徽记、柔光及法阵，复用布局与动画控制器。图标表达视觉身份，不增加元素反应等新规则。地图信标锚定台阶透视位置，微浮不改变阶号；跳跃使用逐阶抛物线轨迹，踩雷按裁决实际退10/13格且最低0。火焚毁/完整盾无实际击退，风免退可有爆炸反馈但不退。回溯以attemptId取消旧轨迹、光环和震动，再恢复授权站位/状态。
 
-**角色专属Viewmodel。** 场景位于`godot_project/scenes/characters/viewmodels/`，统一控制脚本为`godot_project/scripts/view/CharacterViewmodel.gd`；摄像机与震屏分别由`godot_project/scripts/view/FirstPersonCamera.gd`和`godot_project/scripts/view/CameraShake.gd`负责。 13名角色各提供与完整角色模型一致的第一人称手部、袖口、专属配饰及已指定手持武器/法器模型，在视口下方渲染；未指定武器者用角色专属手势/法术表现，不新增规则外武器。通过Camera3D下的独立ViewmodelRoot及可见层管理，必要时用共享世界的SubViewport独立渲染近景以避免穿墙/近裁剪，再合成到主视口；不得把立绘贴片当作3D手部。本人头部及会穿入眼位的几何从FPP相机剔除，世界中的完整角色仍为对手视角、图鉴和战术视角保留。Viewmodel与世界模型复用同一角色ID、外观规格和有效技能状态，不持有另一套技能次数。
-
-周身环绕元素粒子通过Godot粒子节点围绕角色锚点布置，FPP边缘可感知，不能持续遮住中间台阶、对手与HUD。出牌、施法、跳跃、落脚、受击及回溯均同步手部/持物动作；融合角色两侧配色与黄金/生命状态分别呈现。私有侦测/暗雷不借粒子、武器指向、镜头自动转向或震屏预警向另一席位泄露。
-
-未指定武器的角色不额外创造技能武器。所有角色都支持待机呼吸与附属部件轻摆、起跳—攀爬—落脚、实际击退、技能动作及登顶；无主动的角色只播放其有效被动，不生成虚构按钮。技能特效不得遮挡手牌、确认按钮或计时，音效关闭时仍能看懂动作和结果。
+**清晰度与权限。** 信标可保留轻量落点光晕/软阴影作定位，不再要求人体投影或玉阶人形倒影。远景提供最小可读字号及必要的标签避让；同阶左右错位，席位角标与全名始终可区分。选角、图鉴、结算复用同一tokenSpec，锁定与解锁独立于视觉主题。融合受冰压制仅在生命侧显示状态，黄金侧及其有效特效保留；私有技能结果仅送本人视图，法阵连线不暴露暗雷。
 
 ## 8. GenshinAudioManager：六曲合成与本地MP3双音源
 
@@ -480,11 +475,11 @@ viewMode为FPP或TACTICAL。保留可见的“战术俯瞰 / 返回第一人称�
 
 | 类 | 职责与主要属性 | 主要方法 | 交互流程 |
 | --- | --- | --- | --- |
-| GenshinAudioManager | Godot AudioServer、BGM/SFX独立总线、六曲目录、两个播放槽、currentTrack、sourceKind、autoMode/manualLock、最高音乐区间、pauseIntent、音量/静音、真实播放状态、本地文件映射 | initializeAudio、resumeFromGesture、applySettings、handleScene、recordReachedStep、selectAutoTrack、play、pause、previousTrack、nextTrack、setSingleLoop、restoreAuto、crossfade、mountLocalMp3、playSfx、resetForNewMatch、dispose | 接收Game授权场景/落脚事件及Settings；选择曲目和音源；控制合成/媒体槽与界面状态，不修改牌雷或胜负 |
+| GenshinAudioManager | AudioContext及GainNode、BGM/SFX独立总线、六曲目录、两个播放槽、currentTrack、sourceKind、autoMode/manualLock、最高音乐区间、pauseIntent、音量/静音、真实播放状态、本地文件映射 | initializeAudio、resumeFromGesture、applySettings、handleScene、recordReachedStep、selectAutoTrack、play、pause、previousTrack、nextTrack、setSingleLoop、restoreAuto、crossfade、mountLocalMp3、playSfx、resetForNewMatch、dispose | 接收Game授权场景/落脚事件及Settings；选择曲目和音源；控制合成/媒体槽与界面状态，不修改牌雷或胜负 |
 | ScoreSynthesizer | 六份只读多轨乐谱、乐器音色规格；每个活动播放槽独立的音频时钟起点、轨道游标、循环边界与已调度节点 | loadScore、createVoice、scheduleAhead、start、pause、resume、stop、connectOutput、releaseVoices | AudioManager选曲 → 依据音频时钟提前调度各轨音符 → 输出至所分配播放槽；淡出槽保留至过渡完成再释放，暂停时冻结两槽，停止时清理待播节点 |
-| LocalMp3Source | 按曲目绑定的MP3字节、AudioStreamMP3资源、AudioStreamPlayer节点、加载/播放状态、当前位置 | mount、prepare、play、pause、stop、connectOutput、handleFailure、release | 用户为选定曲目选择本地MP3 → Web桥接转交字节 → GDScript构建AudioStreamMP3并接同一BGM槽；错误通知AudioManager静默切回该曲内置合成器 |
+| LocalMp3Source | 按曲目绑定的MP3字节、AudioBuffer资源、AudioBufferSourceNode节点、加载/播放状态、当前位置 | mount、prepare、play、pause、stop、connectOutput、handleFailure、release | 用户为选定曲目选择本地MP3 → File API读取字节 → decodeAudioData构建AudioBuffer并接同一BGM槽；错误通知AudioManager静默切回该曲内置合成器 |
 
-两个活动播放槽分别持有独立的乐谱或媒体播放会话，新曲加载不能重置淡出曲的游标；过渡期间暂停会同时冻结两槽，恢复后继续尚未完成的过渡。播放槽增益先进入统一BGM音量/静音总线，SFX使用独立总线。停止AudioStreamPlayer并释放音频资源及桥接临时引用不删除用户的MP3文件；LocalStorage不保存文件内容或可跨刷新恢复的文件访问权。账号只保存Settings偏好，本地文件挂载在本窗口会话内有效。
+两个活动播放槽分别持有独立的乐谱或媒体播放会话，新曲加载不能重置淡出曲的游标；过渡期间暂停会同时冻结两槽，恢复后继续尚未完成的过渡。播放槽增益先进入统一BGM音量/静音总线，SFX使用独立总线。停止AudioBufferSourceNode并释放音频资源及模块协作临时引用不删除用户的MP3文件；LocalStorage不保存文件内容或可跨刷新恢复的文件访问权。账号只保存Settings偏好，本地文件挂载在本窗口会话内有效。
 
 ### 8.2 六首曲目与内置乐谱要求
 
@@ -497,7 +492,7 @@ viewMode为FPP或TACTICAL。保留可见的“战术俯瞰 / 返回第一人称�
 | Termination of Desires（斩雾破竹） | 完整内置，可手动上一首/下一首选择；未指定自动角色映射 |
 | Rage Beneath the Mountains（山峦的震怒） | 完整内置，可手动上一首/下一首选择；未指定自动角色映射 |
 
-每份乐谱规格包含对应旋律音高、音符时值/休止、速度与节拍、分轨乐器、力度包络、和声与伴奏、段落及循环边界。ScoreSynthesizer以GDScript生成分轨波形、滤波与包络，写入AudioStreamGeneratorPlayback，按AudioServer音频时钟与采样数调度；画面帧率不作为音乐节拍源。六曲在无本地文件、无外部音频请求时都必须能发声。
+每份乐谱规格包含对应旋律音高、音符时值/休止、速度与节拍、分轨乐器、力度包络、和声与伴奏、段落及循环边界。ScoreSynthesizer以JavaScript生成分轨波形、滤波与包络，写入Web Audio音频节点，按AudioContext.currentTime与采样数调度；画面帧率不作为音乐节拍源。六曲在无本地文件、无外部音频请求时都必须能发声。
 
 后续实现需分别验证“六份谱确实有独立内容”和“可辨旋律与指定原曲对应”，不能只列六个曲名、重复同一旋律或以无关氛围曲代替。本阶段只确定谱数据结构和播放设计，不生成乐谱程序、音频文件，也不宣称曲目已经实现或验收。
 
@@ -516,7 +511,7 @@ viewMode为FPP或TACTICAL。保留可见的“战术俯瞰 / 返回第一人称�
 
 ### 8.4 自动播放恢复与交互音效
 
-Godot Web音频仍受浏览器自动播放限制。首次首页手势可触发引擎加载，但不能假定异步加载后仍保有手势资格；若引擎就绪时受限，提供“点击启用音频/继续”入口，在可信手势中经Web适配器恢复Godot音频上下文。BGM/SFX及播放状态由Godot负责；保留的首页播放器外观通过桥接控制同一Godot音频管理器，避免重复发声。唤醒不取消用户的主动暂停/静音，等待音频不阻断游戏。
+Web Audio API受浏览器自动播放限制。首次可信手势中创建或resume同一AudioContext；受限时提供“点击启用音频”入口。首页与对局共用同一音频管理器，真实区分等待/播放/暂停；唤醒不取消主动暂停/静音，等待音频不阻断游戏。
 
 SFX覆盖按钮、抛硬币、取牌、兑换、布雷调整、锁定/亮牌、攀爬落脚、爆炸、技能/压制/回溯、胜负等交互。音效由已授权事件触发；暗选牌的音色/时长不编码花色，秘密布雷不按坐标产生可辨空间声像，私有侦测结果不作为公共语音播报。音效暂停/关闭或音频失败不改变Game的状态推进；全部结果仍有可见反馈。
 
@@ -531,7 +526,7 @@ SFX覆盖按钮、抛硬币、取牌、兑换、布雷调整、锁定/亮牌、�
 | 主要方法 | createRoom、discoverRoom、joinRoom、copyRoomCode、setReady、sendCommand、receiveMessage、validateEnvelope、publishViews、startStepTimer、handleTimeout、leaveRoom、handlePeerDeparture、readSharedResult、confirmSharedResult、closeRoom、dispose |
 | 交互流程 | 房主创建RoomSession并公布房间摘要 → 加入申请由房主串行占P2席 → 双方就绪触发Game选角 → 远端意图交给房主Game校验并提交 → 分席发布投影；离开/超时按对应规则交由Game处理 |
 
-Godot NetworkManager默认通过JavaScriptBridge传输适配器使用同一浏览器配置文件、同源站点内的BroadcastChannel，LocalStorage事件作为兼容备用；不是跨浏览器配置文件或跨设备通信。房间码只能在该通信范围内邀请另一窗口。Chrome、Edge等的兼容性指标是分别能运行应用，不表示两种浏览器互通房间。前端应用须由同一可信来源运行，以使用所选浏览器API；默认无需额外服务进程；改用WebSocket时须配置可用端点。适配器只转发消息，房间、计时、权威同步及AI逻辑仍在Godot中。
+JavaScript NetworkManager直接使用同一浏览器配置文件、同源站点内的BroadcastChannel，LocalStorage事件作为兼容备用；不是跨浏览器配置文件或跨设备通信。房间码只能在该通信范围内邀请另一窗口。Chrome、Edge等的兼容性指标是分别能运行应用，不表示两种浏览器互通房间。前端应用须由同一可信来源运行，以使用所选浏览器API；默认无需额外服务进程；改用WebSocket时须配置可用端点。适配器只转发消息，房间、计时、权威同步及AI逻辑仍在同一Web应用中。
 
 房间码选择允许范围内的6位数字/字母码，由RandomSource生成；创建时核对当前活动房间索引，冲突重新生成。房间内部另有唯一roomId，已失效房间的旧消息不能凭相同短码影响新房间。复制失败时仍展示可手动选取的房间码。
 
@@ -609,11 +604,11 @@ RandomSource以随机位得到正反严格各1/2；抽牌在剩余实体索引�
 
 | 关注点 | 设计措施 | 后续验证口径 |
 | --- | --- | --- |
-| 首屏 | 登录/首页骨架与必要场景优先；几何/材质规格复用；按需创建参赛角色，图鉴模型按需预览；音频使用内置乐谱，不等待外部MP3 | 记录硬件、系统、浏览器版本、网络/缓存状态；测量从打开页面到原首页可操作时间；另测Godot WASM/PCK冷启动和缓存启动进入场景耗时 |
+| 首屏 | 优先首页骨架，角色分层资源与场景按需加载；六曲内置乐谱不依赖外部MP3 | 测首页可操作时间与首次进入2.5D场景耗时，记录冷/热缓存、硬件和浏览器 |
 | 操作反馈 | 命令提交即给按钮/等待反馈；状态校验与可见反馈不等待整段动画或1.5秒切歌；AI困难计算分批让出主线程 | 量测输入到可见反馈，密码派生、通信等待和完整动作另行记录 |
-| 地图与模型 | 复用台阶几何/材质、粒子实例化、限制离屏粒子和阴影开销、控制像素比；两名参赛世界模型与当前观察者的一套Viewmodel按可见性更新，图鉴关闭后停更；粒子与近景独立渲染控制开销 | 在两种分辨率分别测FPP/战术切换、Viewmodel、柱廊云海、逐阶跳跃、贴脸爆炸连锁及技能特效帧率，保留角色必备轮廓及标志部件 |
+| 地图与信标 | 缓存台阶、铭牌/图标与光环，控制像素比、离屏粒子及透明层开销，图鉴关闭停更 | 两分辨率实测跟随/全局/五焦点、长全名与角标可读性、同阶双信标及连爆/技能帧率 |
 | 音频 | 用音频时钟提前调度，小批量生成节点；离开的槽及时停止；SFX独立总线控制并发 | 连续切歌/暂停/静音及MP3失败回退无旧音残留，过渡时长1.5秒 |
-| 布局 | 首页DOM与Godot嵌入画布分层，Godot内用Control/CanvasLayer组织HUD；低分辨率下手牌/技能/确认优先，日志允许区域滚动；阶号和双方状态可读 | 不遮挡锁牌、技能、倒计时、交接遮罩或播放器；不通过布局折叠泄露上一操作者私有信息 |
+| 布局 | 同一DOM页面中Canvas/SVG/CSS视差层与HUD分层，低分辨率优先手牌、技能、确认，日志可滚动 | 阶号和状态可读；不遮挡倒计时、交接遮罩、播放器，不泄露上一席私有展示 |
 
 页面进入后台可暂停纯视觉帧更新，恢复后按最新授权状态重建表现；联机的绝对期限与规则不随渲染暂停而重置。性能优化不能以减少角色数、删去六曲或省略暗雷/回溯规则替代。
 
@@ -624,7 +619,7 @@ RandomSource以随机位得到正反严格各1/2；抽牌在剩余实体索引�
 | 输入、资源、次数或阶段非法 | Game返回可理解原因，原子拒绝，不部分扣费；本地按钮禁用之外仍在业务层检查 |
 | 重复确认/重复网络消息 | 根据commandId及步骤状态去重；不重复取牌、抽随机、爆炸、耗次或记账 |
 | 存储禁用、容量不足或档案格式异常 | 明确提示注册/保存未成功；保留当前可重试结果；不自动删除账号、清空历史或改用伪持久化成功提示 |
-| WebGL/API能力缺失或上下文丢失 | 显示能力/渲染异常；若可恢复则依据最新授权投影重建场景；不凭渲染故障更改阶数、牌雷或胜负，也不宣称无3D时满足建模验收 |
+| Canvas/SVG/Web Audio API能力缺失或上下文丢失 | 显示能力/渲染异常；若可恢复则依据最新授权投影重建场景；不凭渲染故障更改阶数、牌雷或胜负，也不宣称无2.5D时满足地图/信标视觉验收 |
 | 音频等待手势 | 播放器显示实际状态并在首次按钮手势恢复；不阻断游戏 |
 | 本地MP3失败 | 静默退回同曲内置合成器，继续遵循暂停/音量/模式 |
 | 账号档案被其他窗口更新 | 重新读取本账号统计/设置/解锁；进行中的局仍按原绑定账号和已确定角色运行，不发生隐式切号 |
@@ -636,7 +631,7 @@ RandomSource以随机位得到正反严格各1/2；抽牌在剩余实体索引�
 
 每局开始新建Player/Character/技能实例、90牌账本、棋盘和快照；结束或作废时取消计时器、排队意图及旧事件订阅。重开重置局内状态而保留账号档案；返回首页解除账号锁。
 
-Godot地图/模型以queue_free及引用管理释放不用的节点、几何、材质、粒子与signals连接；共享资源按引用管理，不能一名模型释放便损坏另一名。音频停止旧AudioStreamPlayer/生成器，释放临时音频资源及文件桥接引用；NetworkManager关闭旧房间通道及活性监测。以上是未来运行时资源管理设计，本次不删除项目文件、用户文件或账号资料。
+Web视图退出时取消requestAnimationFrame、监听器、计时和表现队列，释放Canvas缓存、SVG引用及临时音频对象；共享资源按引用管理。NetworkManager关闭旧通道和活性监测。本次不删除项目文件、用户文件或账号资料。
 
 ## 11. 关键对象协作与设计约束
 
@@ -693,7 +688,7 @@ sequenceDiagram
 | AIPlayer继承Player | 资源模型相同，决策输入受限，不因继承获得对手数据访问权 |
 | ActiveSkillComponent / PassiveSkillComponent继承SkillComponent | 统一压制/上下文约定；具体技能只实现自己的条件与效果 |
 | AccountManager依赖LocalStorageStore并协调AccountProfile | 档案持久化与局内规则分离；只有最终确认结果进入历史、统计及解锁提交 |
-| GameView / Renderer / CharacterModel3D消费投影 | 页面和模型都不直接读取完整敌方状态；任何表现事件不能反向触发规则 |
+| GameView / Renderer / CharacterTokenRenderer消费投影 | 页面和信标都不直接读取完整敌方状态；任何表现事件不能反向触发规则 |
 | GenshinAudioManager组合两类音源 | 共用BGM控制通路，SFX独立；音源失败不改变领域状态 |
 
 ## 12. 需求追踪与本阶段审阅边界
@@ -708,14 +703,14 @@ sequenceDiagram
 | FR-04、FR-10、FR-11 | 第7.1节GameView首页/图鉴/设置；第4节Settings；第8节播放器 |
 | FR-07、FR-73 | 第6.1、第9.3节AIPlayer，InformationProjector及统一Game校验 |
 | FR-08、FR-09、FR-49、FR-50 | 第9.1～9.2节NetworkManager、RoomSession、两席/就绪/期限及退出 |
-| FR-12～FR-15、FR-55、FR-56 | 第7节MountainMapRenderer、CharacterModel3D及13造型表；地图采用最新确认的笔直0～40阶立体天梯 |
+| FR-12～FR-15、FR-55、FR-56 | 第7节MountainMapRenderer、CharacterTokenRenderer及13信标规格表；地图采用最新确认的笔直0～40阶立体天梯 |
 | FR-16～FR-19、FR-53、FR-54 | 第8节GenshinAudioManager、ScoreSynthesizer、LocalMp3Source |
 | FR-20～FR-24 | 第3、5节初始化、硬币、DRAFT及快速补齐；第9.4节公平随机 |
 | FR-25～FR-31、FR-51 | 第5节唯一准备与原子兑换/布雷，第6节炸弹/技能修正；生命兑换至少2张的最新边界 |
 | FR-32～FR-35、FR-52、FR-72 | 第3节数据边界，第6节CardLedger/BattleLog，第7节交接与授权标记，第9.4节投影 |
 | FR-36～FR-43、FR-71、FR-76 | 第5.5～5.6节技能先于锁牌、同时结算/连锁/回溯；第6节JudgeRule与20技能 |
 | FR-44～FR-48、FR-74、FR-75 | 第4节一次记账、正常/测试解锁；第5.7节退出/重开；第10节异常 |
-| FR-57～FR-70、CH-01～CH-13 | 第6.2～6.4节基类/具体技能/组合压制，第7.3节立体造型与动作 |
+| FR-57～FR-70、CH-01～CH-13 | 第6.2～6.4节基类/具体技能/组合压制，第7.3节信标规格与状态动画 |
 | NFR-01～NFR-03 | 第3～5、9节原子提交、权限、账号隔离及持久化 |
 | NFR-04、NFR-05 | 第7～8节可理解界面、立体动作与音乐过渡，第10节布局和回溯表现一致性 |
 | NFR-06、NFR-07 | 第8、10节四浏览器/两分辨率性能目标、离线合成、自动播放及异常 |
@@ -736,11 +731,11 @@ sequenceDiagram
 | 同阶多雷、自踩自雷、雷/火/盾/风/死亡叠加 | 单次选1且敌雷优先；焚毁/盾不雷弃牌、风免退仍可雷弃牌；正常退10/对死亡退13，实际新落脚才连锁 |
 | 本轮登顶/耗尽候选回溯、双时间请求、延迟旧消息 | 恢复领域账本/普通次数，同roundNo新attemptId；时间次数不返还、旧命令/动画失效；确认前不写战绩 |
 | 同轮双方登顶、同阶争同雷 | 同轮双登顶为平局；同雷仅处理一次，按既定冲突顺序，不能先处理P1就决定胜负 |
-| FPP、13套Viewmodel及战术俯瞰 | 默认双眼位仰望40阶大门，两侧多立克式白石廊柱与云海；平视/回头可见对手完整3D模型，手部/持物及元素粒子可辨；准备俯瞰可精确选远端阶位，切回FPP不泄私有信息 |
-| 第一人称跳跃、爆炸与回溯 | 逐阶抛物线起伏不额外查雷；贴脸爆炸、强烈震屏与快速后退匹配实际10/13格及0阶边界，火/盾/风例外正确；旧attempt取消后眼位与震屏归零 |
+| 第三人称、全局与五焦点 | 0～40阶笔直纵深可辨，柱廊、断梁、圣光、云海多层视差；平滑跟随可关闭，远端选阶准确且无未授权暗雷 |
+| 角色信标、跳跃、爆炸与回溯 | 四个展示场景覆盖13名角色全名、图标、主题色与席位角标；四类动画、融合双色及实际10/13格回退正确，旧attempt取消 |
 | 无MP3、挂载坏文件、手动切歌、首个按钮恢复 | 六曲真实对应旋律可合成；坏文件静默回退；手动锁曲到恢复自动/新局；1.5秒过渡，暂停/静音意图保持 |
 | 达35后炸回25、回溯、终局 | 对局高阶音乐不因回退而降区，结果按场景回宁静黄昏；无未经指定的特殊角色自动切曲 |
 | 本地/AI退出与重开、联机房主关闭、45/15秒边界 | 作废局不记账；无既有终局时留存端独立记胜，正常终局广播前房主关闭也沿用共享最终结果；无续连；超时只执行指定代操作且不与人工双重生效 |
-| 存储不可用、重复终局消息、WebGL/音频故障 | 明确保存状态、不删旧数据、不重记；音画故障不改变牌雷/结果；性能按四浏览器及两分辨率实测 |
+| 存储不可用、重复终局消息、Canvas/音频故障 | 明确保存状态、不删旧数据、不重记；音画故障不改变牌雷/结果；性能按四浏览器及两分辨率实测 |
 
-本次仅同步Godot技术栈与FPP视角调整文档。第7步首页、白昼天空岛动态视觉及账号系统完整保留；第8～16步按本设计与04-plan逐轮实施。现有Three.js预览的历史证据不代表Godot版本已实现或验收。本次未改程序、未生成Godot工程、未删除文件。
+本次仅同步原生Web 2.5D架构、地图镜头及角色铭牌与信标方案。第7步首页与账号完整保留；第8～16步逐轮实施和验收。本次未修改程序、未删除文件，旧Three.js预览证据不代表新方案已验收。

@@ -2,9 +2,9 @@
 
 | 文档属性 | 内容 |
 | --- | --- |
-| 版本 | v1.0（规则勘误修订） |
-| 依据 | 已确认的[《需求分析说明书》v1.1](01-requirements.md)；FR-01～FR-76、CH-01～CH-13与NFR-01～NFR-07，以及2026-10-28本轮用户规则裁决 |
-| 日期 | 2026-10-28（Asia/Hong_Kong） |
+| 版本 | v1.1（名字铭牌与元素信标表现修订） |
+| 依据 | 已确认的[《需求分析说明书》v1.2](01-requirements.md)；FR-01～FR-76、CH-01～CH-13与NFR-01～NFR-07，以及2026-10-28本轮用户规则裁决 |
+| 日期 | 2026-10-29（Asia/Hong_Kong） |
 | 所属阶段 | 第二阶段：系统分析 |
 | 状态 | 分析架构已获用户认可；按本轮裁决修正规则，仍属第二阶段 |
 | 配套类图 | [02-classdiagram.puml](02-classdiagram.puml) |
@@ -13,11 +13,21 @@
 
 本说明将已确认需求转化为对象职责、对象关系、核心状态流及需求追踪关系。对象命名及特别要求以需求确认内容为准；补充的 AccountProfile、MatchRecord、PlayingCard、Bomb、CardLedger、BattleLog、RoomSession、RoundSnapshot 是表达已有账号、牌/雷、历史、日志、房间和回溯需求所需的支持对象，不代表新增用户功能。
 
-本次按用户最新裁决修正单向出牌的获胜/连胜判定及纳贝里士抽牌余量边界。现有需求文档第3.4、3.11、3.12节及相关FR/AC仍保留相反的旧口径；本说明涉及这两点时以本轮裁决为准，其余沿用已确认需求。此次不改写需求原文；保留原FR编号用于追踪，不表示对应需求条款及验收条目已同步改写。
+本次同步角色名字铭牌与元素信标表现方案；此前已按用户裁决修正单向出牌的获胜/连胜判定及纳贝里士抽牌余量边界。现有需求文档第3.4、3.11、3.12节及相关FR/AC仍保留相反的旧口径；本说明涉及这两点时以本轮裁决为准，其余沿用已确认需求。此次仅同步需求中的表现条款，其他旧规则条文仍按既有勘误解释；保留原FR编号用于追踪，不表示对应需求条款及验收条目已同步改写。
 
-本阶段不规定程序语言、具体接口签名、文件结构、LocalStorage 键值结构、联机通信方案或 AI 算法，不编写程序代码，不安装依赖。类图中的属性及操作名称是分析层的状态与职责说明，不是程序接口定义。Three.js 与精细分层骨骼 Canvas/SVG、浏览器端通信方式等继续保留需求文档中已确认的选择边界。
+本阶段不规定程序语言、具体接口签名、文件结构、LocalStorage 键值结构、联机通信方案或 AI 算法，不编写程序代码，不安装依赖。类图中的属性及操作名称是分析层的状态与职责说明，不是程序接口定义。表现层遵循本轮已确认的原生Web 2.5D地图及CharacterTokenRenderer名字铭牌/元素信标约束，不再承担人体造型建模职责。
 
 业务状态与展示权限分开分析：玩家对象需要保存自身牌、雷库存、位置和技能状态；界面和日志只显示规则许可的公开信息或当前技能授权的信息。AI 只能依据自身合法信息、公开信息和当次技能合法返回的信息行动。
+
+### 1.1 本轮表现层约束
+
+取消复杂角色人偶立体建模，不再绘制13名角色的人体、五官、发型与服饰模型。角色视觉统一由CharacterTokenRenderer呈现为《原神》风格鎏金悬浮角色名字铭牌／元素神之眼棋子信标；40阶2.5D直线天梯地图（0～40共41个阶位）、选角台、图鉴页和结算弹窗共用同一角色规格。
+
+每个信标必须清晰显示角色全名、所属元素/权能图标与主题配色、P1/P2玩家归属角标；不得仅以颜色区分角色或席位，长名称尤其“莱茵多特/纳贝里士”必须完整可读，可自适应宽度或换行，不以省略号代替。选角按当前选择席位显示角标，图鉴无真实玩家绑定时使用明确标注“预览”的P1/P2示例；结算按实际参赛席位展示。融合铭牌采用左黑金＋右翠白双色渐变，双权能图标可辨。
+
+保留四类状态动画与技能特效：待机微浮呼吸、逐阶跳跃攀爬轨迹、踩雷震动与实际回退、技能释放/被动触发时的专属元素光环或法阵。保留出牌、登顶与回溯衔接，同阶双信标左右错位；技能次数、护盾、连胜、冻结与来源压制仍由真实规则驱动。无主动角色只播放真实被动，不生成虚构按钮。私有侦测、暗雷和手牌不能经光环、颜色、轨迹或镜头泄露。
+
+配套类图文件未在本次四份文档更新范围内；其中旧角色渲染类名按本文CharacterTokenRenderer职责理解，不作为恢复人偶建模的依据。
 
 ## 2. 系统对象概览
 
@@ -38,12 +48,12 @@
 | NetworkManager | 联机控制对象 | 管理联机房间码、P1房主/P2加入者、两席限制、就绪、房间有效期、步骤倒计时、超时代操作、退出结果及双方状态同步。通信底层保持需求规定的可选范围，本阶段不选定实现方式。 |
 | Settings | 账号设置值对象 | 保存每账号的BGM/SFX音量与静音、单曲循环/自动切歌偏好和镜头跟随等需求指定设置；由 AccountManager 按当前账号持久化，供渲染器与音频管理器读取。当局手动锁曲和已达音乐区间由 GenshinAudioManager 管理，并按新局规则重置。 |
 
-### 2.2 可视化、角色模型与音频对象
+### 2.2 可视化、角色信标与音频对象
 
 | 对象 | 类型 | 核心职责与分析边界 |
 | --- | --- | --- |
 | MountainMapRenderer | 表现对象 | 将 MountainBoard、双方合法可见的 Player 状态呈现为0～40阶天梯地图；处理台阶高亮、视角跟随/手动聚焦、立体站位和攀爬移动表现。沿用指定对象名，视觉采用已确认FR-12的笔直天梯与三段地貌，原盘山要求已被取代。不得自行改变位置、雷状态或游戏规则，也不得渲染未经授权的敌方暗雷信息。 |
-| CharacterModel3D | 模型与动画表现对象 | 按角色规格构建程序化立体角色表现并控制待机、攀爬、跳跃、回退、登顶和技能动作/特效。技术路线遵循需求限定的 Three.js/WebGL 或精细分层骨骼 Canvas/SVG；模型不决定角色技能结果。 |
+| CharacterTokenRenderer | 角色信标与动画表现对象 | 在地图、选角台、图鉴和结算统一展示角色全名鎏金铭牌、元素/权能图标与配色及P1/P2角标，控制微浮呼吸、逐阶跳跃、踩雷震动回退和技能光环/法阵；只消费授权状态，不裁决技能结果。 |
 | GenshinAudioManager | 音频表现对象 | 生成/播放需求指定的六首BGM及交互音效，读取 Game 场景和领先阶数执行自动曲目映射、1.5秒淡变；响应 Settings、手动锁曲/恢复自动、静音/音量、首次用户手势恢复播放及可选本地MP3失败回退。音频不改变对局状态。 |
 
 ### 2.3 由需求直接抽取的支持对象
@@ -161,7 +171,7 @@ Game 在开局准备收益计算之前协调 DivineSuppression；在回合中由
 
 NetworkManager 管理 RoomSession 的2席房间生命周期、房间码和就绪状态；在对局中与 Game 同步双方规则所需状态、超时步骤及退出结果。具体采用同机跨标签页通信还是轻量局域网消息，需求保留为选项，系统分析不提前决定。私有数据只由合法席位/技能界面读取，公共状态按需求同步。
 
-Settings 随 AccountProfile 保存。MountainMapRenderer 读取棋盘、玩家位置、镜头选项和经授权的标记，只负责把规则状态显示为需求规定的地图与镜头行为。CharacterModel3D 把已选择角色的外观和动作呈现为实时模型，不管理角色选择/技能结果。GenshinAudioManager 读取 Game 场景、回合和场上最高阶数，按需求映射音乐；爆炸导致领先阶数下降时保持高阶曲目规则，不反向改写 Game 状态。
+Settings随AccountProfile保存。MountainMapRenderer读取授权位置、镜头选项和标记。CharacterTokenRenderer按角色身份、席位及授权状态绘制铭牌/信标与动画，不管理选角或技能结果。GenshinAudioManager按既定场景与高度映射播放音乐，爆炸回退不降低已到达的音乐区间，不改写Game状态。
 
 ## 4. 功能需求—对象对应关系
 
@@ -182,7 +192,7 @@ Settings 随 AccountProfile 保存。MountainMapRenderer 读取棋盘、玩家�
 | FR-11 | Settings | AccountManager、GenshinAudioManager、MountainMapRenderer | 账号设置值、音量/静音与自动镜头选项。 |
 | FR-12 | MountainMapRenderer | MountainBoard、StepCell | 41阶地图及各地形区域表现。 |
 | FR-13 | MountainMapRenderer | MountainBoard、Player、Settings | 阶梯高亮、自动跟随和手动聚焦，且不展示未授权雷位。 |
-| FR-14 | CharacterModel3D | Character、MountainMapRenderer | 实时模型、动作、同阶错位和技能视觉效果。 |
+| FR-14 | CharacterTokenRenderer | Character、MountainMapRenderer | 实时信标、动作、同阶错位和技能视觉效果。 |
 | FR-15 | MountainMapRenderer | Player、SkillComponent、Game | 按住查看己方雷、失焦/交接隐藏及技能授权显示。 |
 | FR-16 | GenshinAudioManager | Settings | 六首可用曲及未指定特殊曲角色映射边界。 |
 | FR-17 | GenshinAudioManager | Game、Player | 按场景/最高阶映射、过渡及高阶曲不回切规则。 |
@@ -223,8 +233,8 @@ Settings 随 AccountProfile 保存。MountainMapRenderer 读取棋盘、玩家�
 | FR-52 | CardLedger | Game、CardDeck、Player、BattleLog | 公开出牌与秘密销毁分区及回溯账本。 |
 | FR-53 | GenshinAudioManager | Settings | 可选本地MP3挂载与失败静默回退。 |
 | FR-54 | GenshinAudioManager | Settings | 内置合成、首次用户手势恢复与实际播放状态。 |
-| FR-55 | MountainMapRenderer | Settings、Game、Player、CharacterModel3D | 手动镜头目标、自动跟随和同阶角色区分。 |
-| FR-56 | CharacterModel3D | Character、SkillComponent | 13角色指定造型/动作/特效及允许的建模路线。 |
+| FR-55 | MountainMapRenderer | Settings、Game、Player、CharacterTokenRenderer | 手动镜头目标、自动跟随和同阶角色区分。 |
+| FR-56 | CharacterTokenRenderer | Character、SkillComponent | 13角色全名铭牌、图标/主题色、席位角标及四类动画；跨页面共用视觉规格，融合双色与局部压制可辨。 |
 | FR-57 | Game | Player、Character、SkillComponent | 主动技能入口、次数/条件及出牌前时序，时间技能例外窗口。 |
 | FR-58 | SkillComponent | Player、JudgeRule、Bomb | 风系剪刀获胜加步含单向推进，以及本局首次踩雷免退。 |
 | FR-59 | SkillComponent | Player、JudgeRule、Bomb | 岩系石头获胜加步含单向推进，以及持续护盾、免疫与平局移动。 |
@@ -254,8 +264,8 @@ Settings 随 AccountProfile 保存。MountainMapRenderer 读取棋盘、玩家�
 | NFR-02 隐私 | Game、Player、SkillComponent、NetworkManager、MountainMapRenderer、BattleLog、AIPlayer | 数据状态与可见快照分离；仅公开/授权数据进入对手视图、日志和网络公开同步；AI无内存特权。 |
 | NFR-03 持久性 | AccountManager、AccountProfile、Settings、MatchRecord | 账号隔离、已完成数据持久化；不把清理站点数据后的恢复能力扩展为需求。 |
 | NFR-04 可理解性 | Game、Player、NetworkManager、MountainMapRenderer、GenshinAudioManager | 阶数、行动、锁定、倒计时、无效原因和结局清楚；无声时仍可完成对局。 |
-| NFR-05 音画一致性 | Character、SkillComponent、CharacterModel3D、MountainMapRenderer、GenshinAudioManager、Game | 表现只读取已裁决状态；回溯/移动/技能效果后显示同步；音效与特效不泄露未授权信息。 |
-| NFR-06 性能与兼容性 | MountainMapRenderer、CharacterModel3D、GenshinAudioManager、Game | 将桌面浏览器、分辨率、首屏、响应和帧率目标作为系统级验收约束，不在此阶段虚构性能设计。 |
+| NFR-05 音画一致性 | Character、SkillComponent、CharacterTokenRenderer、MountainMapRenderer、GenshinAudioManager、Game | 表现只读取已裁决状态；回溯/移动/技能效果后显示同步；音效与特效不泄露未授权信息。 |
+| NFR-06 性能与兼容性 | MountainMapRenderer、CharacterTokenRenderer、GenshinAudioManager、Game | 将桌面浏览器、分辨率、首屏、响应和帧率目标作为系统级验收约束，不在此阶段虚构性能设计。 |
 | NFR-07 异常与自主运行 | AccountManager、Game、NetworkManager、GenshinAudioManager | 存储、断线、刷新、播放受限及MP3失败等已定义异常由对应控制对象反馈/收敛，不错误记账或改变胜负。 |
 
 ## 6. 对象关系要点
@@ -265,7 +275,7 @@ Settings 随 AccountProfile 保存。MountainMapRenderer 读取棋盘、玩家�
 3. Player 当前选择一个 Character；Character 组合其局内 SkillComponent。融合角色用多个不同 sourceOrigin 的组件表达双来源能力。
 4. AccountManager 管理多个 AccountProfile；AccountProfile 聚合单账号 Settings、MatchRecord与解锁状态。Player 席位与账号档案不是一对一关系，Guest_P2/AI没有独立 AccountProfile。
 5. CardDeck 与 Player 的手牌和 CardLedger 共同表达 PlayingCard 单一归属与区间移动；BattleLog 只保留已允许公开的事件。
-6. MountainMapRenderer/CharacterModel3D/GenshinAudioManager 是表现对象。它们读取业务状态，不反向裁决移动、抽牌、技能和胜负。
+6. MountainMapRenderer/CharacterTokenRenderer/GenshinAudioManager 是表现对象。它们读取业务状态，不反向裁决移动、抽牌、技能和胜负。
 
 ## 7. 分析边界与待系统设计承接项
 
@@ -273,6 +283,5 @@ Settings 随 AccountProfile 保存。MountainMapRenderer 读取棋盘、玩家�
 - 联机通信允许同机跨标签页同步或轻量局域网同步；分析不替用户选方案、不引入外部数据库。
 - AI仅明确简单/困难、手动选角与信息公平边界；没有指定搜索算法、策略树或胜率指标，分析不添加。
 - 角色技能数值和约束以需求 v1.1 及本轮用户明确裁决为业务来源，冲突时以本轮裁决为准；融合压制依据 SkillComponent.sourceOrigin 精确处理。
-- 3D/分层动画、BGM乐谱生成、音效和性能指标是需求验收要求；本阶段不转成渲染管线、音序器或优化方案。
+- 角色铭牌/信标动画、BGM乐谱、音效和性能仍是验收要求，本阶段只分析职责与边界。
 - 对象与类图只用于确认职责及关系，用户确认本阶段成果后才能进入系统设计；不得由本说明直接开始程序开发。
-
