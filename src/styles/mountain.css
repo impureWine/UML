@@ -107,3 +107,22 @@
 @media (min-width: 1600px) { .mountain-layout { grid-template-columns: 210px minmax(0, 1fr) 250px; gap: 32px; } .mountain-itinerary,.mountain-inspector { padding-top: 24px; } .region-navigation { gap: 15px; } .itinerary-intro { margin: 36px 0; } .detail-number { margin-top: 32px; } .step-detail dl { gap: 17px; } .step-detail > p { font-size: 11px; } .detail-rule { margin: 24px 0; } .step-label { height: 16px; font-size: 11px; line-height: 14px; min-width: 26px; } }
 @media (max-width: 1150px) { .mountain-main { width: calc(100% - 48px); } .mountain-layout { grid-template-columns: minmax(0, 1fr) 210px; gap: 16px; } .mountain-itinerary { display: none; } .mountain-heading-actions { gap: 10px; } }
 @media (max-width: 700px) { .mountain-main { width: calc(100% - 24px); } .mountain-heading { align-items: start; } .mountain-heading h1 { font-size: 19px; line-height: 1.6; } .mountain-heading h1 > span { display: block; font-size: 12px; } .mountain-heading h1 i { display: none; } .mountain-heading-actions { flex-direction: column-reverse; align-items: end; gap: 6px; } .map-preview-badge { font-size: 8px; padding: 5px; } .mountain-layout { display: block; } .mountain-viewport { height: 580px; } .map-scene-title { top: 14px; left: 12px; } .map-scene-title small { font-size: 5px; letter-spacing: .5px; } .map-focus-controls { bottom: 14px; } .map-focus-controls button { padding: 8px; } .mountain-inspector { padding: 24px 10px; } .step-detail { display: flow-root; } .detail-number { float: left; margin-right: 24px; } .step-detail h2 { margin-top: 10px; } .step-detail dl { font-size: 11px; } .map-legend { display: flex; flex-wrap: wrap; } .mountain-bottom { flex-wrap: wrap; padding-bottom: 12px; } .map-keyboard-hint { display: none; } .map-statusbar { font-size: 8px; padding-inline: 8px; } .map-statusbar > span:last-child { display: none; } }
+
+/* Canvas 2.5D scene: independent CSS depth layers respond to camera movement. */
+.mountain-canvas { position:absolute; inset:0; width:100%; height:100%; touch-action:none; cursor:grab; z-index:1; }
+.mountain-canvas:active { cursor:grabbing; }
+.map-atmosphere { position:absolute; inset:0; overflow:hidden; pointer-events:none; perspective:900px; z-index:2; }
+.parallax-cloud { position:absolute; inset:-20%; opacity:.32; background:radial-gradient(ellipse at 18% 65%,#fffefa 0,transparent 32%),radial-gradient(ellipse at 86% 40%,#ffffef 0,transparent 26%); }
+.cloud-far { transform:translate3d(0,calc(var(--camera-offset, 0px) * .3),-80px); animation:map-cloud-drift 42s ease-in-out infinite alternate; }
+.cloud-near { top:55%; opacity:.42; transform:translate3d(0,var(--camera-offset, 0px),30px); animation:map-cloud-drift 26s ease-in-out infinite alternate-reverse; }
+.parallax-rays { position:absolute; inset:-35%; background:repeating-conic-gradient(from 173deg at 70% 0%,transparent 0deg 9deg,#fff6c92b 10deg 13deg,transparent 14deg 23deg); filter:blur(7px); transform:translateY(calc(var(--camera-offset, 0px) * .15)); mix-blend-mode:screen; }
+.canvas-step-labels { position:absolute; inset:0; z-index:3; pointer-events:none; overflow:hidden; }
+.canvas-step-labels button { position:absolute; left:0; top:0; margin:-7px 0 0 -12px; width:24px; height:14px; padding:0; border:1px solid #d9cc9c99; border-radius:2px; background:#f7fbefdc; color:#416572; font:10px/12px Georgia,serif; pointer-events:auto; }
+.canvas-step-labels button[aria-pressed="true"] { color:#604c23; background:#fff0ab; border-color:#fff8d0; box-shadow:0 0 12px #fff4b9; }
+@keyframes map-cloud-drift { from { margin-left:-4%; } to { margin-left:5%; } }
+@media (prefers-reduced-motion:reduce) { .parallax-cloud { animation:none; } }
+
+/* Surface inscriptions remain readable without an opaque badge over the glass. */
+.canvas-step-labels button { margin:0; transform-origin:center; translate:-50% -50%; height:12px; line-height:1; border:0; border-radius:2px; background:transparent; color:#294e5b; font-weight:700; text-shadow:0 1px 2px #fffef3,0 0 4px #fffef3; }
+.canvas-step-labels button[aria-pressed="true"] { background:#fff0ab99; color:#5b441d; outline:1px solid #ffe7a6; }
+.canvas-step-labels button:focus-visible { outline:2px solid #286d83; outline-offset:1px; }

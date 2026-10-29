@@ -1,0 +1,5 @@
+<!doctype html><html lang="zh-CN"><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>迭代4内存验收</title><div id="app"></div><script type="module">
+import '../../src/styles/theme.css';import '../../src/styles/layout.css';import '../../src/styles/characters.css';import '../../src/styles/mountain.css';import '../../src/styles/opening.css';
+import {Game} from '../../src/controller/Game.js';import {GameView} from '../../src/view/GameView.js';import {AccountManager} from '../../src/utils/AccountManager.js';import {LocalStorageStore} from '../../src/utils/LocalStorageStore.js';import {environment} from './account-environment.js';
+const accounts=new AccountManager({store:new LocalStorageStore(environment())});await accounts.register('内存验收','pass');const game=new Game(accounts);new GameView(document.querySelector('#app'),game);await game.submitAuth({username:'内存验收',password:'pass'});game.navigate('local');game.startSetup();
+</script></html>

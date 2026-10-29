@@ -1,3 +1,4 @@
+import { CHARACTERS } from '../resources/characters.js';
 import { InformationProjector } from '../utils/InformationProjector.js';
 
 const ZONES = {
@@ -49,6 +50,9 @@ export class MountainMapPanel {
     this.viewport = root.querySelector('.mountain-viewport');
     this.followInput = root.querySelector('[data-auto-follow]');
     this.followInput.checked = autoFollow;
+    const test = document.createElement('section'); test.className='token-mount-test';
+    test.innerHTML=`<h2>角色信标挂载测试</h2><p>纯视觉预览 · 不选角、不出牌、不记战绩</p>${['P1','P2'].map((seat,i)=>`<fieldset><legend>${seat}</legend><label>角色 <select data-token-character="${seat}">${CHARACTERS.map((c,n)=>`<option value="${c.id}" ${n===i?'selected':''}>${c.name}</option>`).join('')}</select></label><label>阶位 <input data-token-step="${seat}" type="number" min="0" max="40" step="1" value="${this.view.positions[seat]}"></label></fieldset>`).join('')}<button type="button" data-mount-tokens>应用预览站位</button><div> P1 动画演示 <button type="button" data-map-motion="Climb">攀爬1阶</button><button type="button" data-map-motion="Hit">受击退10阶</button><button type="button" data-map-motion="Skill">元素光效</button></div><output data-mount-status role="status"></output>`;
+    root.querySelector('.mountain-inspector').append(test);
     this.bindEvents();
     this.selectStep(0);
     this.ready = this.loadRenderer();
@@ -75,7 +79,7 @@ export class MountainMapPanel {
       this.updateViewStatus({ mode: 'overview', zoom: 1 });
       this.setControlsDisabled(false);
     } catch (error) {
-      if (!this.disposed && this.generation === generation) this.showError(`需要支持 WebGL 2 的浏览器及硬件加速。${error.message || '场景载入失败。'}`);
+      if (!this.disposed && this.generation === generation) this.showError(`需要支持 HTML5 Canvas 2D 的浏览器。${error.message || '场景载入失败。'}`);
     } finally {
       if (!this.disposed && this.generation === generation) this.root.querySelector('.map-loading').hidden = true;
     }
@@ -96,6 +100,22 @@ export class MountainMapPanel {
     this.root.addEventListener('click', (event) => {
       const button = event.target.closest('button');
       if (!button || button.disabled) return;
+      if (button.dataset.mapMotion && this.renderer) {
+        const state=button.dataset.mapMotion;
+        const target=Math.max(0,Math.min(40,this.view.positions.P1+(state==='Climb'?1:state==='Hit'?-10:0)));
+        this.renderer.previewMotion('P1',state,target);
+        this.view=this.renderer.publicView;this.selectStep(target);
+        this.root.querySelector('[data-token-step="P1"]').value=target;
+      }
+      if (button.hasAttribute('data-mount-tokens') && this.renderer) {
+        const get=seat=>this.root.querySelector(`[data-token-step="${seat}"]`).valueAsNumber;
+        const p1Step=get('P1'),p2Step=get('P2');
+        if (![p1Step,p2Step].every(n=>Number.isInteger(n)&&n>=0&&n<=40)) {this.root.querySelector('[data-mount-status]').textContent='请输入0～40的整数阶位。'; return;}
+        for (const seat of ['P1','P2']) this.renderer.tokens[seat].setCharacter(this.root.querySelector(`[data-token-character="${seat}"]`).value,seat);
+        this.applyAuthorizedView(InformationProjector.mapPreview({p1Step,p2Step}));
+        this.renderer.focusTarget('P1');
+        this.root.querySelector('[data-mount-status]').textContent=`预览已更新：P1 ${p1Step}阶 / P2 ${p2Step}阶`;
+      }
       if (button.dataset.focus) this.renderer?.focusTarget(button.dataset.focus);
       if (button.dataset.zoom) this.renderer?.zoomBy(Number(button.dataset.zoom));
       if (button.hasAttribute('data-step-delta')) this.selectStep(Math.max(0, Math.min(40, this.selected + Number(button.dataset.stepDelta))));
@@ -191,3 +211,4 @@ export class MountainMapPanel {
     this.renderer = null;
   }
 }
+

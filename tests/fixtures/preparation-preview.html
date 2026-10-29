@@ -1,0 +1,9 @@
+<!doctype html><html lang="zh-CN"><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>迭代5内存验收</title><body><button id="chain">独立规则夹具：P1落脚35阶（双方均锁定后可点）</button><main></main><script type="module">
+import '/src/styles/theme.css';import '/src/styles/layout.css';import '/src/styles/mountain.css';import '/src/styles/characters.css';import '/src/styles/opening.css';
+import {Game} from '/src/controller/Game.js';import {PreparationPanel} from '/src/view/PreparationPanel.js';
+const profile={accountId:'memory',unlockedCharacterIds:['CH-01','CH-03']};
+const game=new Game({observeChanges:()=>()=>{},getCurrentProfile:()=>profile,login:async()=>profile});
+await game.submitAuth({username:'memory',password:'test'});game.navigate('local');game.startSetup();game.selectCharacter('P1','CH-01');game.selectCharacter('P2','CH-03');game.confirmCharacters();game.chooseCoinFace('P1','heads');game.tossCoin();game.finishCoin();game.quickFill();
+const panel=new PreparationPanel(document.querySelector('main'),game);game.subscribe(s=>panel.update(s));
+document.querySelector('#chain').onclick=()=>{try{game.commitLanding('P1',35);}catch(e){alert(e.message);}};
+</script></body></html>

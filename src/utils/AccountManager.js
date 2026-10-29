@@ -85,6 +85,19 @@ export class AccountManager {
     });
   }
 
+  async setFusionTestUnlock(value) {
+    if(typeof value!=='boolean' || !this.#currentAccountId) throw new Error('请先登录，解锁开关必须为布尔值');
+    const ownerId=this.#currentAccountId;
+    return this.#store.withWriteLock(draft=>{
+      const profile=draft.accounts[ownerId];
+      if(!profile) throw new Error('账号不可用');
+      profile.unlockedCharacterIds=profile.unlockedCharacterIds.filter(id=>id!=='CH-13');
+      if(value) profile.unlockedCharacterIds.push('CH-13');
+      profile.revision++; AccountProfile.validate(profile);
+      return AccountProfile.publicSnapshot(profile);
+    });
+  }
+
   observeChanges(callback) {
     if (typeof callback !== 'function') throw new Error('账号变更监听器无效。');
     this.#listeners.add(callback);

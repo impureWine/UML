@@ -38,12 +38,12 @@ test('越界、小数、非数值阶号拒绝且不隐式转型', () => {
   }
 });
 
-test('地图和阶位不可修改，且不暴露炸弹状态或业务操作', () => {
+test('地图结构和地形不可修改，领域阶位持有独立炸弹队列', () => {
   const board = new MountainBoard();
   assert.throws(() => { board.steps = []; }, TypeError);
   assert.throws(() => board.steps.pop(), TypeError);
   assert.throws(() => { board.getStep(10).canPlaceBomb = false; }, TypeError);
-  assert.deepEqual(Object.keys(board.getStep(10)).sort(), ['canPlaceBomb', 'index', 'milestone', 'name', 'zone']);
+  assert.deepEqual(Object.keys(board.getStep(10)).sort(), ['bombQueue', 'canPlaceBomb', 'index', 'milestone', 'name', 'zone']);
   assert.equal(board.getStep(10).canPlaceBomb, true);
   assert.equal(board.steps.length, 41);
 });

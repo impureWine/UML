@@ -1,3 +1,5 @@
+import { OpeningPanel } from './OpeningPanel.js';
+import { CharacterGuide } from './CharacterGuide.js';
 import { MountainMapPanel } from './MountainMapPanel.js';
 
 const ROUTES = {
@@ -12,7 +14,7 @@ const CHARACTER_NAMES = {
   'CH-01': '巴巴托斯', 'CH-02': '摩拉克斯', 'CH-03': '巴尔泽布',
   'CH-04': '布耶尔', 'CH-05': '芙卡洛斯', 'CH-06': '赫布里穆',
   'CH-07': '瓦沙嘉', 'CH-08': '伊斯塔露', 'CH-09': '阿斯莫代',
-  'CH-10': '若娜瓦', 'CH-11': '纳贝里士', 'CH-12': '“黄金”莱茵多特',
+  'CH-10': '若娜瓦', 'CH-11': '纳贝里士', 'CH-12': '莱茵多特',
   'CH-13': '莱茵多特/纳贝里士',
 };
 
@@ -163,6 +165,7 @@ export class GameView {
       const button = event.target.closest('button');
       if (!button || !this.root.contains(button) || button.disabled) return;
       if (button.dataset.route) this.game.navigate(button.dataset.route);
+      if (button.dataset.action === 'start-setup') this.game.startSetup();
       if (button.dataset.authMode) this.game.changeAuthMode(button.dataset.authMode);
       const actions = {
         home: () => this.game.returnHome(),
@@ -225,7 +228,7 @@ export class GameView {
     const fusion = this.root.querySelector('[data-fusion]');
     fusion.classList.toggle('is-unlocked', fusionUnlocked);
     fusion.innerHTML = `${icon(fusionUnlocked ? 'unlock' : 'lock')}<span>${fusionUnlocked ? '隐藏融合 · 已解锁' : '隐藏融合 · 锁定'}</span>`;
-    for (const button of this.root.querySelectorAll('.account-actions button')) button.disabled = !authenticated;
+    for (const button of this.root.querySelectorAll('.account-actions button')) button.disabled = !authenticated || Boolean(snapshot.setup);
 
     const storageError = snapshot.storageError || '';
     this.root.querySelector('.storage-banner').hidden = !storageError;
@@ -234,12 +237,16 @@ export class GameView {
     this.dialog.querySelector('[data-auth-storage-message]').textContent = storageError;
 
     const page = authenticated && ROUTES[snapshot.page] ? snapshot.page : 'home';
-    const key = `${page}:${authenticated ? profile.accountId : 'auth'}`;
+    const key = `${page}:${authenticated ? profile.accountId : 'auth'}:${snapshot.setup ? 'opening' : 'preview'}`;
     if (this.pageKey !== key) {
+      this.opening?.dispose(); this.opening = null;
+      this.guide?.dispose();
+      this.guide = null;
       this.mapPanel?.dispose();
       this.mapPanel = null;
       this.pageKey = key;
-      if (page === 'home') this.renderHome();
+      if (snapshot.setup) this.opening = new OpeningPanel(this.main, this.game);
+      else if (page === 'home') this.renderHome();
       else if (['local', 'ai', 'online'].includes(page)) {
         this.mapPanel = new MountainMapPanel(this.main, {
           title: ROUTES[page].title,
@@ -247,10 +254,15 @@ export class GameView {
           onAutoFollow: (value) => this.game.setCameraAutoFollow(value),
         });
       }
+      else if (page === 'guide') this.guide = new CharacterGuide(this.main, profile);
       else this.renderPlaceholder(page);
       if (authenticated && previous && previous.page !== snapshot.page && !snapshot.auth?.open) {
         this.main.querySelector('h1')?.focus({ preventScroll: true });
       }
+    }
+    if (this.opening) this.opening.update(snapshot);
+    if (this.mapPanel && ['local','ai'].includes(page) && !this.main.querySelector('[data-action="start-setup"]')) {
+      const start = document.createElement('button'); start.dataset.action = 'start-setup'; start.className = 'opening-start'; start.textContent = '开始本轮对局 · 选择角色'; this.main.prepend(start);
     }
     if (this.mapPanel) this.mapPanel.setAutoFollow(profile.settings.cameraAutoFollow);
     if (page === 'home') this.updateHome(profile, fusionUnlocked);
@@ -425,10 +437,13 @@ export class GameView {
   }
 
   dispose() {
+    this.opening?.dispose();
     if (this.disposed) return;
     this.disposed = true;
     this.unsubscribe?.();
-    this.mapPanel?.dispose();
+    this.guide?.dispose();
+      this.guide = null;
+      this.mapPanel?.dispose();
     this.events.abort();
     this.surface.inert = false;
     if (this.dialog.open) this.dialog.close();

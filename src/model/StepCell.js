@@ -10,6 +10,7 @@ export class StepCell {
           : this.zone === 'snow' ? '龙脊雪山云海' : '星穹天梯';
     this.canPlaceBomb = index > 0 && index < 40;
     this.milestone = index % 10 === 0;
+    this.bombQueue = [];
     Object.freeze(this);
   }
 

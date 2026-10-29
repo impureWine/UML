@@ -1,0 +1,4 @@
+<!doctype html><html lang="zh-CN"><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>迭代3只读验收</title><link rel="stylesheet" href="/src/styles/theme.css"><link rel="stylesheet" href="/src/styles/layout.css"><link rel="stylesheet" href="/src/styles/mountain.css"><link rel="stylesheet" href="/src/styles/characters.css"><body><button id="guide">图鉴</button><button id="map">地图</button><main id="fixture"></main><script type="module">
+import {CharacterGuide} from '/src/view/CharacterGuide.js';import {MountainMapPanel} from '/src/view/MountainMapPanel.js';
+let panel;const root=document.querySelector('#fixture');function guide(){panel?.dispose();panel=new CharacterGuide(root,{unlockedCharacterIds:[]});}document.querySelector('#guide').onclick=guide;document.querySelector('#map').onclick=()=>{panel?.dispose();panel=new MountainMapPanel(root,{title:'只读挂载测试'});};guide();
+</script></body></html>

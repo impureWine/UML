@@ -1,3 +1,5 @@
+import './styles/opening.css';
+import './styles/characters.css';
 import './styles/theme.css';
 import './styles/layout.css';
 import './styles/mountain.css';
