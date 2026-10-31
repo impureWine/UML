@@ -4,8 +4,8 @@ import { CharacterTokenRenderer } from './CharacterTokenRenderer.js';
 const names={rock:'石头',scissors:'剪刀',paper:'布'};
 export class BattlePanel {
  constructor(root,game){this.root=root;this.game=game;this.events=new AbortController();this.round=0;
- root.className='main-content battle-main';root.innerHTML=`<header class="guide-heading"><h1>云上对决</h1><button data-battle="exit">退出对局</button></header><div class="battle-layout"><aside class="battle-console"></aside><section class="mountain-viewport battle-map"></section><aside class="battle-history"></aside></div><section class="battle-finale" hidden></section><output data-battle-error role="alert"></output>`;
- this.renderer=new MountainMapRenderer(root.querySelector('.battle-map'));this.renderer.setAutoFollow(true);
+ root.className='main-content battle-main';root.innerHTML=`<header class="guide-heading"><h1>云上对决</h1><div class="match-heading-actions"><button data-battle="exit">退出对局</button></div></header><div class="battle-layout"><aside class="battle-console" aria-label="出牌区"></aside><section class="mountain-viewport battle-map"></section><aside class="battle-history"></aside></div><section class="battle-finale" hidden></section><output data-battle-error role="alert"></output>`;
+ this.renderer=new MountainMapRenderer(root.querySelector('.battle-map'));this.renderer.setAutoFollow(game.state.profile?.settings.cameraAutoFollow!==false);
  root.addEventListener('click',async e=>{const b=e.target.closest('button');if(!b||b.disabled)return;try{const m=this.m;
  if(b.dataset.skill){const panel=b.closest('[data-skill-panel]'),value=name=>panel.querySelector(`[name="${name}"]`)?.value;let args={};
  if(b.dataset.skill==='FreezeCard')args={suit:value('freeze-suit')};
@@ -27,7 +27,22 @@ export class BattlePanel {
  }catch(err){const inline=b.closest('[data-skill-panel]')?.querySelector('[data-skill-error]');if(inline){inline.textContent=err.message;inline.hidden=false;}else root.querySelector('[data-battle-error]').textContent=err.message;}},{signal:this.events.signal});
  root.addEventListener('change',e=>{if(e.target.name!=='space-branch')return;const fields=e.target.closest('[data-skill-panel]').querySelector('[data-space-move]');fields.hidden=e.target.value!=='move';fields.disabled=fields.hidden;const error=e.target.closest('[data-skill-panel]').querySelector('[data-skill-error]');error.hidden=e.target.value!=='swap'||Math.abs(this.m.positions.P1-this.m.positions.P2)<=5;},{signal:this.events.signal});
  }
- update(snapshot){this.m=snapshot.setup;const m=this.m;this.honor?.dispose();
+ selectedCardBeforeUpdate(next){
+ const previous=this.m;
+ const canChoose=m=>m?.phase==='CARD_LOCK'&&!m.covered&&!m.waiting;
+ if(!canChoose(previous)||!canChoose(next))return null;
+ // Opponent updates may redraw the console, but a local draft belongs to one
+ // match, round, rewind attempt and private seat, independently of revisions.
+ const scope=m=>JSON.stringify([m.matchId,m.roundNo,m.attemptNo,m.viewerSeat||m.turn]);
+ if(scope(previous)!==scope(next))return null;
+ return this.root.querySelector('[name="battle-card"]:checked')?.value||null;
+ }
+ restoreSelectedCard(cardId){
+ if(!cardId)return;
+ const input=[...this.root.querySelectorAll('[name="battle-card"]')].find(c=>c.value===cardId&&!c.disabled);
+ if(input)input.checked=true;
+ }
+ update(snapshot){const selectedCard=this.selectedCardBeforeUpdate(snapshot.setup);this.m=snapshot.setup;const m=this.m;this.honor?.dispose();
  const final=m.phase==='FINAL';
  this.root.querySelector('.battle-layout').hidden=final;
  this.renderer.tokenLayer.hidden=final;
@@ -36,14 +51,17 @@ export class BattlePanel {
  if(final){this.renderFinal(m);this.apply(m.positions,m.characters);return;}
  const pane=this.root.querySelector('.battle-console');
  const action=(key,label,disabled=false)=>`<button data-battle="${key}" ${disabled?'disabled':''}>${label}</button>`;
- pane.innerHTML=`<small>CELESTIAL DUEL</small><h2>第 ${m.roundNo} 回合</h2><p>P1：${m.positions.P1}阶 · ${m.handCounts.P1}张<br>P2：${m.positions.P2}阶 · ${m.handCounts.P2}张</p>`;
+ pane.innerHTML=`<small>CELESTIAL DUEL</small><h2>第 ${m.roundNo} 回合</h2><p>${m.phase==='ROUND_SKILLS'?'双方选择技能':m.phase==='CARD_LOCK'?'双方选择出牌':'回合结算'} <span data-step-clock></span></p><p>P1：${m.positions.P1}阶 · ${m.handCounts.P1}张<br>P2：${m.positions.P2}阶 · ${m.handCounts.P2}张</p>`;
+ this.root.querySelector('[aria-label="本地私密交接"]')?.remove();
+ if(m.mode==='local'&&['PREPARATION','ROUND_SKILLS','CARD_LOCK'].includes(m.phase)){this.root.querySelector('[data-battle="exit"]').insertAdjacentHTML('beforebegin','<nav aria-label="本地私密交接"><button data-local-seat="P1">交给 P1</button><button data-local-seat="P2">交给 P2</button></nav>');}
  if(['ROUND_SKILLS','CARD_LOCK'].includes(m.phase)){
- pane.innerHTML+=m.covered?`<h3>请交给 ${m.turn}</h3><p>请另一位玩家移开视线。</p>${action('reveal','我是 '+m.turn)}`:`<h3>${m.turn} 私有操作台</h3><p>己方库存炸弹 ${m.ownBombs}</p>${this.renderSkills(m)}${m.phase==='ROUND_SKILLS'?`${action('skills','完成出牌前操作')}`:`<p>选牌可修改；锁定后不可更改。</p><div class="battle-cards">${Object.entries(names).map(([s,n])=>{const cards=m.ownHand.filter(c=>c.suit===s);return `<label><input type="radio" name="battle-card" value="${cards[0]?.cardId||''}" ${cards.length&&!(m.frozenSuit===s&&m.ownHand.some(c=>c.suit!==s))?'':'disabled'}><img src="/images/cards/${s}.png?v=transparent-1" alt="${n}">${n} ×${cards.length}</label>`;}).join('')}</div>${action('lock','锁定这张牌')}`}`;
+ pane.innerHTML+=m.waiting?`<h3>${m.phase==='ROUND_SKILLS'?'技能选择已确认':'出牌已锁定'}</h3><p role="status" aria-live="polite">等待对方操作</p>`:m.covered?`<h3>请交给 ${m.turn}</h3><p>请另一位玩家移开视线。</p>${action('reveal','我是 '+m.turn)}`:`<h3>${m.turn} 私有操作台</h3><p>己方库存炸弹 ${m.ownBombs}</p>${this.renderSkills(m)}${m.phase==='ROUND_SKILLS'?`${action('skills','完成出牌前操作')}`:`<p>选牌可修改；锁定后不可更改。</p><div class="battle-cards">${Object.entries(names).map(([s,n])=>{const cards=m.ownHand.filter(c=>c.suit===s);return `<label><input type="radio" name="battle-card" value="${cards[0]?.cardId||''}" ${cards.length&&!(m.frozenSuit===s&&m.ownHand.some(c=>c.suit!==s))?'':'disabled'}><img src="/images/cards/${s}.png?v=transparent-1" alt="${n}">${n} ×${cards.length}</label>`;}).join('')}</div>${action('lock','锁定这张牌')}`}`;
  }else{pane.innerHTML+=`<h3>${m.resolution?.winner?m.resolution.winner+' 猜拳获胜':'本轮平局'}</h3><p>${['P1','P2'].map(s=>s+'：'+(names[m.resolution?.cards[s]?.suit]||'无牌自动跳过')).join('<br>')}</p>`;
  if(m.phase==='RESOLVE')pane.innerHTML+='<p role="status" aria-live="polite" data-bomb-feedback>正在逐阶攀爬与结算落脚炸弹…</p>';
- if(m.phase==='ROUND_REVIEW')pane.innerHTML+=m.reviewDeadline>Date.now()?'<p>5秒时之回溯窗口（可撤销本轮登顶或耗尽）</p>'+m.rewindSeats.map(s=>'<button data-rewind="'+s+'">'+s+' 时之回溯 · 剩余1次</button><button data-cancel-rewind="'+s+'">取消本回合回溯</button>').join(''):m.candidate?'':action('next','下一回合');
+ if(m.phase==='ROUND_REVIEW')pane.innerHTML+=m.reviewDeadline>Date.now()?'<p>时之回溯窗口（可撤销本轮登顶或耗尽）</p>'+m.rewindSeats.map(s=>'<button data-rewind="'+s+'">'+s+' 时之回溯 · 剩余1次</button><button data-cancel-rewind="'+s+'">取消本回合回溯</button>').join(''):m.candidate?'':action('next','下一回合');
 
  }
+ this.restoreSelectedCard(selectedCard);
  this.root.querySelector('.battle-history').innerHTML=`<h3>对局记录</h3><p>无牌方自动跳过，有牌方直接获胜。</p>${(m.suppressionLogs||[]).join('<br>')}${['overview','P1','P2','summit'].map(f=>`<button data-focus="${f}">${f==='overview'?'全局':f==='summit'?'山顶':f}</button>`).join('')}${this.renderRoundHistory(m)}`;
  if(m.phase==='RESOLVE'&&this.round!==m.roundNo){this.round=m.roundNo;this.animate(m);}
  else if(m.phase!=='RESOLVE')this.apply(m.positions,m.characters);

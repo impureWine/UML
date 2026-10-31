@@ -48,14 +48,14 @@ test('错席、遮罩、旧步骤与非法花色拒绝且不扣牌',async()=>{
  for(const [seat,suit,token] of [['P2','rock',0],['P1','invalid',0],['P1','rock',8]])assert.throws(()=>g.pickCard(seat,suit,token));
  assert.equal(g.match.deck.remaining,90);
 });
-test('测试解锁仅写当前账号，持久化失败不污染档案或战绩',async()=>{
+test('正式胜利才解锁当前账号融合，失败写入不污染档案',async()=>{
  const env=environment();const manager=new AccountManager({store:new LocalStorageStore(env)});
  await manager.register('甲甲','pass');await manager.register('乙乙','pass');await manager.login('甲甲','pass');
- await manager.setFusionTestUnlock(true);assert.ok(manager.getCurrentProfile().unlockedCharacterIds.includes('CH-13'));
- await manager.login('乙乙','pass');assert.ok(!manager.getCurrentProfile().unlockedCharacterIds.includes('CH-13'));
- await manager.login('甲甲','pass');env.storage.writeError=true;await assert.rejects(manager.setFusionTestUnlock(false));
- assert.ok(manager.getCurrentProfile().unlockedCharacterIds.includes('CH-13'));env.storage.writeError=false;
- await manager.setFusionTestUnlock(false);assert.equal(manager.getCurrentProfile().stats.total,0);manager.dispose();
+ const record={matchId:'unlock-normal',mode:'local',ownerSeat:'P1',result:'win',p1CharacterId:'CH-12',p2CharacterId:'CH-11',p1FinalStep:40,p2FinalStep:12,endedAt:new Date().toISOString(),endReason:'登顶'};
+ env.storage.writeError=true;await assert.rejects(manager.commitCompletedMatch(manager.currentAccountId,record));assert.ok(!manager.getCurrentProfile().unlockedCharacterIds.includes('CH-13'));
+ env.storage.writeError=false;await manager.commitCompletedMatch(manager.currentAccountId,record);assert.ok(manager.getCurrentProfile().unlockedCharacterIds.includes('CH-13'));
+ await manager.commitCompletedMatch(manager.currentAccountId,record);assert.equal(manager.getCurrentProfile().stats.total,1);
+ await manager.login('乙乙','pass');assert.ok(!manager.getCurrentProfile().unlockedCharacterIds.includes('CH-13'));manager.dispose();
 });
 
 test('库分项来自剩余实体，取牌后立即更新且快照不可反改',async()=>{

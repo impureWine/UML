@@ -1,4 +1,5 @@
 const DEFAULT_SETTINGS = Object.freeze({
+  effectQuality: 'high',
   bgmVolume: 70,
   sfxVolume: 80,
   bgmMuted: false,
@@ -22,11 +23,12 @@ export class Settings {
     if (!isRecord(value)) throw new Error('偏好设置格式无效，请重新设置。');
     const keys = Object.keys(value);
     if (keys.some((key) => !Object.hasOwn(DEFAULT_SETTINGS, key))
-      || (!partial && keys.length !== Object.keys(DEFAULT_SETTINGS).length)) {
+      || (!partial && keys.length !== Object.keys(DEFAULT_SETTINGS).length && !(keys.length===Object.keys(DEFAULT_SETTINGS).length-1&&!Object.hasOwn(value,'effectQuality')))) {
       throw new Error('偏好设置包含缺失或不支持的字段。');
     }
     for (const key of keys) {
-      if (key === 'bgmVolume' || key === 'sfxVolume') {
+      if(key==='effectQuality'){if(!['low','medium','high'].includes(value[key]))throw new Error('画质档位无效');}
+      else if (key === 'bgmVolume' || key === 'sfxVolume') {
         if (!Number.isFinite(value[key]) || value[key] < 0 || value[key] > 100) {
           throw new Error('音乐和音效音量必须在0～100之间。');
         }

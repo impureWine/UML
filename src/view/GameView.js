@@ -116,7 +116,20 @@ export class GameView {
     this.musicPlayer = new MusicPlayer(this.root.querySelector('.music-player'), this.audio, game);
     document.addEventListener('pointerdown', () => this.audio.resumeFromGesture(), { signal: this.events.signal });
     document.addEventListener('keydown', () => this.audio.resumeFromGesture(), { signal: this.events.signal });
+    this.clock=setInterval(()=>this.updateStepClock(),250);
     this.bindEvents();
+    this.root.addEventListener('change', async e=>{const k=e.target.dataset.setting;if(!k)return;try{await game.saveSettings({[k]:e.target.type==='checkbox'?e.target.checked:e.target.type==='range'?Number(e.target.value):e.target.value});}catch(err){this.main.querySelector('[data-settings-error]').textContent=err.message;}},{signal:this.events.signal});
+    this.root.addEventListener('click', async e => {
+      const button = e.target.closest('[data-room]');
+      if (!button || button.disabled) return;
+      try {
+        await this.handleRoomAction(button.dataset.room);
+      } catch (error) {
+        const output = this.main.querySelector('[data-settings-error]');
+        if (output) output.textContent = error.message;
+        else { game.state.storageError = error.message; game.emit(); }
+      }
+    }, { signal: this.events.signal });
     this.unsubscribe = game.subscribe((snapshot) => this.applyView(snapshot));
   }
 
@@ -257,7 +270,9 @@ export class GameView {
       this.pageKey = key;
       if (snapshot.setup) this.opening = new OpeningPanel(this.main, this.game);
       else if (page === 'home') this.renderHome();
-      else if (['local', 'ai', 'online'].includes(page)) {
+      else if(page==='settings')this.renderSettings(profile);
+      else if(page==='online')this.renderOnline();
+      else if (['local', 'ai'].includes(page)) {
         this.mapPanel = new MountainMapPanel(this.main, {
           title: ROUTES[page].title,
           autoFollow: profile.settings.cameraAutoFollow,
@@ -270,7 +285,10 @@ export class GameView {
         this.main.querySelector('h1')?.focus({ preventScroll: true });
       }
     }
+    if(page==='settings'&&!snapshot.setup)this.renderSettings(profile);
+    if(page==='online'&&!snapshot.setup)this.renderOnline();
     if (this.opening) this.opening.update(snapshot);
+    this.root.dataset.effectQuality=profile?.settings.effectQuality||'high';
     if (this.mapPanel && ['local','ai'].includes(page) && !this.main.querySelector('[data-action="start-setup"]')) {
       const start = document.createElement('button'); start.dataset.action = 'start-setup'; start.className = 'opening-start'; start.textContent = '开始本轮对局 · 选择角色'; this.main.prepend(start);
     }
@@ -379,6 +397,32 @@ export class GameView {
     content.append(list);
   }
 
+  updateStepClock(){
+ const s=this.snapshot?.setup;
+ const text=s?.mode==='online'&&Number.isFinite(s.deadline)&&s.deadline>0?'· 本步剩余 '+Math.max(0,Math.ceil((s.deadline-Date.now())/1000))+' 秒':'';
+ for(const out of this.root.querySelectorAll('[data-step-clock]'))out.textContent=text;
+ }
+  renderSettings(profile){
+ const prefs=profile.settings;
+ this.main.className='main-content opening-main';
+ this.main.innerHTML='<h1>旅途设置</h1><button data-action="home">返回首页</button><output role="alert" data-settings-error></output>'+['bgmVolume','sfxVolume'].map((k,i)=>'<p><label>'+['BGM 音量','SFX 音量'][i]+' <input type="range" min="0" max="100" data-setting="'+k+'" value="'+prefs[k]+'"> '+prefs[k]+'%</label></p>').join('')+Object.entries({bgmMuted:'BGM 静音',sfxMuted:'SFX 静音',autoMusic:'自动切歌',singleLoop:'单曲循环',cameraAutoFollow:'镜头自动跟随'}).map(([k,label])=>'<p><label><input type="checkbox" data-setting="'+k+'" '+(prefs[k]?'checked':'')+'>'+label+'</label></p>').join('')+'<p><label>画质特效 <select data-setting="effectQuality">'+['low','medium','high'].map((k,i)=>'<option value="'+k+'" '+((prefs.effectQuality||'high')===k?'selected':'')+'>'+['低','中','高'][i]+'</option>').join('')+'</select></label></p><p>当前账号隐藏角色：'+(profile.unlockedCharacterIds.includes('CH-13')?'已解锁':'锁定')+'</p>';
+ }
+ async handleRoomAction(action) {
+   const network = this.game.ensureNetwork();
+   // Network operations emit the current state. Their async completion must not
+   // redraw a lobby over a match that has already started in the meantime.
+   if (action === 'create') await network.create();
+   else if (action === 'join') await network.join(this.main.querySelector('[data-room-code]').value.trim());
+   else if (action === 'ready') await network.ready();
+   else if (action === 'leave') { network.send('leave', {}); await network.disconnected(); }
+ }
+ renderOnline(){
+ const snapshot=this.game.getSnapshot();
+ if(snapshot.page!=='online'||snapshot.setup)return;
+ const n=this.game.network;
+ this.main.className='main-content opening-main';
+ this.main.innerHTML='<h1>房间码联机</h1><p>同一浏览器、同一地址打开两个窗口。每席使用各自登录账号。</p><output role="alert" data-settings-error></output>'+(n?.code?'<p>房间码：<b>'+n.code+'</b> · 你是 '+n.seat+'</p><p>P1：'+(n.room()?.ready.P1?'已就绪':'未就绪')+' / P2：'+(n.room()?.ready.P2?'已就绪':'未就绪')+'</p><button data-room="ready">就绪</button><button data-room="leave">离开房间</button>':'<button data-room="create">创建房间</button><label> 房间码 <input data-room-code maxlength="6" inputmode="numeric"></label><button data-room="join">加入房间</button><button data-action="home">返回首页</button>');
+ }
   renderPlaceholder(page) {
     const route = ROUTES[page];
     this.main.className = 'main-content placeholder-main';

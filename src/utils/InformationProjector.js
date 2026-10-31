@@ -5,6 +5,10 @@ const BOARD = new MountainBoard();
 
 /** Preview contract: whitelist public positions; never accept a complete Game object. */
 export class InformationProjector {
+  static preparationSafe(m,seat) {
+ const v=m.board?this.preparation({...m,turn:seat,covered:false}):{ownHand:structuredClone(m.players[seat].hand)};delete v.skillBombs;
+ if(m.phase==='DRAFT')v.remainingCounts=m.deck.getCounts();return structuredClone(v);
+ }
   static preparation(m) {
     const own = !m.covered ? m.players[m.turn] : null;
     return {
@@ -13,8 +17,8 @@ export class InformationProjector {
       skills: own ? own.character.getActiveSkills().map(c=>({id:c.skillId,name:c.name,remaining:c.remaining,suppressed:c.isSuppressed})) : [],
       suppressionLogs:m.suppressionLogs||[],effects:m.effects||{},reviewDeadline:m.reviewDeadline,
       rewindSeats:m.phase==='ROUND_REVIEW'?Object.values(m.players).filter(p=>p.character.get('TimeRewind')?.remaining>0&&!m.rewindDeclined?.includes(p.seat)).map(p=>p.seat):[],
-      recon:own&&m.recon?.seat===m.turn?m.recon:null,
-      frozenSuit:own&&m.freeze?.seat===m.turn?m.freeze.suit:null,
+      recon:own?(m.recons?.[m.turn]||(m.recon?.seat===m.turn?m.recon:null)):null,
+      frozenSuit:own?(m.freezes?.[m.turn]?.suit||(m.freeze?.seat===m.turn?m.freeze.suit:null)):null,
       shieldSeats:Object.values(m.players).filter(p=>p.shieldUntil>=m.roundNo).map(p=>p.seat),
       ownHand: own ? structuredClone(own.hand) : null,
       ownBombs: own ? own.bombs : null,
@@ -23,7 +27,7 @@ export class InformationProjector {
       handCounts: m.preparationCompleted ? Object.fromEntries(Object.values(m.players).map(p => [p.seat, p.hand.length])) : null,
       remainingCounts: m.preparationCompleted ? m.deck.getCounts() : null,
       positions: Object.fromEntries(Object.values(m.players).map(p => [p.seat,p.step])),
-      logs: m.log.getPublicEntries(),
+      logs: m.log?.getPublicEntries()||[],
     };
   }
   static mapPreview(input = {}) {

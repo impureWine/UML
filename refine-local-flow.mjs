@@ -1,0 +1,1 @@
+import fs from 'node:fs';const p='src/controller/Game.js';let s=fs.readFileSync(p,'utf8');s=s.replace("throw new Error('该席位已确认或当前不能交接');m.turn=seat;m.covered=true;", "throw new Error('当前不能交接该席位');m.turn=seat;m.covered=true;m.token++;");fs.writeFileSync(p,s);

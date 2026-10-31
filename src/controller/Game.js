@@ -1,3 +1,6 @@
+import { NetworkManager } from '../utils/NetworkManager.js';
+import { AIPlayer } from '../model/AIPlayer.js';
+import { AIController } from './AIController.js';
 import { RoundSnapshot } from '../model/RoundSnapshot.js';
 import { MountainBoard } from '../model/MountainBoard.js';
 import { Bomb } from '../model/Bomb.js';
@@ -20,6 +23,7 @@ export class Game {
       phase: 'AUTH', page: 'home', profile: null, storageError: '',
       auth: { open: true, mode: 'login', busy: false, error: '', notice: '' },
     };
+    this.aiController = new AIController(this);
     this.unsubscribeStorage = accountManager.observeChanges(({ profile, error }) => {
       if (error) {
         this.state.storageError = error.message;
@@ -37,8 +41,15 @@ export class Game {
     });
   }
 
-  getSnapshot() {
+  setLocalSeat(seat){const m=this.match;if(m?.mode!=='local'||!['PREPARATION','ROUND_SKILLS','CARD_LOCK'].includes(m.phase)||!['P1','P2'].includes(seat))throw new Error('当前不能交接该席位');m.turn=seat;m.covered=true;m.token++;this.emit();}
+  freezeFor(seat){const m=this.match;return m.freezes?.[seat]||(m.freeze?.seat===seat?m.freeze:null);}
+  isConcurrent(){return ['ai','online'].includes(this.match?.mode)&&['PREPARATION','ROUND_SKILLS','CARD_LOCK'].includes(this.match?.phase);}
+  actionToken(seat){const m=this.match;return this.isConcurrent()? [m.matchId,m.phase,m.roundNo||0,m.attemptNo||0,seat,m.actionVersions?.[seat]||0].join(':'):m.token;}
+  bumpAction(seat){const m=this.match;m.token++;if(this.isConcurrent()){m.actionVersions??={};m.actionVersions[seat]=(m.actionVersions[seat]||0)+1;}}
+  actorDone(seat){const m=this.match;return m.phase==='PREPARATION'?!!m.locked[seat]:m.phase==='ROUND_SKILLS'?!!m.skillsDone[seat]:!!m.pending[seat]||!m.players[seat].hand.length;}
+  getSnapshot(raw=false,viewerSeat='P1') {
     const snapshot = structuredClone(this.state);
+    if(this.state.page==='online'&&this.network?.code&&this.network.seat==='P2'&&this.network.remote){snapshot.setup=structuredClone(this.network.remote);return snapshot;}
     const m = this.match;
     if (m) {
       snapshot.setup = { matchId:m.matchId, phase:m.phase, mode:m.mode, characters:{...m.characters}, difficulty:m.difficulty,
@@ -47,14 +58,21 @@ export class Game {
         first:m.first, turn:m.turn, covered:m.covered, token:m.token, remaining:m.deck?.remaining,
         ownHand:m.phase==='DRAFT' && !m.covered ? structuredClone(m.players[m.turn].hand) : null };
     }
-    if (m?.board) Object.assign(snapshot.setup, InformationProjector.preparation(m));
-    if(m?.roundNo) Object.assign(snapshot.setup,{roundNo:m.roundNo,skillsDone:{...m.skillsDone},cardLocked:Object.fromEntries(['P1','P2'].map(s=>[s,!!m.pending?.[s]])),history:structuredClone(m.history||[]),roundResults:structuredClone(m.roundResults||[]),resolution:structuredClone(m.resolution||null),candidate:structuredClone(m.candidate||null),saveStatus:m.saveStatus,saveError:m.saveError});
+    if (m?.board) Object.assign(snapshot.setup, InformationProjector.preparation(this.isConcurrent()?{...m,turn:viewerSeat,covered:false}:m));
+    if(this.isConcurrent())Object.assign(snapshot.setup,{concurrent:true,viewerSeat,turn:viewerSeat,covered:false,waiting:this.actorDone(viewerSeat),token:this.actionToken(viewerSeat)});
+    if(m?.mode==='local'&&['PREPARATION','ROUND_SKILLS','CARD_LOCK'].includes(m.phase)){
+      snapshot.setup.waiting=this.actorDone(m.turn);
+      if(snapshot.setup.waiting)Object.assign(snapshot.setup,{ownHand:null,ownBombs:null,ownPlaced:[],skills:[],skillBombs:[],recon:null,frozenSuit:null});
+    }
+    if(m?.roundNo) Object.assign(snapshot.setup,{roundNo:m.roundNo,attemptNo:m.attemptNo,skillsDone:{...m.skillsDone},cardLocked:Object.fromEntries(['P1','P2'].map(s=>[s,!!m.pending?.[s]])),history:structuredClone(m.history||[]),roundResults:structuredClone(m.roundResults||[]),resolution:structuredClone(m.resolution||null),candidate:structuredClone(m.candidate||null),saveStatus:m.saveStatus,saveError:m.saveError});
+    if(!raw&&m?.mode==='online'&&this.network?.code&&this.network.seat==='P1'&&snapshot.setup)snapshot.setup=this.network.project(snapshot.setup,'P1');
+    if(!raw&&m?.mode==='ai'&&m.turn==='P2'&&m.phase==='DRAFT'&&snapshot.setup){for(const k of ['ownHand','ownBombs','recon','frozenSuit'])snapshot.setup[k]=null;for(const k of ['ownPlaced','skills','skillBombs'])snapshot.setup[k]=[];snapshot.setup.covered=true;snapshot.setup.waiting=true;}
     return snapshot;
   }
 
   startSetup() {
     this.requireHome();
-    if (this.match || !['local','ai'].includes(this.state.page)) throw new Error('当前不能开始选角');
+    if (this.match || !['local','ai','online'].includes(this.state.page)) throw new Error('当前不能开始选角');
     this.match={phase:'CHARACTER_SELECT',mode:this.state.page,characters:{P1:null,P2:null},difficulty:'simple',token:0,matchId:crypto.randomUUID(),ownerId:this.state.profile.accountId};
     this.emit();
   }
@@ -68,19 +86,12 @@ export class Game {
     if(this.match?.phase!=='CHARACTER_SELECT' || !['simple','hard'].includes(value)) throw new Error('难度无效');
     this.match.difficulty=value; this.emit();
   }
-  async setFusionTestUnlock(value) {
-    if(this.match && this.match.phase!=='CHARACTER_SELECT') throw new Error('已确定角色，对局中不能改变解锁状态');
-    const profile=await this.accountManager.setFusionTestUnlock(value);
-    this.state.profile=profile;
-    if(!value && this.match) for(const seat of ['P1','P2']) if(this.match.characters[seat]==='CH-13') this.match.characters[seat]=null;
-    this.emit();
-  }
   confirmCharacters() {
     const m=this.match;
     if(m?.phase!=='CHARACTER_SELECT') throw new Error('当前不能确认');
-    const ids=this.accountManager.getCurrentProfile().unlockedCharacterIds;
+    const ids=[...this.accountManager.getCurrentProfile().unlockedCharacterIds,...(this.network?.room()?.guestPool||[])];
     if(!['P1','P2'].every(seat=>ids.includes(m.characters[seat]))) throw new Error('请双方选择已解锁角色');
-    m.players=Object.fromEntries(['P1','P2'].map(seat=>[seat,new Player(seat,m.characters[seat])]));
+    m.players=Object.fromEntries(['P1','P2'].map(seat=>[seat,new (m.mode==='ai'&&seat==='P2'?AIPlayer:Player)(seat,m.characters[seat])]));
     m.suppressionLogs=[]; for(const seat of ['P1','P2']) { const other=seat==='P1'?'P2':'P1'; if(m.players[other].character.get('DivineSuppression')) for(const c of m.players[seat].character.skillComponents) if(c.sourceOrigin==='NABERIUS'){c.isSuppressed=true;m.suppressionLogs.push(seat+' '+c.skillId+' 被瓦沙嘉压制');} }
     m.deck=new CardDeck(); m.ledger=new CardLedger(m.deck.cards); m.coinChoices={P1:null,P2:null}; m.phase='COIN'; this.emit();
   }
@@ -126,7 +137,7 @@ export class Game {
   }
   requirePreparation(seat, token) {
     const m=this.match;
-    if(m?.phase!=='PREPARATION' || m.preparationCompleted || m.covered || seat!==m.turn || m.locked[seat] || token!==m.token) throw new Error('准备操作已失效或已锁定');
+    if(m?.phase!=='PREPARATION' || m.preparationCompleted || (!this.isConcurrent()&&(m.covered||seat!==m.turn)) || m.locked[seat] || token!==this.actionToken(seat)) throw new Error('准备操作已失效或已锁定');
     return m;
   }
   revealPreparation() {
@@ -139,13 +150,13 @@ export class Game {
     if(!Array.isArray(ids) || ids.length!==2 || new Set(ids).size!==2 || ids.some(id=>!p.hand.some(c=>c.cardId===id))) throw new Error('请自主选择两张不同实体手牌');
     if(p.bombs+m.board.getOwnedBombs(seat).length>=p.bombCapacity) throw new Error('库存与场上炸弹总数已达上限');
     const cards=p.hand.filter(c=>ids.includes(c.cardId));
-    cards.forEach(c=>m.ledger.destroySecretly(c,seat)); p.hand=p.hand.filter(c=>!ids.includes(c.cardId)); p.bombs++; m.token++; this.emit();
+    cards.forEach(c=>m.ledger.destroySecretly(c,seat)); p.hand=p.hand.filter(c=>!ids.includes(c.cardId)); p.bombs++; this.bumpAction(seat); this.emit();
   }
   exchangeBomb(seat, token) {
     const m=this.requirePreparation(seat,token), p=m.players[seat];
     if(p.bombs<1 || m.deck.remaining<2) throw new Error('需要1个库存炸弹且公共牌库至少2张');
     const cards=Array.from({length:Math.min(m.deck.remaining,p.character.get('LifeExchangeBonus')?3:2)},()=>m.deck.drawRandom(this.random));
-    for(const c of cards){m.ledger.transfer(c,'deck',seat);p.hand.push(c);if(p.character.get('LifeExchangeBonus'))this.announceSkill(seat,'生命兑换','获得一张手牌');} p.bombs--; m.token++; this.emit();
+    for(const c of cards){m.ledger.transfer(c,'deck',seat);p.hand.push(c);if(p.character.get('LifeExchangeBonus'))this.announceSkill(seat,'生命兑换','获得一张手牌');} p.bombs--; this.bumpAction(seat); this.emit();
   }
   adjustBomb(seat, id, target, token) {
     const m=this.requirePreparation(seat,token), p=m.players[seat];
@@ -156,32 +167,33 @@ export class Game {
       if(p.bombs<1) throw new Error('库存炸弹不足');
       m.board.placeBomb(new Bomb(`bomb-${String(m.nextBomb).padStart(4,'0')}`,seat,target)); m.nextBomb++;p.bombs--;
     }
-    m.token++;this.emit();
+    this.bumpAction(seat);this.emit();
   }
   lockPreparation(seat, token) {
-    const m=this.requirePreparation(seat,token); m.locked[seat]=true; m.covered=true; m.token++;
+    const m=this.requirePreparation(seat,token); m.locked[seat]=true; m.covered=true; this.bumpAction(seat);
     m.turn=seat==='P1'?'P2':'P1';
     if(m.locked.P1&&m.locked.P2){m.preparationCompleted=true;m.phase='CARD_LOCK';m.roundNo=1;m.turn=m.first;this.beginRound();}
     this.emit();
   }
   beginRound() {
     const m=this.match;
+    m.attemptNo=(m.attemptNo||0)+1;m.actionVersions={};
     m.phase='ROUND_SKILLS';m.covered=true;m.turn=m.first;m.skillsDone={P1:false,P2:false};m.pending={};m.resolution=null;
-    m.rewindDeclined=[];m.freeze=null;m.water=[];m.recon=null;m.effects={};m.candidate=null;m.reviewDeadline=null;m.roundSnapshot=new RoundSnapshot(m);
+    m.rewindDeclined=[];m.freezes={};m.recons={};m.freeze=null;m.water=[];m.recon=null;m.effects={};m.candidate=null;m.reviewDeadline=null;m.roundSnapshot=new RoundSnapshot(m);
     m.token++;
   }
   revealBattle(){const m=this.match;if(!m || !['ROUND_SKILLS','CARD_LOCK'].includes(m.phase))return;m.covered=false;this.emit();}
   completeSkills(seat,token){
-    const m=this.match;if(m?.phase!=='ROUND_SKILLS'||m.covered||seat!==m.turn||token!==m.token||m.skillsDone[seat])throw new Error('操作窗口已失效');
-    m.skillsDone[seat]=true;m.token++;m.covered=true;m.turn=seat==='P1'?'P2':'P1';
+    const m=this.match;if(m?.phase!=='ROUND_SKILLS'||(!this.isConcurrent()&&(m.covered||seat!==m.turn))||token!==this.actionToken(seat)||m.skillsDone[seat])throw new Error('操作窗口已失效');
+    m.skillsDone[seat]=true;this.bumpAction(seat);m.covered=true;m.turn=seat==='P1'?'P2':'P1';
     if(m.skillsDone.P1&&m.skillsDone.P2){m.requiredActors=[m.first,m.first==='P1'?'P2':'P1'].filter(s=>m.players[s].hand.length);m.phase='CARD_LOCK';m.turn=m.requiredActors[0];if(!m.turn)this.resolveRound();}
     this.emit();
   }
   lockCard(seat,id,token){
-    const m=this.match;if(m?.phase!=='CARD_LOCK'||m.covered||seat!==m.turn||token!==m.token||m.pending[seat])throw new Error('锁牌操作已失效');
+    const m=this.match;if(m?.phase!=='CARD_LOCK'||(!this.isConcurrent()&&(m.covered||seat!==m.turn))||token!==this.actionToken(seat)||m.pending[seat])throw new Error('锁牌操作已失效');
     const p=m.players[seat],card=p.hand.find(c=>c.cardId===id);if(!card)throw new Error('请选择一张本人手牌');
-    if(m.freeze?.seat===seat&&card.suit===m.freeze.suit&&p.hand.some(c=>c.suit!==card.suit))throw new Error('该牌型已被冻结');
-    m.ledger.transfer(card,seat,'pending');p.hand=p.hand.filter(c=>c!==card);m.pending[seat]=card;m.token++;m.covered=true;
+    if(this.freezeFor(seat)&&card.suit===this.freezeFor(seat).suit&&p.hand.some(c=>c.suit!==card.suit))throw new Error('该牌型已被冻结');
+    m.ledger.transfer(card,seat,'pending');p.hand=p.hand.filter(c=>c!==card);m.pending[seat]=card;this.bumpAction(seat);m.covered=true;
     m.turn=m.requiredActors.find(s=>!m.pending[s]);
     if(!m.turn)this.resolveRound();this.emit();
   }
@@ -209,14 +221,14 @@ export class Game {
       m.roundSnapshot.restore(m);for(const [s,p] of Object.entries(m.players)){const c=p.character.get('TimeRewind');if(c)c.usedUses=spent[s];}
       this.beginRound();this.announceSkill(seat,'时之回溯','将双方状态恢复至本回合技能操作前');m.effects[seat]='time';this.emit();return;
     }
-    if(m.phase!=='ROUND_SKILLS'||m.covered||m.turn!==seat||m.token!==token||m.skillsDone[seat])throw new Error('技能操作窗口已失效');
+    if(m.phase!=='ROUND_SKILLS'||(!this.isConcurrent()&&(m.covered||m.turn!==seat))||this.actionToken(seat)!==token||m.skillsDone[seat])throw new Error('技能操作窗口已失效');
     const other=seat==='P1'?'P2':'P1',q=m.players[other];
     if(id==='JadeShield')p.shieldUntil=m.roundNo+1;
     else if(id==='NatureRecon'){
       const counts=['rock','paper','scissors'].map(s=>[s,q.hand.filter(c=>c.suit===s).length]);counts.sort((a,b)=>b[1]-a[1]);
-      m.recon={seat,steps:m.board.steps.filter(c=>c.index>p.step&&c.index<=p.step+10&&c.bombQueue.length).map(c=>c.index),suit:counts[0][1]?counts[0][0]:null};
+      m.recon={seat,steps:m.board.steps.filter(c=>c.index>p.step&&c.index<=p.step+10&&c.bombQueue.length).map(c=>c.index),suit:counts[0][1]?counts[0][0]:null};m.recons??={};m.recons[seat]=m.recon;
     }else if(id==='WaterDefeatDraw'){if(!m.deck.remaining||m.water.includes(seat))throw new Error('空库或本轮已激活');m.water.push(seat);}
-    else if(id==='FreezeCard'){if(!['rock','paper','scissors'].includes(args.suit))throw new Error('请选择冻结牌型');m.freeze={seat:other,suit:args.suit};}
+    else if(id==='FreezeCard'){if(!['rock','paper','scissors'].includes(args.suit))throw new Error('请选择冻结牌型');m.freeze={seat:other,suit:args.suit};m.freezes??={};m.freezes[other]=m.freeze;}
     else if(id==='SpaceOperation'){
       if(args.branch==='swap'){if(Math.abs(p.step-q.step)>5)throw new Error('阶差须不大于5');[p.step,q.step]=[q.step,p.step];}
       else{const bomb=m.board.steps.flatMap(c=>c.bombQueue).find(b=>b.bombId===args.bombId);if(!bomb||!Number.isInteger(args.target)||args.target<1||args.target>39||args.target===bomb.stepIndex||m.board.getStep(args.target).bombQueue.length)throw new Error('请选择已存在炸弹及另一无雷的1～39阶');m.board.moveBomb(bomb.bombId,args.target);}
@@ -226,7 +238,7 @@ export class Game {
     }else if(id==='LifeReplenish'){if(p.hand.length>=10||!m.deck.remaining)throw new Error('手牌须少于10且公共库非空');this.drawCards(seat,3,'生机赐福');}
     const actions={JadeShield:'开启持续含当轮共两回合的护盾',NatureRecon:'查看对手最多的牌型并扫描前方雷区',WaterDefeatDraw:'激活本回合失利补牌效果',FreezeCard:'冻结对手一种牌型',SpaceOperation:args.branch==='swap'?'交换双方所在阶数':'移动一枚炸弹'};
     if(actions[id])this.announceSkill(seat,skill.name,actions[id]);
-    skill.usedUses++;m.effects[seat]=id;m.token++;this.emit();
+    skill.usedUses++;m.effects[seat]=id;this.bumpAction(seat);this.emit();
   }
 
   resolveRound(){
@@ -242,7 +254,7 @@ export class Game {
       if(p.character.get('RockVictoryBonus')&&suit==='rock'){n++;this.announceSkill(winner,'岩胜加步','额外前进1阶');}
       if(p.character.get('WaterVictoryBonus')&&suit==='paper'){n+=2;this.announceSkill(winner,'水胜加步','额外前进2阶');}
       if(p.character.get('FlameWinStreak')&&p.streak>=2){n+=2;m.effects[winner]='flame';this.announceSkill(winner,'烈焰连胜','额外前进2阶');}
-      if(m.freeze?.seat===winner&&suit===m.freeze.suit&&a&&b){n=Math.ceil(n/2);this.announceSkill(winner,'极寒敕令','将本次获胜总步数减半向上取整');}
+      if(this.freezeFor(winner)&&suit===this.freezeFor(winner).suit&&a&&b){n=Math.ceil(n/2);this.announceSkill(winner,'极寒敕令','将本次获胜总步数减半向上取整');}
       target=Math.min(40,from[winner]+n);const landing=this.skillLanding(winner,target);events=landing.events;
     }else for(const seat of ['P1','P2'])if(m.players[seat].shieldUntil>=m.roundNo){this.announceSkill(seat,'玉璋护盾','在平局时前进1阶');const r=this.skillLanding(seat,Math.min(40,from[seat]+1));events.push(...r.events);}
     if(winner)for(const seat of m.water||[])if(seat!==winner&&m.deck.remaining)this.drawCards(seat,1,'万众狂欢');
@@ -253,7 +265,7 @@ export class Game {
     const top=['P1','P2'].filter(s=>m.players[s].step===40),empty=Object.values(m.players).every(p=>!p.hand.length);
     m.candidate=top.length||empty?{winner:top.length===2?null:top[0]||(m.players.P1.step===m.players.P2.step?null:m.players.P1.step>m.players.P2.step?'P1':'P2'),reason:top.length?'登顶':'双方手牌耗尽'}:null;
   }
-  finishRoundAnimation(roundNo){const m=this.match;if(m?.phase!=='RESOLVE'||m.roundNo!==roundNo)return;m.phase='ROUND_REVIEW';const can=Object.values(m.players).some(p=>p.character.get('TimeRewind')?.remaining>0);if(can){m.reviewDeadline=Date.now()+5000;const token=m.token;setTimeout(()=>{if(this.match===m&&m.token===token&&m.phase==='ROUND_REVIEW'){m.reviewDeadline=null;this.emit();if(m.candidate)this.finalizeMatch();}},5000);}this.emit();if(m.candidate&&!can)this.finalizeMatch();}
+  finishRoundAnimation(roundNo){const m=this.match;if(m?.phase!=='RESOLVE'||m.roundNo!==roundNo)return;m.phase='ROUND_REVIEW';const can=Object.values(m.players).some(p=>p.character.get('TimeRewind')?.remaining>0);if(can){m.reviewDeadline=Date.now()+(m.mode==='online'?45000:5000);const token=m.token;setTimeout(()=>{if(this.match===m&&m.token===token&&m.phase==='ROUND_REVIEW'){m.reviewDeadline=null;this.emit();if(m.candidate)this.finalizeMatch();}},m.mode==='online'?45000:5000);}this.emit();if(m.candidate&&!can)this.finalizeMatch();}
   cancelTimeRewind(seat,token){
     const m=this.match;
     if(!m||token!==m.token||m.phase!=='ROUND_REVIEW'||!(m.reviewDeadline>Date.now())||!m.players[seat]?.character.get('TimeRewind')?.remaining||m.rewindDeclined.includes(seat))throw new Error('回溯窗口已关闭');
@@ -266,7 +278,8 @@ export class Game {
     const m=this.match;if(m?.reviewDeadline>Date.now())return;
     if(!m?.candidate||!['ROUND_REVIEW','FINAL'].includes(m.phase)||m.saveStatus==='saving'||m.saveStatus==='saved')return;
     m.phase='FINAL';m.saveStatus='saving';m.endedAt??=new Date().toISOString();this.emit();
-    try{const profile=await this.accountManager.commitCompletedMatch(m.ownerId,{matchId:m.matchId,mode:m.mode,ownerSeat:'P1',result:m.candidate.winner===null?'draw':m.candidate.winner==='P1'?'win':'loss',p1CharacterId:m.characters.P1,p2CharacterId:m.characters.P2,p1FinalStep:m.players.P1.step,p2FinalStep:m.players.P2.step,endedAt:m.endedAt,endReason:m.candidate.reason});if(this.match!==m)return;this.state.profile=profile;m.saveStatus='saved';m.saveError='';}
+    try{if(m.mode==='online'){const r=await this.network.result(m.candidate,m);m.candidate={winner:r.winner,reason:r.endReason};}
+    const profile=await this.accountManager.commitCompletedMatch(m.ownerId,{matchId:m.matchId,mode:m.mode,ownerSeat:'P1',result:m.candidate.winner===null?'draw':m.candidate.winner==='P1'?'win':'loss',p1CharacterId:m.characters.P1,p2CharacterId:m.characters.P2,p1FinalStep:m.players.P1.step,p2FinalStep:m.players.P2.step,endedAt:m.endedAt,endReason:m.candidate.reason});if(this.match!==m)return;this.state.profile=profile;m.saveStatus='saved';m.saveError='';}
     catch(e){m.saveStatus='error';m.saveError=e.message;}this.emit();
   }
   restartMatch(same=false){const m=this.match;if(!m || m.phase!=='FINAL'||m.saveStatus!=='saved')throw new Error('请先成功保存战绩');const {mode,characters}=m;this.match=null;this.state.page=mode;this.startSetup();if(same){this.match.characters={...characters};this.confirmCharacters();}}
@@ -276,7 +289,7 @@ export class Game {
     result.destroyed.forEach(id=>m.board.removeBomb(id)); m.players[seat].step=result.step;
     result.events.forEach(e=>m.log.appendPublicEvent(e)); this.emit(); return result;
   }
-  exitSetup() { this.match=null; this.state.page='home'; this.emit(); }
+  exitSetup() { if(this.network?.code){this.network.send('leave',{});if(this.network.seat==='P1'){const r=this.network.room();r.closed=true;this.network.write(r);}this.network.remote=null;this.network.code=null;}this.match=null; this.state.page='home'; this.emit(); }
 
 
   subscribe(listener) {
@@ -300,7 +313,7 @@ export class Game {
     this.requireHome();
     if (this.state.auth.open) throw new Error('请先完成或取消账号切换。');
     if (!PAGES.has(page)) throw new Error('该页面尚未开放。');
-    if (this.match) throw new Error('请先退出当前对局再导航。');
+    if (this.match||this.network?.code) throw new Error('请先退出当前对局或房间再导航。');
     this.state.page = page;
     this.emit();
   }
@@ -382,6 +395,8 @@ export class Game {
     this.emit();
   }
 
+  ensureNetwork(){this.network??=new NetworkManager(this);return this.network;}
+  async saveSettings(patch){this.requireHome();this.state.profile=await this.accountManager.saveSettings(patch);this.emit();}
   async setCameraAutoFollow(value) {
     this.requireHome();
     if (typeof value !== 'boolean') throw new TypeError('镜头跟随必须是开关值。');
@@ -395,6 +410,7 @@ export class Game {
   }
 
   dispose() {
+    this.aiController?.dispose();this.network?.dispose();
     this.unsubscribeStorage?.();
     this.listeners.clear();
   }

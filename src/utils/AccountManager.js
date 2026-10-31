@@ -85,25 +85,15 @@ export class AccountManager {
     });
   }
 
-  async setFusionTestUnlock(value) {
-    if(typeof value!=='boolean' || !this.#currentAccountId) throw new Error('请先登录，解锁开关必须为布尔值');
-    const ownerId=this.#currentAccountId;
-    return this.#store.withWriteLock(draft=>{
-      const profile=draft.accounts[ownerId];
-      if(!profile) throw new Error('账号不可用');
-      profile.unlockedCharacterIds=profile.unlockedCharacterIds.filter(id=>id!=='CH-13');
-      if(value) profile.unlockedCharacterIds.push('CH-13');
-      profile.revision++; AccountProfile.validate(profile);
-      return AccountProfile.publicSnapshot(profile);
-    });
-  }
-
   async commitCompletedMatch(ownerId, record) {
     if(ownerId!==this.#currentAccountId)throw new Error('对局账号已改变，不能保存');
     AccountProfile.validateMatchRecord(record);
     return this.#store.withWriteLock(draft=>{
       const p=draft.accounts[ownerId];if(!p)throw new Error('账号不存在');
       if(!p.matchHistory.some(r=>r.matchId===record.matchId)){
+        const own=record.ownerSeat==='P1'?record.p1CharacterId:record.p2CharacterId;
+        const opponent=record.ownerSeat==='P1'?record.p2CharacterId:record.p1CharacterId;
+        if(record.result==='win'&&own==='CH-12'&&opponent==='CH-11'&&!p.unlockedCharacterIds.includes('CH-13'))p.unlockedCharacterIds.push('CH-13');
         p.matchHistory.push(structuredClone(record));p.stats.total++;p.stats[{win:'wins',loss:'losses',draw:'draws'}[record.result]]++;p.revision++;AccountProfile.validate(p);
       }
       return AccountProfile.publicSnapshot(p);

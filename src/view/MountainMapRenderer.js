@@ -1,4 +1,5 @@
 import { CharacterTokenRenderer } from './CharacterTokenRenderer.js';
+import { CharacterSkillDialog } from './CharacterSkillDetails.js';
 import { BackgroundTransition } from './BackgroundTransition.js';
 const clamp = (n, a, b) => Math.max(a, Math.min(b, n));
 
@@ -40,12 +41,26 @@ export class MountainMapRenderer {
     this.tokenLayer = document.createElement('div'); this.tokenLayer.className='map-token-layer'; container.append(this.tokenLayer);
     this.tokens = Object.fromEntries(['P1','P2'].map((seat,i)=>{const el=document.createElement('div'); el.className='map-character-anchor'; this.tokenLayer.append(el);return [seat,new CharacterTokenRenderer(el,{seat,characterId:i?'CH-02':'CH-01'})];}));
     this.bind();
+    this.skillDialog = new CharacterSkillDialog();
+    for (const [seat, token] of Object.entries(this.tokens)) {
+      token.root.classList.add('skill-info-trigger');
+      token.root.tabIndex = 0;
+      token.root.setAttribute('role', 'button');
+      token.root.setAttribute('aria-haspopup', 'dialog');
+      token.root.title = '点击查看角色技能';
+      const open = () => this.skillDialog.open(token.character, seat);
+      token.root.addEventListener('click', open, {signal:this.events.signal});
+      token.root.addEventListener('keydown', event => {
+        if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); open(); }
+      }, {signal:this.events.signal});
+    }
     this.observer = new ResizeObserver(() => this.resize()); this.observer.observe(container); this.resize();
     this.frame = requestAnimationFrame(t => this.draw(t));
   }
   resize() {
     this.width = this.container.clientWidth; this.height = this.container.clientHeight;
-    const dpr = Math.min(devicePixelRatio || 1, 2);
+    const quality=document.querySelector('.game-app')?.dataset.effectQuality||'high';
+    const dpr = Math.min(devicePixelRatio || 1, {low:1,medium:1.5,high:2}[quality]);
     this.canvas.width = this.width * dpr; this.canvas.height = this.height * dpr;
     this.ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
   }
@@ -252,6 +267,7 @@ export class MountainMapRenderer {
     this.frame = requestAnimationFrame(t2 => this.draw(t2));
   }
   dispose() {
+    this.skillDialog?.dispose();
     if (this.disposed) return; this.disposed = true; cancelAnimationFrame(this.frame); this.events.abort(); this.observer.disconnect();
     Object.values(this.tokens).forEach(t=>t.dispose()); this.tokenLayer.remove();
     this.canvas.remove(); this.atmosphere.remove(); this.labelLayer.remove();
