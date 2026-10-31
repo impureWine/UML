@@ -49,7 +49,7 @@ export class Game {
   actorDone(seat){const m=this.match;return m.phase==='PREPARATION'?!!m.locked[seat]:m.phase==='ROUND_SKILLS'?!!m.skillsDone[seat]:!!m.pending[seat]||!m.players[seat].hand.length;}
   getSnapshot(raw=false,viewerSeat='P1') {
     const snapshot = structuredClone(this.state);
-    if(this.state.page==='online'&&this.network?.code&&this.network.seat==='P2'&&this.network.remote){snapshot.setup=structuredClone(this.network.remote);return snapshot;}
+    if(this.state.page==='online'&&this.network?.code&&(this.network.seat==='P2'||this.network.transport?.server)&&this.network.remote){snapshot.setup=structuredClone(this.network.remote);return snapshot;}
     const m = this.match;
     if (m) {
       snapshot.setup = { matchId:m.matchId, phase:m.phase, mode:m.mode, characters:{...m.characters}, difficulty:m.difficulty,
@@ -65,6 +65,7 @@ export class Game {
       if(snapshot.setup.waiting)Object.assign(snapshot.setup,{ownHand:null,ownBombs:null,ownPlaced:[],skills:[],skillBombs:[],recon:null,frozenSuit:null});
     }
     if(m?.roundNo) Object.assign(snapshot.setup,{roundNo:m.roundNo,attemptNo:m.attemptNo,skillsDone:{...m.skillsDone},cardLocked:Object.fromEntries(['P1','P2'].map(s=>[s,!!m.pending?.[s]])),history:structuredClone(m.history||[]),roundResults:structuredClone(m.roundResults||[]),resolution:structuredClone(m.resolution||null),candidate:structuredClone(m.candidate||null),saveStatus:m.saveStatus,saveError:m.saveError});
+    if(m?.phase==='FINAL')Object.assign(snapshot.setup,{candidate:structuredClone(m.candidate),saveStatus:m.saveStatus});
     if(!raw&&m?.mode==='online'&&this.network?.code&&this.network.seat==='P1'&&snapshot.setup)snapshot.setup=this.network.project(snapshot.setup,'P1');
     if(!raw&&m?.mode==='ai'&&m.turn==='P2'&&m.phase==='DRAFT'&&snapshot.setup){for(const k of ['ownHand','ownBombs','recon','frozenSuit'])snapshot.setup[k]=null;for(const k of ['ownPlaced','skills','skillBombs'])snapshot.setup[k]=[];snapshot.setup.covered=true;snapshot.setup.waiting=true;}
     return snapshot;
@@ -289,7 +290,7 @@ export class Game {
     result.destroyed.forEach(id=>m.board.removeBomb(id)); m.players[seat].step=result.step;
     result.events.forEach(e=>m.log.appendPublicEvent(e)); this.emit(); return result;
   }
-  exitSetup() { if(this.network?.code){this.network.send('leave',{});if(this.network.seat==='P1'){const r=this.network.room();r.closed=true;this.network.write(r);}this.network.remote=null;this.network.code=null;}this.match=null; this.state.page='home'; this.emit(); }
+  exitSetup() { if(this.network?.code){this.network.send('leave',{});if(this.network.seat==='P1'){const r=this.network.room();r.closed=true;this.network.write(r);}this.network.transport?.close();this.network.transport=null;this.network.remote=null;this.network.code=null;}this.match=null; this.state.page='home'; this.emit(); }
 
 
   subscribe(listener) {

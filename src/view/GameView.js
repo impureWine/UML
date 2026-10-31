@@ -401,6 +401,7 @@ export class GameView {
  const s=this.snapshot?.setup;
  const text=s?.mode==='online'&&Number.isFinite(s.deadline)&&s.deadline>0?'· 本步剩余 '+Math.max(0,Math.ceil((s.deadline-Date.now())/1000))+' 秒':'';
  for(const out of this.root.querySelectorAll('[data-step-clock]'))out.textContent=text;
+ const n=this.game?.network;if(n?.code){let out=this.root.querySelector('[data-network-status]');if(!out){out=document.createElement('output');out.dataset.networkStatus='';this.main.prepend(out);}out.textContent=(n.transport?(n.transport.server?'服务器':'公网P2P'):'同机')+' · '+(n.connected?'已连接 · '+(n.ping??'--')+' ms':'等待连接');}
  }
   renderSettings(profile){
  const prefs=profile.settings;
@@ -411,17 +412,18 @@ export class GameView {
    const network = this.game.ensureNetwork();
    // Network operations emit the current state. Their async completion must not
    // redraw a lobby over a match that has already started in the meantime.
+   if(['create','join'].includes(action)){network.mode=this.main.querySelector('[data-net-mode]')?.value||'auto';network.serverUrl=this.main.querySelector('[data-net-url]')?.value.trim();}
    if (action === 'create') await network.create();
    else if (action === 'join') await network.join(this.main.querySelector('[data-room-code]').value.trim());
    else if (action === 'ready') await network.ready();
-   else if (action === 'leave') { network.send('leave', {}); await network.disconnected(); }
+   else if (action === 'leave') { network.send('leave', {}); await network.disconnected(true); }
  }
  renderOnline(){
  const snapshot=this.game.getSnapshot();
  if(snapshot.page!=='online'||snapshot.setup)return;
  const n=this.game.network;
  this.main.className='main-content opening-main';
- this.main.innerHTML='<h1>房间码联机</h1><p>同一浏览器、同一地址打开两个窗口。每席使用各自登录账号。</p><output role="alert" data-settings-error></output>'+(n?.code?'<p>房间码：<b>'+n.code+'</b> · 你是 '+n.seat+'</p><p>P1：'+(n.room()?.ready.P1?'已就绪':'未就绪')+' / P2：'+(n.room()?.ready.P2?'已就绪':'未就绪')+'</p><button data-room="ready">就绪</button><button data-room="leave">离开房间</button>':'<button data-room="create">创建房间</button><label> 房间码 <input data-room-code maxlength="6" inputmode="numeric"></label><button data-room="join">加入房间</button><button data-action="home">返回首页</button>');
+ this.main.innerHTML='<h1>房间码联机</h1><p>跨设备使用公网 P2P 或权威服务器；同机模式需同源双窗口。每席登录各自账号。</p><output role="alert" data-settings-error></output>'+(n?.code?'<p>房间码：<b>'+n.code+'</b> · 你是 '+n.seat+'</p><p>P1：'+(n.room()?.ready.P1?'已就绪':'未就绪')+' / P2：'+(n.room()?.ready.P2?'已就绪':'未就绪')+'</p><button data-room="ready">就绪</button><button data-room="leave">离开房间</button>':'<label>通信方式 <select data-net-mode><option value="auto">自动（公网P2P / 同机回退）</option><option value="p2p">公网P2P</option><option value="ws">WebSocket权威服务器</option><option value="local">同机双窗口</option></select></label><label>服务器 <input data-net-url placeholder="wss://你的域名/ws（留空同源）"></label><button data-room="create">创建房间</button><label> 房间码 <input data-room-code maxlength="6" inputmode="numeric"></label><button data-room="join">加入房间</button><button data-action="home">返回首页</button>');
  }
   renderPlaceholder(page) {
     const route = ROUTES[page];
@@ -505,3 +507,4 @@ export class GameView {
     if (this.dialog.open) this.dialog.close();
   }
 }
+
