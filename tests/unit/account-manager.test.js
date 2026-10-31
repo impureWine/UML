@@ -261,3 +261,12 @@ test('通知订阅者抛错不改变已保存结果，其他订阅者仍拿到�
   assert.equal(changes.at(-1).profile.settings.bgmVolume, 12);
   assert.equal(changes.at(-1).error, null);
 });
+
+test('终局持久化幂等与账号隔离',async()=>{
+ const {manager,storage}=setup();await manager.register('战绩A','test');await manager.login('战绩A','test');const owner=manager.currentAccountId;
+ const record={matchId:'battle-6',mode:'local',ownerSeat:'P1',result:'win',p1CharacterId:'CH-01',p2CharacterId:'CH-02',p1FinalStep:40,p2FinalStep:12,endedAt:new Date().toISOString(),endReason:'登顶'};
+ await Promise.all([manager.commitCompletedMatch(owner,record),manager.commitCompletedMatch(owner,record)]);
+ assert.deepEqual(manager.getCurrentProfile().stats,{total:1,wins:1,losses:0,draws:0});
+ await manager.register('战绩B','test');await manager.switchAccount('战绩B','test');await assert.rejects(manager.commitCompletedMatch(owner,record));assert.equal(manager.getCurrentProfile().stats.total,0);
+ await manager.switchAccount('战绩A','test');assert.equal(manager.getCurrentProfile().matchHistory.length,1);
+});

@@ -1,3 +1,5 @@
+import { GenshinAudioManager } from '../audio/GenshinAudioManager.js';
+import { MusicPlayer } from './MusicPlayer.js';
 import { OpeningPanel } from './OpeningPanel.js';
 import { CharacterGuide } from './CharacterGuide.js';
 import { MountainMapPanel } from './MountainMapPanel.js';
@@ -108,6 +110,12 @@ export class GameView {
     this.disposed = false;
     this.events = new AbortController();
     this.buildShell();
+    this.audio = new GenshinAudioManager(() => this.musicPlayer?.update());
+    this.game.audio = this.audio;
+    this.root.addEventListener('click', e => { if(e.target.closest('button:not(:disabled)') && !e.target.closest('.music-player')) this.audio.playSfx('button'); }, {signal:this.events.signal});
+    this.musicPlayer = new MusicPlayer(this.root.querySelector('.music-player'), this.audio, game);
+    document.addEventListener('pointerdown', () => this.audio.resumeFromGesture(), { signal: this.events.signal });
+    document.addEventListener('keydown', () => this.audio.resumeFromGesture(), { signal: this.events.signal });
     this.bindEvents();
     this.unsubscribe = game.subscribe((snapshot) => this.applyView(snapshot));
   }
@@ -215,6 +223,8 @@ export class GameView {
 
   applyView(snapshot) {
     if (this.disposed) return;
+    if (snapshot.profile) this.audio.applySettings(snapshot.profile.settings);
+    this.audio.handleScene(snapshot);
     const previous = this.snapshot;
     this.snapshot = snapshot;
     const profile = snapshot.profile;
@@ -444,6 +454,8 @@ export class GameView {
     this.guide?.dispose();
       this.guide = null;
       this.mapPanel?.dispose();
+    this.musicPlayer?.dispose();
+    this.audio?.dispose();
     this.events.abort();
     this.surface.inert = false;
     if (this.dialog.open) this.dialog.close();

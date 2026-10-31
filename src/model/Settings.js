@@ -4,7 +4,7 @@ const DEFAULT_SETTINGS = Object.freeze({
   bgmMuted: false,
   sfxMuted: false,
   autoMusic: true,
-  singleLoop: false,
+  singleLoop: true,
   cameraAutoFollow: true,
 });
 

@@ -1,0 +1,39 @@
+  drawCards(seat,n){const m=this.match,p=m.players[seat];for(let i=0;i<n&&m.deck.remaining;i++){const c=m.deck.drawRandom(this.random);m.ledger.transfer(c,'deck',seat);p.hand.push(c);}}
+  skillLanding(seat,step){
+    const m=this.match,p=m.players[seat],other=m.players[seat==='P1'?'P2':'P1'],events=[];
+    while(step>0&&step<40){const bomb=JudgeRule.selectLandingBomb(m.board.getStep(step).bombQueue,seat);if(!bomb)break;
+      m.board.removeBomb(bomb.bombId);
+      if(p.character.get('FlameWinStreak')&&p.streak>=2){m.effects[seat]='flame';events.push({type:'BOMB_BURNED',seat,stepIndex:step,to:step});break;}
+      if(p.shieldUntil>=m.roundNo){m.effects[seat]='shield';events.push({type:'BOMB_SHIELDED',seat,stepIndex:step,to:step});break;}
+      const wind=p.character.get('WindFirstBombGrace')&&!p.windUsed;
+      if(wind){p.windUsed=true;m.effects[seat]='wind';}
+      if(m.players[bomb.ownerSeat].character.get('ThunderBombDiscard')&&p.hand.length){const c=p.hand.splice(this.random.uniformIndex(p.hand.length),1)[0];m.ledger.destroySecretly(c,seat);}
+      const to=wind?step:Math.max(0,step-(other.character.get('DeathRetreat')?13:10));events.push({type:wind?'BOMB_WIND':'BOMB_EXPLODED',seat,ownerSeat:bomb.ownerSeat,stepIndex:step,to});if(wind)break;step=to;
+    }p.step=step;return {step,events};
+  }
+  activateSkill(seat,id,args={},token){
+    const m=this.match,p=m?.players[seat],skill=p?.character.get(id);
+    if(!skill||!skill.remaining)throw new Error('技能被压制或次数不足');
+    if(id==='TimeRewind'){
+      if(m.phase!=='ROUND_REVIEW'||!(m.reviewDeadline>Date.now()))throw new Error('回溯窗口已关闭');
+      const spent=Object.fromEntries(Object.entries(m.players).map(([s,p])=>[s,p.character.get('TimeRewind')?.usedUses||0]));spent[seat]++;
+      m.roundSnapshot.restore(m);for(const [s,p] of Object.entries(m.players)){const c=p.character.get('TimeRewind');if(c)c.usedUses=spent[s];}
+      this.beginRound();m.effects[seat]='time';this.emit();return;
+    }
+    if(m.phase!=='ROUND_SKILLS'||m.covered||m.turn!==seat||m.token!==token||m.skillsDone[seat])throw new Error('技能操作窗口已失效');
+    const other=seat==='P1'?'P2':'P1',q=m.players[other];
+    if(id==='JadeShield')p.shieldUntil=m.roundNo+1;
+    else if(id==='NatureRecon'){
+      const counts=['rock','paper','scissors'].map(s=>[s,q.hand.filter(c=>c.suit===s).length]);counts.sort((a,b)=>b[1]-a[1]);
+      m.recon={seat,steps:m.board.steps.filter(c=>c.index>p.step&&c.index<=p.step+10&&c.bombQueue.length).map(c=>c.index),suit:counts[0][1]?counts[0][0]:null};
+    }else if(id==='WaterDefeatDraw'){if(!m.deck.remaining||m.water===seat)throw new Error('空库或本轮已激活');m.water=seat;}
+    else if(id==='FreezeCard'){if(!['rock','paper','scissors'].includes(args.suit))throw new Error('请选择冻结牌型');m.freeze={seat:other,suit:args.suit};}
+    else if(id==='SpaceOperation'){
+      if(args.branch==='swap'){if(Math.abs(p.step-q.step)>5)throw new Error('阶差须不大于5');[p.step,q.step]=[q.step,p.step];}
+      else{const bomb=m.board.steps.flatMap(c=>c.bombQueue).find(b=>b.bombId===args.bombId);if(!bomb||!Number.isInteger(args.target)||args.target<1||args.target>39||args.target===bomb.stepIndex||m.board.getStep(args.target).bombQueue.length)throw new Error('请选择已存在炸弹及另一无雷的1～39阶');m.board.moveBomb(bomb.bombId,args.target);}
+    }else if(id==='DeathCardBomb'){
+      const c=p.hand.find(c=>c.cardId===args.cardId);if(!c||p.hand.length<2||p.bombs+m.board.getOwnedBombs(seat).length>=p.bombCapacity||!Number.isInteger(args.target)||args.target<1||args.target>39)throw new Error('需要至少2张手牌、总雷额度及合法目标');
+      m.ledger.destroySecretly(c,seat);p.hand=p.hand.filter(x=>x!==c);m.board.placeBomb(new Bomb('skill-'+m.nextBomb++,seat,args.target));
+    }else if(id==='LifeReplenish'){if(p.hand.length>=10||!m.deck.remaining)throw new Error('手牌须少于10且公共库非空');this.drawCards(seat,3);}
+    skill.usedUses++;m.effects[seat]=id;m.token++;this.emit();
+  }

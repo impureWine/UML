@@ -52,7 +52,7 @@ test('先手锁定后交接彻底清屏，后手同阶布雷不泄漏，齐锁�
  assert.throws(()=>g.exchangeBomb(first,g.match.token));g.revealPreparation();s=g.getSnapshot().setup;
  assert.ok(!JSON.stringify(s).includes(hiddenBomb));command(g,'adjustBomb',null,23);assert.equal(g.match.board.getStep(23).bombQueue.length,2);
  command(g,'lockPreparation');s=g.getSnapshot().setup;
- assert.equal(s.phase,'CARD_LOCK');assert.ok(s.handCounts);assert.ok(s.remainingCounts);assert.equal(g.match.preparationCompleted,true);
+ assert.equal(s.phase,'ROUND_SKILLS');assert.ok(s.handCounts);assert.ok(s.remainingCounts);assert.equal(g.match.preparationCompleted,true);
  assert.throws(()=>command(g,'lockPreparation'));assert.throws(()=>command(g,'exchangeBomb'));assert.throws(()=>g.quickFill());
  }
 });

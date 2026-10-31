@@ -99,11 +99,12 @@ export class MountainMapRenderer {
       this.report();
     }
   }
-  async playBombChain(events) {
+  async playBombChain(events, {onExplosion = () => {}} = {}) {
     const generation=this.chainGeneration=(this.chainGeneration||0)+1;
     for(const event of events){
       if(this.disposed || generation!==this.chainGeneration)return;
       this.applyAuthorizedView({...this.publicView,positions:{...this.publicView.positions,[event.seat]:event.stepIndex}});
+      onExplosion({seat:event.seat,stepIndex:event.stepIndex,to:event.to});
       this.blast={step:event.stepIndex,started:performance.now()};
       this.previewMotion(event.seat,'Hit',event.to);
       await new Promise(resolve=>setTimeout(resolve,720));
@@ -184,8 +185,8 @@ export class MountainMapRenderer {
       this.line(this.project(x, i + .72), this.project(x + .15, i - .18), '#728e8c50', .7);
     }
     this.line(this.project(-wide, i + .22), this.project(wide, i + .22), '#f9fff399', .7);
-    if (gold || this.selected === i) {
-      c.save(); c.shadowColor = '#ffe4a1'; c.shadowBlur = 14; this.poly([a, b, e, d], this.selected === i ? '#fff3b52e' : null, '#f9df9f', 1.8); c.restore();
+    if (gold || this.selected === i || this.scanSteps?.includes(i)) {
+      c.save(); c.shadowColor = this.scanSteps?.includes(i)?'#6affb0':'#ffe4a1'; c.shadowBlur = 14; this.poly([a, b, e, d], this.selected === i ? '#fff3b52e' : null, '#f9df9f', 1.8); c.restore();
       const p = this.project(0, i + .2); c.fillStyle = '#a48a4f'; c.font = `${Math.max(10, 14 * a.scale)}px Georgia`; c.textAlign = 'center'; c.fillText(i === 0 ? '✧' : i === 40 ? '✦  CELESTIA  ✦' : '◇  ✦  ◇', p.x, p.y + 2);
     }
     const slot = this.project(2.9, i + .2); c.strokeStyle = '#6b929d99'; c.lineWidth = 1; c.beginPath(); c.ellipse(slot.x, slot.y, 4 * a.scale, 2 * a.scale, 0, 0, Math.PI * 2); c.stroke();
@@ -235,7 +236,7 @@ export class MountainMapRenderer {
     ['P1','P2'].forEach((seat,i)=>{
       const token=this.tokens[seat], el=token.root, p=anchors[i];
       token.setStep(this.publicView?.positions[seat] ?? 0);
-      let x=p.x+(i?1:-1)*(cardWidth/2+7)*tokenScale;
+      let x=this.publicView?.positions[seat]===40?p.x:p.x+(i?1:-1)*(cardWidth/2+7)*tokenScale;
       x=clamp(x,visibleWidth/2+4,this.width-visibleWidth/2-4);
       el.style.transformOrigin='bottom center';
       el.style.transform=`translate(-50%,-100%) scale(${tokenScale})`;

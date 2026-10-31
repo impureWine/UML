@@ -1,6 +1,8 @@
 import { StepCell } from './StepCell.js';
 /** Pure resolution: Game commits removals, position and public events after calculation. */
 export class JudgeRule {
+  static steps(suit){return {scissors:2,paper:3,rock:5}[suit];}
+  static winner(a,b){if(a===b)return null;if(!a)return 'P2';if(!b)return 'P1';return {rock:'scissors',scissors:'paper',paper:'rock'}[a]===b?'P1':'P2';}
   static selectLandingBomb(bombs, seat) {
     return [...bombs].sort((a,b) => Number(a.ownerSeat === seat) - Number(b.ownerSeat === seat) || a.bombId.localeCompare(b.bombId))[0] ?? null;
   }

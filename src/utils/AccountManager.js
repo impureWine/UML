@@ -98,6 +98,18 @@ export class AccountManager {
     });
   }
 
+  async commitCompletedMatch(ownerId, record) {
+    if(ownerId!==this.#currentAccountId)throw new Error('对局账号已改变，不能保存');
+    AccountProfile.validateMatchRecord(record);
+    return this.#store.withWriteLock(draft=>{
+      const p=draft.accounts[ownerId];if(!p)throw new Error('账号不存在');
+      if(!p.matchHistory.some(r=>r.matchId===record.matchId)){
+        p.matchHistory.push(structuredClone(record));p.stats.total++;p.stats[{win:'wins',loss:'losses',draw:'draws'}[record.result]]++;p.revision++;AccountProfile.validate(p);
+      }
+      return AccountProfile.publicSnapshot(p);
+    });
+  }
+
   observeChanges(callback) {
     if (typeof callback !== 'function') throw new Error('账号变更监听器无效。');
     this.#listeners.add(callback);

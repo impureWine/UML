@@ -8,6 +8,14 @@ export class InformationProjector {
   static preparation(m) {
     const own = !m.covered ? m.players[m.turn] : null;
     return {
+      exchangeDrawCount:own?.character.get('LifeExchangeBonus')?Math.min(3,m.deck.remaining):2,
+      skillBombs:own?.character.get('SpaceOperation')?m.board.steps.flatMap(c=>c.bombQueue).sort((a,b)=>a.bombId.localeCompare(b.bombId,'en',{numeric:true})).map(b=>({bombId:b.bombId,...(b.ownerSeat===m.turn?{stepIndex:b.stepIndex}:{})})):[],
+      skills: own ? own.character.getActiveSkills().map(c=>({id:c.skillId,name:c.name,remaining:c.remaining,suppressed:c.isSuppressed})) : [],
+      suppressionLogs:m.suppressionLogs||[],effects:m.effects||{},reviewDeadline:m.reviewDeadline,
+      rewindSeats:m.phase==='ROUND_REVIEW'?Object.values(m.players).filter(p=>p.character.get('TimeRewind')?.remaining>0&&!m.rewindDeclined?.includes(p.seat)).map(p=>p.seat):[],
+      recon:own&&m.recon?.seat===m.turn?m.recon:null,
+      frozenSuit:own&&m.freeze?.seat===m.turn?m.freeze.suit:null,
+      shieldSeats:Object.values(m.players).filter(p=>p.shieldUntil>=m.roundNo).map(p=>p.seat),
       ownHand: own ? structuredClone(own.hand) : null,
       ownBombs: own ? own.bombs : null,
       bombCapacity: own ? own.bombCapacity : null,

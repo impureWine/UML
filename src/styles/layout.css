@@ -419,3 +419,37 @@
   .home-art { top: -12px; right: -43px; width: 67%; }
   .journey-overview { padding-top: 305px; padding-bottom: 0; }
 }
+
+/* Header music controls share the account bar's quiet ivory/gold treatment. */
+.music-player { position: relative; flex: 0 0 242px; display: flex; align-items: center; gap: 10px; min-width: 0; max-width: none; padding: 0; color: #5e7b79; background: none; border: 0; border-radius: 0; box-shadow: none; z-index: 80; }
+.music-player .music-launcher { display: flex; align-items: center; gap: 11px; flex: 1; width: auto; min-width: 0; height: auto; padding: 5px 0; text-align: left; opacity: 1; }
+.music-player .record-disc { flex: 0 0 40px; width: 40px; height: 40px; background: transparent; color: #a2986a; }
+.music-player .music-description { min-width: 0; margin: 0; }
+.music-player .music-description strong { white-space: nowrap; }
+.music-player .music-description small { max-width: 130px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; line-height: 1.5; }
+.music-player .music-transport { display: grid; flex: 0 0 28px; width: 28px; height: 32px; padding: 4px; opacity: 1; }
+.music-player .music-launcher:hover, .music-player .music-transport:hover { color: #397276; }
+.music-player .gramophone-controls { position: absolute; top: calc(100% + 14px); right: 0; width: min(360px, calc(100vw - 40px)); max-height: min(650px, calc(100svh - 145px)); overflow-y: auto; overflow-x: hidden; padding: 20px; border: 1px solid #c6c9aa; border-radius: 10px; background: #fcfaf1; box-shadow: 0 12px 36px #253d5126; color: #354f53; font-size: 13px; line-height: 1.65; text-align: left; letter-spacing: normal; }
+.gramophone-controls .gramophone-heading { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 10px; }
+.gramophone-controls h2 { font-family: var(--serif); font-size: 17px; font-weight: 500; letter-spacing: 2px; }
+.gramophone-controls .gramophone-track { font-weight: 600; overflow-wrap: anywhere; }
+.gramophone-controls [data-mount-info] { margin-top: 7px; color: #6d8583; font-size: 12px; overflow-wrap: anywhere; }
+.gramophone-controls [data-music-state] { margin: 6px 0 14px; color: #6d8583; overflow-wrap: anywhere; }
+.gramophone-controls nav { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; margin-bottom: 14px; }
+.music-player .gramophone-controls button { display: inline-flex; align-items: center; justify-content: center; width: auto; min-width: 0; height: auto; min-height: 34px; padding: 6px 8px; border: 1px solid #c6c9aa; border-radius: 5px; background: #fffdf5; color: #486b69; font-size: 12px; line-height: 1.5; white-space: nowrap; opacity: 1; }
+.music-player .gramophone-controls button:hover { background: #eaf0e5; }
+.gramophone-controls .music-check { display: flex; align-items: center; gap: 9px; margin: 10px 0; }
+.gramophone-controls input[type=checkbox] { flex: 0 0 auto; width: 16px; height: 16px; margin: 0; accent-color: #527c72; }
+.gramophone-controls .music-volume-row { display: grid; grid-template-columns: 64px minmax(0, 1fr) 38px; gap: 10px; align-items: center; margin-top: 16px; }
+.gramophone-controls .music-volume-row label { white-space: nowrap; }
+.gramophone-controls input[type=range] { display: block; width: 100%; min-width: 0; margin: 0; accent-color: #527c72; }
+.gramophone-controls [data-volume] { color: #6d8583; text-align: right; font-variant-numeric: tabular-nums; }
+.gramophone-controls .music-file-field { display: grid; gap: 7px; margin-top: 16px; }
+.gramophone-controls select, .gramophone-controls input[type=file] { display: block; width: 100%; min-width: 0; max-width: 100%; padding: 7px; border: 1px solid #c6c9aa; border-radius: 5px; background: #fffdf5; color: #354f53; font: inherit; }
+.gramophone-controls input[type=file] { overflow: hidden; font-size: 12px; }
+.gramophone-controls [data-music-error] { display: block; margin-top: 10px; color: #a03030; overflow-wrap: anywhere; }
+.gramophone-controls [data-music-error]:empty { display: none; }
+.music-player button:focus-visible, .music-player select:focus-visible { outline: 2px solid #397276; outline-offset: 3px; }
+@media (max-width: 1430px) { .music-player { flex-basis: 215px; gap: 6px; } .music-player .record-disc { flex-basis: 36px; width: 36px; height: 36px; } .music-player .music-description small { max-width: 110px; } }
+@media (max-width: 760px) { .music-player { flex-basis: 195px; } .music-player .gramophone-controls { max-height: calc(100svh - 125px); } }
+@media (max-width: 380px) { .music-player { flex-basis: 190px; margin-left: auto; } .music-player .music-launcher { display: flex; } .music-player .music-transport { display: grid; } }

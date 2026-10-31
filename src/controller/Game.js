@@ -1,3 +1,4 @@
+import { RoundSnapshot } from '../model/RoundSnapshot.js';
 import { MountainBoard } from '../model/MountainBoard.js';
 import { Bomb } from '../model/Bomb.js';
 import { CardLedger } from '../model/CardLedger.js';
@@ -40,20 +41,21 @@ export class Game {
     const snapshot = structuredClone(this.state);
     const m = this.match;
     if (m) {
-      snapshot.setup = { phase:m.phase, mode:m.mode, characters:{...m.characters}, difficulty:m.difficulty,
+      snapshot.setup = { matchId:m.matchId, phase:m.phase, mode:m.mode, characters:{...m.characters}, difficulty:m.difficulty,
         coinChoices:{...m.coinChoices}, coinFace:m.coinFace,
         remainingCounts:m.phase==='DRAFT' ? m.deck.getCounts() : null,
         first:m.first, turn:m.turn, covered:m.covered, token:m.token, remaining:m.deck?.remaining,
         ownHand:m.phase==='DRAFT' && !m.covered ? structuredClone(m.players[m.turn].hand) : null };
     }
     if (m?.board) Object.assign(snapshot.setup, InformationProjector.preparation(m));
+    if(m?.roundNo) Object.assign(snapshot.setup,{roundNo:m.roundNo,skillsDone:{...m.skillsDone},cardLocked:Object.fromEntries(['P1','P2'].map(s=>[s,!!m.pending?.[s]])),history:structuredClone(m.history||[]),roundResults:structuredClone(m.roundResults||[]),resolution:structuredClone(m.resolution||null),candidate:structuredClone(m.candidate||null),saveStatus:m.saveStatus,saveError:m.saveError});
     return snapshot;
   }
 
   startSetup() {
     this.requireHome();
     if (this.match || !['local','ai'].includes(this.state.page)) throw new Error('当前不能开始选角');
-    this.match={phase:'CHARACTER_SELECT',mode:this.state.page,characters:{P1:null,P2:null},difficulty:'simple',token:0};
+    this.match={phase:'CHARACTER_SELECT',mode:this.state.page,characters:{P1:null,P2:null},difficulty:'simple',token:0,matchId:crypto.randomUUID(),ownerId:this.state.profile.accountId};
     this.emit();
   }
   selectCharacter(seat, id) {
@@ -79,6 +81,7 @@ export class Game {
     const ids=this.accountManager.getCurrentProfile().unlockedCharacterIds;
     if(!['P1','P2'].every(seat=>ids.includes(m.characters[seat]))) throw new Error('请双方选择已解锁角色');
     m.players=Object.fromEntries(['P1','P2'].map(seat=>[seat,new Player(seat,m.characters[seat])]));
+    m.suppressionLogs=[]; for(const seat of ['P1','P2']) { const other=seat==='P1'?'P2':'P1'; if(m.players[other].character.get('DivineSuppression')) for(const c of m.players[seat].character.skillComponents) if(c.sourceOrigin==='NABERIUS'){c.isSuppressed=true;m.suppressionLogs.push(seat+' '+c.skillId+' 被瓦沙嘉压制');} }
     m.deck=new CardDeck(); m.ledger=new CardLedger(m.deck.cards); m.coinChoices={P1:null,P2:null}; m.phase='COIN'; this.emit();
   }
   chooseCoinFace(seat, face) {
@@ -128,7 +131,7 @@ export class Game {
   }
   revealPreparation() {
     const m=this.match;
-    if(!m?.board || !m.covered || !['PREPARATION','CARD_LOCK'].includes(m.phase)) return;
+    if(!m?.board || !m.covered || !['PREPARATION','ROUND_SKILLS','CARD_LOCK'].includes(m.phase)) return;
     m.covered=false; this.emit();
   }
   exchangeCards(seat, ids, token) {
@@ -141,8 +144,8 @@ export class Game {
   exchangeBomb(seat, token) {
     const m=this.requirePreparation(seat,token), p=m.players[seat];
     if(p.bombs<1 || m.deck.remaining<2) throw new Error('需要1个库存炸弹且公共牌库至少2张');
-    const cards=[m.deck.drawRandom(this.random),m.deck.drawRandom(this.random)];
-    for(const c of cards){m.ledger.transfer(c,'deck',seat);p.hand.push(c);} p.bombs--; m.token++; this.emit();
+    const cards=Array.from({length:Math.min(m.deck.remaining,p.character.get('LifeExchangeBonus')?3:2)},()=>m.deck.drawRandom(this.random));
+    for(const c of cards){m.ledger.transfer(c,'deck',seat);p.hand.push(c);if(p.character.get('LifeExchangeBonus'))this.announceSkill(seat,'生命兑换','获得一张手牌');} p.bombs--; m.token++; this.emit();
   }
   adjustBomb(seat, id, target, token) {
     const m=this.requirePreparation(seat,token), p=m.players[seat];
@@ -158,9 +161,115 @@ export class Game {
   lockPreparation(seat, token) {
     const m=this.requirePreparation(seat,token); m.locked[seat]=true; m.covered=true; m.token++;
     m.turn=seat==='P1'?'P2':'P1';
-    if(m.locked.P1&&m.locked.P2){m.preparationCompleted=true;m.phase='CARD_LOCK';m.roundNo=1;m.turn=m.first;}
+    if(m.locked.P1&&m.locked.P2){m.preparationCompleted=true;m.phase='CARD_LOCK';m.roundNo=1;m.turn=m.first;this.beginRound();}
     this.emit();
   }
+  beginRound() {
+    const m=this.match;
+    m.phase='ROUND_SKILLS';m.covered=true;m.turn=m.first;m.skillsDone={P1:false,P2:false};m.pending={};m.resolution=null;
+    m.rewindDeclined=[];m.freeze=null;m.water=[];m.recon=null;m.effects={};m.candidate=null;m.reviewDeadline=null;m.roundSnapshot=new RoundSnapshot(m);
+    m.token++;
+  }
+  revealBattle(){const m=this.match;if(!m || !['ROUND_SKILLS','CARD_LOCK'].includes(m.phase))return;m.covered=false;this.emit();}
+  completeSkills(seat,token){
+    const m=this.match;if(m?.phase!=='ROUND_SKILLS'||m.covered||seat!==m.turn||token!==m.token||m.skillsDone[seat])throw new Error('操作窗口已失效');
+    m.skillsDone[seat]=true;m.token++;m.covered=true;m.turn=seat==='P1'?'P2':'P1';
+    if(m.skillsDone.P1&&m.skillsDone.P2){m.requiredActors=[m.first,m.first==='P1'?'P2':'P1'].filter(s=>m.players[s].hand.length);m.phase='CARD_LOCK';m.turn=m.requiredActors[0];if(!m.turn)this.resolveRound();}
+    this.emit();
+  }
+  lockCard(seat,id,token){
+    const m=this.match;if(m?.phase!=='CARD_LOCK'||m.covered||seat!==m.turn||token!==m.token||m.pending[seat])throw new Error('锁牌操作已失效');
+    const p=m.players[seat],card=p.hand.find(c=>c.cardId===id);if(!card)throw new Error('请选择一张本人手牌');
+    if(m.freeze?.seat===seat&&card.suit===m.freeze.suit&&p.hand.some(c=>c.suit!==card.suit))throw new Error('该牌型已被冻结');
+    m.ledger.transfer(card,seat,'pending');p.hand=p.hand.filter(c=>c!==card);m.pending[seat]=card;m.token++;m.covered=true;
+    m.turn=m.requiredActors.find(s=>!m.pending[s]);
+    if(!m.turn)this.resolveRound();this.emit();
+  }
+  announceSkill(seat,name,action){this.match.log.appendSkillEvent(seat,name,action,this.match.roundNo||0);}
+  drawCards(seat,n,reason){const m=this.match,p=m.players[seat];for(let i=0;i<n&&m.deck.remaining;i++){const c=m.deck.drawRandom(this.random);m.ledger.transfer(c,'deck',seat);p.hand.push(c);if(reason)this.announceSkill(seat,reason,'获得一张手牌');}}
+  skillLanding(seat,step){
+    const m=this.match,p=m.players[seat],other=m.players[seat==='P1'?'P2':'P1'],events=[];
+    while(step>0&&step<40){const bomb=JudgeRule.selectLandingBomb(m.board.getStep(step).bombQueue,seat);if(!bomb)break;
+      m.board.removeBomb(bomb.bombId);
+      if(p.character.get('FlameWinStreak')&&p.streak>=2){m.effects[seat]='flame';this.announceSkill(seat,'烈焰连胜','焚毁落脚点的一枚炸弹，免于爆炸');events.push({type:'BOMB_BURNED',seat,stepIndex:step,to:step});break;}
+      if(p.shieldUntil>=m.roundNo){m.effects[seat]='shield';this.announceSkill(seat,'玉璋护盾','销毁落脚点的一枚炸弹，免于后退及雷爆弃牌');events.push({type:'BOMB_SHIELDED',seat,stepIndex:step,to:step});break;}
+      const wind=p.character.get('WindFirstBombGrace')&&!p.windUsed;
+      if(wind){p.windUsed=true;m.effects[seat]='wind';this.announceSkill(seat,'初雷庇护','免除本次炸弹后退');}
+      if(m.players[bomb.ownerSeat].character.get('ThunderBombDiscard')&&p.hand.length){const c=p.hand.splice(this.random.uniformIndex(p.hand.length),1)[0];m.ledger.destroySecretly(c,seat);this.announceSkill(seat,'雷爆弃牌','销毁一张手牌');}
+      if(!wind&&other.character.get('DeathRetreat'))this.announceSkill(seat,'死亡退行','受到13格炸弹后退效果');
+      const to=wind?step:Math.max(0,step-(other.character.get('DeathRetreat')?13:10));events.push({type:wind?'BOMB_WIND':'BOMB_EXPLODED',seat,ownerSeat:bomb.ownerSeat,stepIndex:step,to});if(wind)break;step=to;
+    }p.step=step;return {step,events};
+  }
+  activateSkill(seat,id,args={},token){
+    const m=this.match,p=m?.players[seat],skill=p?.character.get(id);
+    if(!skill||!skill.remaining)throw new Error('技能被压制或次数不足');
+    if(id==='TimeRewind'){
+      if(token!==m.token||m.rewindDeclined?.includes(seat)||m.phase!=='ROUND_REVIEW'||!(m.reviewDeadline>Date.now()))throw new Error('回溯窗口已关闭');
+      const spent=Object.fromEntries(Object.entries(m.players).map(([s,p])=>[s,p.character.get('TimeRewind')?.usedUses||0]));spent[seat]++;
+      m.roundSnapshot.restore(m);for(const [s,p] of Object.entries(m.players)){const c=p.character.get('TimeRewind');if(c)c.usedUses=spent[s];}
+      this.beginRound();this.announceSkill(seat,'时之回溯','将双方状态恢复至本回合技能操作前');m.effects[seat]='time';this.emit();return;
+    }
+    if(m.phase!=='ROUND_SKILLS'||m.covered||m.turn!==seat||m.token!==token||m.skillsDone[seat])throw new Error('技能操作窗口已失效');
+    const other=seat==='P1'?'P2':'P1',q=m.players[other];
+    if(id==='JadeShield')p.shieldUntil=m.roundNo+1;
+    else if(id==='NatureRecon'){
+      const counts=['rock','paper','scissors'].map(s=>[s,q.hand.filter(c=>c.suit===s).length]);counts.sort((a,b)=>b[1]-a[1]);
+      m.recon={seat,steps:m.board.steps.filter(c=>c.index>p.step&&c.index<=p.step+10&&c.bombQueue.length).map(c=>c.index),suit:counts[0][1]?counts[0][0]:null};
+    }else if(id==='WaterDefeatDraw'){if(!m.deck.remaining||m.water.includes(seat))throw new Error('空库或本轮已激活');m.water.push(seat);}
+    else if(id==='FreezeCard'){if(!['rock','paper','scissors'].includes(args.suit))throw new Error('请选择冻结牌型');m.freeze={seat:other,suit:args.suit};}
+    else if(id==='SpaceOperation'){
+      if(args.branch==='swap'){if(Math.abs(p.step-q.step)>5)throw new Error('阶差须不大于5');[p.step,q.step]=[q.step,p.step];}
+      else{const bomb=m.board.steps.flatMap(c=>c.bombQueue).find(b=>b.bombId===args.bombId);if(!bomb||!Number.isInteger(args.target)||args.target<1||args.target>39||args.target===bomb.stepIndex||m.board.getStep(args.target).bombQueue.length)throw new Error('请选择已存在炸弹及另一无雷的1～39阶');m.board.moveBomb(bomb.bombId,args.target);}
+    }else if(id==='DeathCardBomb'){
+      const c=p.hand.find(c=>c.cardId===args.cardId);if(!c||p.hand.length<2||p.bombs+m.board.getOwnedBombs(seat).length>=p.bombCapacity||!Number.isInteger(args.target)||args.target<1||args.target>39)throw new Error('需要至少2张手牌、总雷额度及合法目标');
+      m.ledger.destroySecretly(c,seat);this.announceSkill(seat,'终焉宣告','销毁一张手牌，兑换一枚炸弹并立即部署');p.hand=p.hand.filter(x=>x!==c);m.board.placeBomb(new Bomb('skill-'+m.nextBomb++,seat,args.target));
+    }else if(id==='LifeReplenish'){if(p.hand.length>=10||!m.deck.remaining)throw new Error('手牌须少于10且公共库非空');this.drawCards(seat,3,'生机赐福');}
+    const actions={JadeShield:'开启持续含当轮共两回合的护盾',NatureRecon:'查看对手最多的牌型并扫描前方雷区',WaterDefeatDraw:'激活本回合失利补牌效果',FreezeCard:'冻结对手一种牌型',SpaceOperation:args.branch==='swap'?'交换双方所在阶数':'移动一枚炸弹'};
+    if(actions[id])this.announceSkill(seat,skill.name,actions[id]);
+    skill.usedUses++;m.effects[seat]=id;m.token++;this.emit();
+  }
+
+  resolveRound(){
+    const m=this.match;m.phase='RESOLVE';m.covered=true;m.turn=m.first;
+    const cards=structuredClone(m.pending),a=cards.P1?.suit,b=cards.P2?.suit;
+    const winner=JudgeRule.winner(a,b);const from=Object.fromEntries(['P1','P2'].map(s=>[s,m.players[s].step]));
+    m.history??=[];
+    for(const [seat,card] of Object.entries(m.pending)){m.ledger.reveal(card);m.history.push({roundNo:m.roundNo,seat,suit:card.suit});}
+    let target=null,events=[];
+    for(const seat of ['P1','P2'])m.players[seat].streak=winner===seat?m.players[seat].streak+1:0;
+    if(winner){const p=m.players[winner],suit=cards[winner].suit;let n=JudgeRule.steps(suit);
+      if(p.character.get('WindScissorsBonus')&&suit==='scissors'){n+=2;this.announceSkill(winner,'风行加步','额外前进2阶');}
+      if(p.character.get('RockVictoryBonus')&&suit==='rock'){n++;this.announceSkill(winner,'岩胜加步','额外前进1阶');}
+      if(p.character.get('WaterVictoryBonus')&&suit==='paper'){n+=2;this.announceSkill(winner,'水胜加步','额外前进2阶');}
+      if(p.character.get('FlameWinStreak')&&p.streak>=2){n+=2;m.effects[winner]='flame';this.announceSkill(winner,'烈焰连胜','额外前进2阶');}
+      if(m.freeze?.seat===winner&&suit===m.freeze.suit&&a&&b){n=Math.ceil(n/2);this.announceSkill(winner,'极寒敕令','将本次获胜总步数减半向上取整');}
+      target=Math.min(40,from[winner]+n);const landing=this.skillLanding(winner,target);events=landing.events;
+    }else for(const seat of ['P1','P2'])if(m.players[seat].shieldUntil>=m.roundNo){this.announceSkill(seat,'玉璋护盾','在平局时前进1阶');const r=this.skillLanding(seat,Math.min(40,from[seat]+1));events.push(...r.events);}
+    if(winner)for(const seat of m.water||[])if(seat!==winner&&m.deck.remaining)this.drawCards(seat,1,'万众狂欢');
+    events.forEach(e=>m.log.appendPublicEvent(e));
+    m.resolution={roundNo:m.roundNo,cards,winner,from,target,events};
+    m.roundResults??=[];
+    m.roundResults.push({...structuredClone(m.resolution),positions:Object.fromEntries(['P1','P2'].map(s=>[s,m.players[s].step])),advance:winner?target-from[winner]:0});
+    const top=['P1','P2'].filter(s=>m.players[s].step===40),empty=Object.values(m.players).every(p=>!p.hand.length);
+    m.candidate=top.length||empty?{winner:top.length===2?null:top[0]||(m.players.P1.step===m.players.P2.step?null:m.players.P1.step>m.players.P2.step?'P1':'P2'),reason:top.length?'登顶':'双方手牌耗尽'}:null;
+  }
+  finishRoundAnimation(roundNo){const m=this.match;if(m?.phase!=='RESOLVE'||m.roundNo!==roundNo)return;m.phase='ROUND_REVIEW';const can=Object.values(m.players).some(p=>p.character.get('TimeRewind')?.remaining>0);if(can){m.reviewDeadline=Date.now()+5000;const token=m.token;setTimeout(()=>{if(this.match===m&&m.token===token&&m.phase==='ROUND_REVIEW'){m.reviewDeadline=null;this.emit();if(m.candidate)this.finalizeMatch();}},5000);}this.emit();if(m.candidate&&!can)this.finalizeMatch();}
+  cancelTimeRewind(seat,token){
+    const m=this.match;
+    if(!m||token!==m.token||m.phase!=='ROUND_REVIEW'||!(m.reviewDeadline>Date.now())||!m.players[seat]?.character.get('TimeRewind')?.remaining||m.rewindDeclined.includes(seat))throw new Error('回溯窗口已关闭');
+    m.rewindDeclined.push(seat);this.announceSkill(seat,'时之回溯','取消本回合回溯，保留技能次数');
+    if(!Object.entries(m.players).some(([s,p])=>p.character.get('TimeRewind')?.remaining>0&&!m.rewindDeclined.includes(s))){m.reviewDeadline=null;}
+    this.emit();if(m.candidate&&!m.reviewDeadline)this.finalizeMatch();
+  }
+  nextRound(){const m=this.match;if(m?.phase!=='ROUND_REVIEW'||m.candidate||m.reviewDeadline>Date.now())throw new Error('当前不能开始下一轮');m.roundNo++;this.beginRound();this.emit();}
+  async finalizeMatch(){
+    const m=this.match;if(m?.reviewDeadline>Date.now())return;
+    if(!m?.candidate||!['ROUND_REVIEW','FINAL'].includes(m.phase)||m.saveStatus==='saving'||m.saveStatus==='saved')return;
+    m.phase='FINAL';m.saveStatus='saving';m.endedAt??=new Date().toISOString();this.emit();
+    try{const profile=await this.accountManager.commitCompletedMatch(m.ownerId,{matchId:m.matchId,mode:m.mode,ownerSeat:'P1',result:m.candidate.winner===null?'draw':m.candidate.winner==='P1'?'win':'loss',p1CharacterId:m.characters.P1,p2CharacterId:m.characters.P2,p1FinalStep:m.players.P1.step,p2FinalStep:m.players.P2.step,endedAt:m.endedAt,endReason:m.candidate.reason});if(this.match!==m)return;this.state.profile=profile;m.saveStatus='saved';m.saveError='';}
+    catch(e){m.saveStatus='error';m.saveError=e.message;}this.emit();
+  }
+  restartMatch(same=false){const m=this.match;if(!m || m.phase!=='FINAL'||m.saveStatus!=='saved')throw new Error('请先成功保存战绩');const {mode,characters}=m;this.match=null;this.state.page=mode;this.startSetup();if(same){this.match.characters={...characters};this.confirmCharacters();}}
   commitLanding(seat, target) {
     if(!this.match?.preparationCompleted) throw new Error('请先完成准备');
     const m=this.match, result=JudgeRule.resolveLanding(m.board,seat,target);

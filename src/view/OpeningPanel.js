@@ -1,3 +1,4 @@
+import { BattlePanel } from './BattlePanel.js';
 import { PreparationPanel } from './PreparationPanel.js';
 import { CHARACTERS, characterById } from '../resources/characters.js';
 import { CharacterTokenRenderer } from './CharacterTokenRenderer.js';
@@ -8,15 +9,15 @@ export class OpeningPanel {
  root.addEventListener('click',e=>{const b=e.target.closest('button');if(!b || b.disabled)return;
  this.run(()=>{if(b.dataset.coinFace)this.game.chooseCoinFace(b.dataset.seat,b.dataset.coinFace);
  if(b.dataset.select)this.game.selectCharacter(b.dataset.seat,b.dataset.select);
- const actions={confirm:()=>game.confirmCharacters(),toss:()=>game.tossCoin(),reveal:()=>game.revealDraft(),quick:()=>game.quickFill(),unlock:()=>game.setFusionTestUnlock(true),reset:()=>game.setFusionTestUnlock(false),exit:()=>{if(confirm('退出本次开局？未完成对局不记战绩。'))game.exitSetup();}};
+ const actions={confirm:()=>game.confirmCharacters(),toss:()=>{game.tossCoin();game.audio?.playSfx('coin');},reveal:()=>game.revealDraft(),quick:()=>game.quickFill(),unlock:()=>game.setFusionTestUnlock(true),reset:()=>game.setFusionTestUnlock(false),exit:()=>{if(confirm('退出本次开局？未完成对局不记战绩。'))game.exitSetup();}};
  if(actions[b.dataset.opening])return actions[b.dataset.opening]();
- if(b.dataset.suit)game.pickCard(this.snapshot.setup.turn,b.dataset.suit,this.snapshot.setup.token);
+ if(b.dataset.suit){game.pickCard(this.snapshot.setup.turn,b.dataset.suit,this.snapshot.setup.token);game.audio?.playSfx('draft');}
  });},{signal:this.events.signal});
  root.addEventListener('change',e=>{if(e.target.matches('[data-difficulty]'))this.run(()=>game.setDifficulty(e.target.value));},{signal:this.events.signal});
- document.addEventListener('keydown',e=>{if(e.repeat || e.ctrlKey || e.altKey || e.metaKey || /INPUT|SELECT|TEXTAREA/.test(e.target.tagName))return;const suit={'1':'rock','2':'scissors','3':'paper'}[e.key];const m=this.snapshot?.setup;if(suit && m?.phase==='DRAFT' && !m.covered){e.preventDefault();this.run(()=>game.pickCard(m.turn,suit,m.token));}},{signal:this.events.signal});
+ document.addEventListener('keydown',e=>{if(e.repeat || e.ctrlKey || e.altKey || e.metaKey || /INPUT|SELECT|TEXTAREA/.test(e.target.tagName))return;const suit={'1':'rock','2':'scissors','3':'paper'}[e.key];const m=this.snapshot?.setup;if(suit && m?.phase==='DRAFT' && !m.covered){e.preventDefault();this.run(()=>{game.pickCard(m.turn,suit,m.token);game.audio?.playSfx('draft');});}},{signal:this.events.signal});
  }
  async run(action){try{await action();}catch(e){const out=this.root.querySelector('[data-opening-error]');if(out)out.textContent=e.message;}}
- update(snapshot){if(['PREPARATION','CARD_LOCK'].includes(snapshot.setup.phase)){this.preparation??=new PreparationPanel(this.root,this.game);this.preparation.update(snapshot);return;}this.snapshot=snapshot;const m=snapshot.setup;this.tokens?.forEach(t=>t.dispose());this.tokens=[];
+ update(snapshot){if(['ROUND_SKILLS','CARD_LOCK','RESOLVE','ROUND_REVIEW','FINAL'].includes(snapshot.setup.phase)){this.preparation?.dispose();this.preparation=null;this.battle??=new BattlePanel(this.root,this.game);this.battle.update(snapshot);return;}this.battle?.dispose();this.battle=null;if(['PREPARATION'].includes(snapshot.setup.phase)){this.preparation??=new PreparationPanel(this.root,this.game);this.preparation.update(snapshot);return;}this.snapshot=snapshot;const m=snapshot.setup;this.tokens?.forEach(t=>t.dispose());this.tokens=[];
  this.root.className='main-content opening-main';
  let body='';
  if(m.phase==='CHARACTER_SELECT'){
@@ -33,5 +34,5 @@ export class OpeningPanel {
  this.root.innerHTML=`<header class="guide-heading"><div><span class="section-eyebrow">CELESTIAL PROLOGUE / 云上序章</span><h1> ${m.phase==='CHARACTER_SELECT'?'开局选角':m.phase.startsWith('COIN')?'命运之币':m.phase==='DRAFT'?'交替取牌':'开局准备'}</h1></div><button data-opening="exit">退出开局 · 返回首页</button></header><output role="alert" data-opening-error></output>${body}`;
  if(m.phase==='CHARACTER_SELECT')for(const seat of ['P1','P2'])if(m.characters[seat])this.tokens.push(new CharacterTokenRenderer(this.root.querySelector(`[data-token="${seat}"]`),{characterId:m.characters[seat],seat,preview:false}));
  }
- dispose(){this.preparation?.dispose();clearTimeout(this.timer);this.events.abort();this.tokens?.forEach(t=>t.dispose());}
+ dispose(){this.battle?.dispose();this.preparation?.dispose();clearTimeout(this.timer);this.events.abort();this.tokens?.forEach(t=>t.dispose());}
 }
