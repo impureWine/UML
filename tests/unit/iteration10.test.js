@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { AIPlayer } from '../../src/model/AIPlayer.js';
-import { NetworkManager } from '../../src/utils/NetworkManager.js';
+import { BroadcastChannelAdapter as NetworkManager } from '../../src/utils/BroadcastChannelAdapter.js';
 import { Game } from '../../src/controller/Game.js';
 import { InformationProjector } from '../../src/utils/InformationProjector.js';
 import { Settings } from '../../src/model/Settings.js';

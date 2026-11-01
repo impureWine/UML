@@ -28,3 +28,14 @@ test('牌已移除或被冻结时，不恢复非法选中状态',()=>{
  const f=fixture();f.choose('p');f.update({ownHand:f.setup.ownHand.filter(c=>c.cardId!=='p')});assert.equal(f.selected(),undefined);
  const g=fixture();g.choose('r');g.update({frozenSuit:'rock'});assert.equal(g.selected(),undefined);
 });
+
+test('AI尚在操作时，己方可选技能/出牌不显示等待；己方确认后才显示',()=>{
+ const f=fixture();
+ for(const phase of ['ROUND_SKILLS','CARD_LOCK']){
+  f.update({mode:'ai',phase,opponentBusy:true,waiting:false});
+  let html=f.panel.root.querySelector('.battle-console').innerHTML;
+  assert.doesNotMatch(html,/等待对手操作/);assert.match(html,/P1 私有操作台/);
+  f.update({waiting:true});html=f.panel.root.querySelector('.battle-console').innerHTML;
+  assert.match(html,/等待对手操作/);assert.doesNotMatch(html,/P1 私有操作台/);
+ }
+});

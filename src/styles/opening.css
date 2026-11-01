@@ -40,3 +40,12 @@
 
 .match-heading-actions{display:flex;align-items:center;gap:12px;margin-left:auto}
 .match-heading-actions nav{display:flex;align-items:center;gap:8px}
+
+/* Persistent online waiting feedback */
+.opponent-waiting{display:grid;place-content:center;justify-items:center;gap:12px;min-height:220px;padding:32px 24px;border:1px solid #c4ac69;border-radius:18px;background:linear-gradient(135deg,#fff9e9,#e5efeb);color:#294f5c;text-align:center}
+.opponent-waiting h2{margin:0;font-size:clamp(24px,3vw,36px)}
+.opponent-waiting p{margin:0;line-height:1.7}
+.waiting-orbit{font-size:40px;color:#ac914b;animation:waiting-breathe 1.6s ease-in-out infinite}
+.public-deck-counts{display:flex;gap:12px;flex-wrap:wrap}.public-deck-counts span{padding:8px 12px;border:1px solid #dacb9d;border-radius:8px;background:#fffaf0}
+@keyframes waiting-breathe{50%{opacity:.4;transform:scale(.85)}}
+@media(prefers-reduced-motion:reduce){.waiting-orbit{animation:none}}

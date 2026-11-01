@@ -4,7 +4,7 @@ export class LocalMp3Source {
     if(this.buffers.has(id)) return this.buffers.get(id);
     if(!this.pending.has(id)) this.pending.set(id, (async () => {
       const version=this.versions.get(id);
-      const controller=new AbortController(); const timeout=setTimeout(()=>controller.abort(),5000);
+      const controller=new AbortController(); const timeout=setTimeout(()=>controller.abort(),60000);
       try { const r = await fetch(url,{signal:controller.signal}); if(!r.ok) return null; const buffer = await ctx.decodeAudioData(await r.arrayBuffer()); if(this.versions.get(id)!==version) return this.buffers.get(id)||null; this.buffers.set(id,buffer); return buffer; }
       catch { return null; } finally { clearTimeout(timeout); this.pending.delete(id); }
     })());

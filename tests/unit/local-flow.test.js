@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import {Game} from '../../src/controller/Game.js';
 import {GameView} from '../../src/view/GameView.js';
-import {NetworkManager} from '../../src/utils/NetworkManager.js';
+import {BroadcastChannelAdapter as NetworkManager} from '../../src/utils/BroadcastChannelAdapter.js';
 import {AccountManager} from '../../src/utils/AccountManager.js';
 import {LocalStorageStore} from '../../src/utils/LocalStorageStore.js';
 import {environment} from '../fixtures/account-environment.js';

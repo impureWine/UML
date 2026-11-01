@@ -8,11 +8,11 @@ export class MountainMapRenderer {
   constructor(container, { onSelect = () => {}, onViewChange = () => {}, onError = () => {} } = {}) {
     Object.assign(this, { container, onSelect, onViewChange, onError, focusMode: 'overview', selected: 0, zoom: 1, desiredZoom: 1, center: 20, desiredCenter: 20, autoFollow: true });
     this.background = new BackgroundTransition();
-    this.backgroundImages = [];
+    this.backgroundImages = [null, null, null];
     // Preload all regions so crossing a boundary never waits for a new download.
-    this.backgroundReady = Promise.all(['base.png', 'dragonspine.jpg', 'sky.png'].map(name => new Promise(resolve => {
+    this.backgroundReady = Promise.all(['base.png', 'dragonspine.jpg', 'sky.png'].map((name, index) => new Promise(resolve => {
       const image = new Image();
-      image.onload = () => resolve(image);
+      image.onload = () => { if (!this.disposed) this.backgroundImages[index] = image; resolve(image); };
       image.onerror = () => resolve(null);
       image.src = `${import.meta.env.BASE_URL}images/mountain/${name}`;
     }))).then(images => { if (!this.disposed) this.backgroundImages = images; });

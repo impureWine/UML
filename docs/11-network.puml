@@ -1,0 +1,24 @@
+@startuml
+class GameRoomServer
+class ServerRoomSession
+class Game
+class NetworkManager
+interface TransportAdapter
+class WebSocketAdapter
+class BroadcastChannelAdapter
+GameRoomServer *-- ServerRoomSession
+ServerRoomSession *-- Game
+NetworkManager --> TransportAdapter
+TransportAdapter <|.. WebSocketAdapter
+TransportAdapter <|.. BroadcastChannelAdapter
+WebSocketAdapter --> GameRoomServer : /ws commands / filtered views
+note right of ServerRoomSession
+DRAFT: public per-suit deck counts for both seats
+Private opponent hands remain filtered
+end note
+note bottom of Game
+GoldFirstExchange: first successful exchange costs 1 card
+Alchemy: 2 uses, changes suits but preserves card IDs
+Rewind increments attemptNo for UI animation identity
+end note
+@enduml

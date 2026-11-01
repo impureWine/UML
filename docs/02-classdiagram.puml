@@ -409,4 +409,9 @@ legend bottom
   当前仅系统分析，待用户确认；不据此进入系统设计或程序开发。
 endlegend
 
+class GameRoomServer
+class ServerRoomSession
+GameRoomServer *-- ServerRoomSession
+ServerRoomSession --> Game : authoritative rules
+NetworkManager --> GameRoomServer : WebSocket /ws
 @enduml

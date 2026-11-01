@@ -25,9 +25,9 @@ test('水真实失败抽牌且空库不耗次；死亡无效目标不耗牌和�
 
 test('技能获得与秘密销毁逐张播报原因且不泄漏花色',()=>{
  const g=fixture('CH-11','CH-03'),m=g.match;g.activateSkill('P1','LifeReplenish',{},m.token);
- assert.equal(m.log.entries.filter(e=>e.message==='玩家P1因生机赐福获得一张手牌').length,3);
+ assert.equal(m.log.entries.filter(e=>e.message==='玩家P1因「生机赐福」获得一张手牌').length,3);
  m.board.placeBomb(new Bomb('t','P2',8));g.skillLanding('P1',8);
- assert.equal(m.log.entries.at(-1).message,'玩家P1因雷爆弃牌销毁一张手牌');assert.ok(m.log.entries.every(e=>!e.message?.includes('rock')));
+ assert.equal(m.log.entries.at(-1).message,'玩家P1因「雷爆弃牌」销毁一张手牌');assert.ok(m.log.entries.every(e=>!e.message?.includes('rock')));
 });
 test('取消时间回溯不耗次数，双方时间角色分别保留选择权',()=>{
  const g=fixture('CH-08','CH-08'),m=g.match;m.phase='ROUND_REVIEW';m.reviewDeadline=Date.now()+5000;

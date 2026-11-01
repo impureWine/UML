@@ -1,49 +1,29 @@
 import express from 'express';
 import {createServer} from 'node:http';
-import {WebSocketServer} from 'ws';
+import {WebSocketServer,WebSocket} from 'ws';
+import {randomInt} from 'node:crypto';
 import {Game} from './src/controller/Game.js';
-import {NetworkManager,COMMANDS} from './src/utils/NetworkManager.js';
-const app=express();app.get('/health',(_,r)=>r.json({ok:true,protocol:1}));app.use(express.static('dist'));
-const http=createServer(app),wss=new WebSocketServer({server:http,path:'/ws',maxPayload:16384});
-const rooms=new Map();
-const send=(ws,m)=>{if(ws?.readyState===1)ws.send(JSON.stringify(m));};
-function create(code){
- const profile={accountId:'server',unlockedCharacterIds:Array.from({length:12},(_,i)=>'CH-'+String(i+1).padStart(2,'0')),settings:{}};
- const accounts={observeChanges:()=>()=>{},getCurrentProfile:()=>profile,commitCompletedMatch:async()=>profile};
- const game=new Game(accounts);game.state={...game.state,phase:'HOME',page:'online',profile};
- const room={code,clients:{},state:{host:'authority',guests:['guest'],ready:{},at:Date.now(),guestPool:profile.unlockedCharacterIds},game};
- const n=Object.create(NetworkManager.prototype);Object.assign(n,{game,code,seat:'P1',id:'authority',original:{},transport:{pulse(){}},roomState:room.state});game.network=n;
- for(const name of COMMANDS)n.original[name]=game[name].bind(game);
- n.publish=()=>{for(const seat of ['P1','P2'])send(room.clients[seat],{type:'view',code,from:'authority',id:crypto.randomUUID(),data:n.project(game.getSnapshot(true,seat).setup,seat)});};
- n.result=async(c,m)=>({winner:c.winner,endReason:c.reason,matchId:m.matchId});
- game.subscribe(()=>{if(game.match)n.publish();});
- room.n=n;rooms.set(code,room);return room;
+const seats=['P1','P2'];
+const owned=new Set(['selectCharacter','chooseCoinFace','pickCard','exchangeCards','exchangeBomb','adjustBomb','lockPreparation','completeSkills','activateSkill','lockCard','cancelTimeRewind']);
+const shared=new Set(['confirmCharacters','tossCoin','finishCoin','revealDraft','revealPreparation','revealBattle','quickFill','finishRoundAnimation','nextRound','finalizeMatch']);
+const send=(ws,type,data)=>{if(ws?.readyState===WebSocket.OPEN)ws.send(JSON.stringify({type,data}));};
+export class ServerRoomSession {
+ constructor(code,host,pool){this.code=code;this.clients={P1:host};this.pools={P1:pool};this.ready={};this.at=Date.now();}
+ start(){const profile={accountId:this.code,unlockedCharacterIds:[...new Set(Object.values(this.pools).flat())]};this.game=new Game({observeChanges:()=>()=>{},getCurrentProfile:()=>profile,commitCompletedMatch:async()=>profile});this.game.state={phase:'HOME',page:'online',profile,storageError:'',auth:{}};this.game.network={dispose:()=>{},room:()=>({guestPool:this.pools.P2}),result:async c=>({winner:c.winner,endReason:c.reason})};this.game.startSetup();this.game.subscribe(()=>this.publish());}
+ command(seat,{name,args}){if(!this.game||!Array.isArray(args)||(!owned.has(name)&&!shared.has(name)))throw Error('无效命令');const g=this.game,m=g.match;if(owned.has(name)&&args[0]!==seat)throw Error('只能操作本人席位');if(['chooseCoinFace','tossCoin','confirmCharacters'].includes(name)&&seat!=='P1')throw Error('仅房主操作');if(name==='selectCharacter'&&!this.pools[seat].includes(args[1]))throw Error('角色未解锁');if(['revealDraft','quickFill'].includes(name)&&m.turn!==seat)throw Error('等待对方取牌');if(name==='quickFill'){g.commitDraftCard(m.deck.drawRandom(g.random));g.emit();}else g[name](...args);this.at=Date.now();}
+ publish(){if(!this.game)return;const g=this.game,m=g.match;if(m.phase==='DRAFT')m.covered=false;const key=[m.phase,m.phase==='DRAFT'?m.token:m.roundNo,m.attemptNo].join(':');if(key!==this.key){this.key=key;this.deadline=Date.now()+(m.phase==='DRAFT'?15000:m.phase==='ROUND_REVIEW'?5000:45000);}
+ for(const seat of seats){const v=g.getSnapshot(true,seat).setup;if(!v)continue;if(!g.isConcurrent()&&m.turn!==seat){for(const k of ['ownHand','ownBombs','bombCapacity','recon','frozenSuit'])v[k]=null;for(const k of ['ownPlaced','skills','skillBombs'])v[k]=[];v.covered=true;}if(m.candidate)v.candidate=structuredClone(m.candidate);if(m.phase==='DRAFT')v.remainingCounts=m.deck.getCounts();else if(!m.preparationCompleted)v.remainingCounts=null;v.viewerSeat=seat;v.deadline=this.deadline;v.waiting=g.isConcurrent()?g.actorDone(seat):m.turn!==seat&&!['CHARACTER_SELECT','COIN','COIN_ANIMATION','RESOLVE','ROUND_REVIEW','FINAL'].includes(m.phase);send(this.clients[seat],'view',v);}}
+ pulse(){const g=this.game,m=g?.match;if(!m||m.phase==='FINAL')return;try{if(m.phase==='COIN_ANIMATION'){g.finishCoin();return;}if(m.phase==='RESOLVE'){g.finishRoundAnimation(m.roundNo);return;}if(m.phase==='ROUND_REVIEW'&&Date.now()>=this.deadline){m.reviewDeadline=null;if(m.candidate)g.finalizeMatch();else g.nextRound();return;}if(Date.now()<this.deadline)return;
+ if(m.phase==='CHARACTER_SELECT'){for(const s of seats)if(!m.characters[s])m.characters[s]=this.pools[s][randomInt(this.pools[s].length)];g.confirmCharacters();}
+ else if(m.phase==='COIN'){g.chooseCoinFace('P1','heads');g.tossCoin();}
+ else if(m.phase==='DRAFT'){g.commitDraftCard(m.deck.drawRandom(g.random));g.emit();}
+ else for(const s of seats){if(!g.isConcurrent()||g.actorDone(s))continue;const t=g.actionToken(s);if(m.phase==='PREPARATION')g.lockPreparation(s,t);else if(m.phase==='ROUND_SKILLS')g.completeSkills(s,t);else if(m.phase==='CARD_LOCK'){let cards=m.players[s].hand.filter(c=>c.suit!==g.freezeFor(s)?.suit);if(!cards.length)cards=m.players[s].hand;const order=['rock','paper','scissors'].sort((a,b)=>cards.filter(c=>c.suit===b).length-cards.filter(c=>c.suit===a).length);if(cards.length)g.lockCard(s,cards.find(c=>c.suit===order[0]).cardId,t);}}
+ }catch(e){console.error('room tick',this.code,e.message);}}
+ close(leaver){if(this.closed)return;this.closed=true;const winner=leaver==='P1'?'P2':'P1',m=this.game?.match;if(m&&m.phase!=='FINAL'){m.phase='FINAL';m.candidate={winner,reason:'opponent_left'};m.reviewDeadline=null;this.publish();send(this.clients[winner],'notice','对手已离开对局，判定你获得本局胜利');}for(const s of seats)send(this.clients[s],'closed','房间已解散');this.game?.dispose();}
 }
-function broadcast(room){for(const seat of ['P1','P2'])send(room.clients[seat],{type:'room',data:room.state});}
-function drop(ws){const room=ws.room;if(!room||room.ended)return;room.ended=true;
- if(room.game.match){room.game.match.candidate={winner:ws.seat==='P1'?'P2':'P1',reason:'opponent_left'};room.game.match.phase='FINAL';room.n.publish();}
- rooms.delete(room.code);
- for(const c of Object.values(room.clients))if(c!==ws)setTimeout(()=>c.close(),500);
+export class GameRoomServer {
+ constructor(http){this.rooms=new Map();this.wss=new WebSocketServer({server:http,path:'/ws',maxPayload:16384});this.wss.on('connection',ws=>{ws.on('pong',()=>{clearTimeout(ws.pongTimer);});ws.on('message',raw=>{try{const {type,data={}}=JSON.parse(raw);if(type==='ping'){send(ws,'pong',data);return;}if(type==='leave'){ws.close();return;}if(type==='create'||type==='join'){if(ws.room)throw Error('请先离开当前房间');const pool=Array.isArray(data.pool)?data.pool.filter(x=>/^CH-(0[1-9]|1[0-3])$/.test(x)):[];if(!pool.length)throw Error('无有效角色档案');let room,seat;if(type==='create'){let code;do{code=String(randomInt(100000,1000000));}while(this.rooms.has(code));room=new ServerRoomSession(code,ws,pool);this.rooms.set(code,room);seat='P1';}else{room=this.rooms.get(data.code);if(!room||room.closed)throw Error('房间不存在或已过期');if(room.game)throw Error('对局已开始');if(room.clients.P2)throw Error('房间已满');seat='P2';room.clients.P2=ws;room.pools.P2=pool;}ws.room=room;ws.seat=seat;send(ws,'joined',{code:room.code,seat});this.lobby(room);return;}const r=ws.room;if(!r||r.closed)throw Error('房间已失效');if(type==='ready'){r.ready[ws.seat]=true;r.at=Date.now();this.lobby(r);if(!r.game&&r.ready.P1&&r.ready.P2)r.start();}else if(type==='command')r.command(ws.seat,data);else throw Error('无效消息');}catch(e){send(ws,'error',e.message);}});ws.on('close',()=>{clearTimeout(ws.pongTimer);const r=ws.room;if(r){if(ws.seat==='P2'&&!r.game&&!r.closed){delete r.clients.P2;delete r.pools.P2;delete r.ready.P2;r.at=Date.now();this.lobby(r);}else{r.close(ws.seat);this.rooms.delete(r.code);}}});ws.on('error',()=>ws.terminate());});this.timer=setInterval(()=>{for(const [code,r]of this.rooms){if(Date.now()-r.at>600000){r.close('P1');this.rooms.delete(code);}else r.pulse();}},100);this.heartbeat=setInterval(()=>{for(const ws of this.wss.clients){ws.ping();ws.pongTimer=setTimeout(()=>ws.terminate(),1000);}},2000);}
+ lobby(r){for(const s of seats)send(r.clients[s],'lobby',{ready:r.ready});}
 }
- wss.on('connection',ws=>{ws.last=Date.now();ws.on('close',()=>drop(ws));ws.on('error',()=>{});ws.on('message',async bytes=>{try{
- const m=JSON.parse(bytes.toString());ws.last=Date.now();
- ws.count=(ws.count||0)+1;if(ws.count>100)throw Error('请求过快');
- if(m.type==='ping'){send(ws,{type:'pong',data:m.data});return;}
- if(!ws.room){if(!['create','join'].includes(m.type)||!/^\d{4,6}$/.test(m.code))throw Error('房间请求无效');
- if(m.type==='create'&&rooms.has(m.code))throw Error('房间码冲突，请重建');if(rooms.size>=200)throw Error('服务器繁忙');
- const room=m.type==='create'?create(m.code):rooms.get(m.code);if(!room||room.ended)throw Error('房间不存在');const seat=m.type==='create'?'P1':'P2';if(room.clients[seat])throw Error('房间已满');
- ws.room=room;ws.seat=seat;room.clients[seat]=ws;
- // Local-account unlock claims are not trusted by the server: only base characters.
- send(ws,{type:'welcome',code:room.code,seat,data:room.state});broadcast(room);return;
- }
- const {room,seat}=ws;if(room.ended)return;
- if(m.type==='leave'){drop(ws);ws.close();return;}
- if(m.type==='ready'){room.state.ready[seat]=true;broadcast(room);if(room.state.ready.P1&&room.state.ready.P2&&!room.game.match)room.game.startSetup();return;}
- if(m.type==='command'){
- if(!Array.isArray(m.data?.args)||m.data.args.length>8)throw Error('参数无效');
- if(m.data.token!==room.game.actionToken(seat))throw Error('操作已过期');
- await room.n.execute(seat,m.data.name,m.data.args);
- }
- }catch(e){send(ws,{type:'error',data:e.message});}});});
-setInterval(()=>{for(const ws of wss.clients){ws.count=0;if(Date.now()-ws.last>2500){drop(ws);ws.terminate();}}for(const room of rooms.values()){try{room.n.pulse();}catch(e){console.error(e.message);}}},250).unref();
-http.listen(process.env.PORT||3000,'0.0.0.0',()=>console.log('Climb40 listening'));
+export function startServer(){const app=express();app.get('/health',(_,res)=>res.json({ok:true}));app.use(express.static('dist',{dotfiles:'deny'}));const http=createServer(app);new GameRoomServer(http);http.on('error',e=>{console.error(e.message);process.exitCode=1;});http.listen(Number(process.env.PORT||3000),'0.0.0.0',()=>console.log('Game server listening',http.address().port));return http;}
+if(process.argv[1]&&import.meta.url===new URL('file:///'+process.argv[1].replaceAll('\\','/')).href)startServer();

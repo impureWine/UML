@@ -227,4 +227,7 @@ legend bottom
   本图仍属需求分析；UC-01～UC-33简述见01-requirements.md。
 endlegend
 
+usecase "公网跨设备对战 / 迭代11" as Online11
+usecase "权威计时及断线判胜" as Authority11
+Online11 .> Authority11 : include
 @enduml

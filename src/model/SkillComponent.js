@@ -18,5 +18,6 @@ export const definitions=[
  ['ISTAROTH',[],[['TimeRewind',1,'时之回溯']]],
  ['ASMODAY',[],[['SpaceOperation',2,'空间置换']]],
  ['RONOVA',['DeathRetreat'],[['DeathCardBomb',1,'终焉宣告']]],
- ['NABERIUS',['LifeExchangeBonus'],[['LifeReplenish',1,'生机赐福']]]
+ ['NABERIUS',['LifeExchangeBonus'],[['LifeReplenish',1,'生机赐福']]],
+ ['GOLD',['GoldFirstExchange'],[['Alchemy',2,'炼金转化']]]
 ];

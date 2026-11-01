@@ -8,6 +8,7 @@ export class BattlePanel {
  this.renderer=new MountainMapRenderer(root.querySelector('.battle-map'));this.renderer.setAutoFollow(game.state.profile?.settings.cameraAutoFollow!==false);
  root.addEventListener('click',async e=>{const b=e.target.closest('button');if(!b||b.disabled)return;try{const m=this.m;
  if(b.dataset.skill){const panel=b.closest('[data-skill-panel]'),value=name=>panel.querySelector(`[name="${name}"]`)?.value;let args={};
+ if(b.dataset.skill==='Alchemy')args={fromSuit:value('alchemy-from'),toSuit:value('alchemy-to')};
  if(b.dataset.skill==='FreezeCard')args={suit:value('freeze-suit')};
  if(b.dataset.skill==='SpaceOperation')args=value('space-branch')==='move'?{branch:'move',bombId:value('bomb-id'),target:Number(value('skill-target'))}:{branch:'swap'};
  if(b.dataset.skill==='DeathCardBomb')args={cardId:value('skill-card'),target:Number(value('skill-target'))};
@@ -55,28 +56,30 @@ export class BattlePanel {
  this.root.querySelector('[aria-label="本地私密交接"]')?.remove();
  if(m.mode==='local'&&['PREPARATION','ROUND_SKILLS','CARD_LOCK'].includes(m.phase)){this.root.querySelector('[data-battle="exit"]').insertAdjacentHTML('beforebegin','<nav aria-label="本地私密交接"><button data-local-seat="P1">交给 P1</button><button data-local-seat="P2">交给 P2</button></nav>');}
  if(['ROUND_SKILLS','CARD_LOCK'].includes(m.phase)){
- pane.innerHTML+=m.waiting?`<h3>${m.phase==='ROUND_SKILLS'?'技能选择已确认':'出牌已锁定'}</h3><p role="status" aria-live="polite">等待对方操作</p>`:m.covered?`<h3>请交给 ${m.turn}</h3><p>请另一位玩家移开视线。</p>${action('reveal','我是 '+m.turn)}`:`<h3>${m.turn} 私有操作台</h3><p>己方库存炸弹 ${m.ownBombs}</p>${this.renderSkills(m)}${m.phase==='ROUND_SKILLS'?`${action('skills','完成出牌前操作')}`:`<p>选牌可修改；锁定后不可更改。</p><div class="battle-cards">${Object.entries(names).map(([s,n])=>{const cards=m.ownHand.filter(c=>c.suit===s);return `<label><input type="radio" name="battle-card" value="${cards[0]?.cardId||''}" ${cards.length&&!(m.frozenSuit===s&&m.ownHand.some(c=>c.suit!==s))?'':'disabled'}><img src="/images/cards/${s}.png?v=transparent-1" alt="${n}">${n} ×${cards.length}</label>`;}).join('')}</div>${action('lock','锁定这张牌')}`}`;
+ pane.innerHTML+=m.waiting?`<h3>${m.phase==='ROUND_SKILLS'?'技能选择已确认':'出牌已锁定'}</h3><p class="opponent-waiting" role="status" aria-live="polite">等待对手操作</p>`:m.covered?`<h3>请交给 ${m.turn}</h3><p>请另一位玩家移开视线。</p>${action('reveal','我是 '+m.turn)}`:`<h3>${m.turn} 私有操作台</h3><p>己方库存炸弹 ${m.ownBombs}</p>${this.renderSkills(m)}${m.phase==='ROUND_SKILLS'?`${action('skills','完成出牌前操作')}`:`<p>选牌可修改；锁定后不可更改。</p><div class="battle-cards">${Object.entries(names).map(([s,n])=>{const cards=m.ownHand.filter(c=>c.suit===s);return `<label><input type="radio" name="battle-card" value="${cards[0]?.cardId||''}" ${cards.length&&!(m.frozenSuit===s&&m.ownHand.some(c=>c.suit!==s))?'':'disabled'}><img src="/images/cards/${s}.png?v=transparent-1" alt="${n}">${n} ×${cards.length}</label>`;}).join('')}</div>${action('lock','锁定这张牌')}`}`;
  }else{pane.innerHTML+=`<h3>${m.resolution?.winner?m.resolution.winner+' 猜拳获胜':'本轮平局'}</h3><p>${['P1','P2'].map(s=>s+'：'+(names[m.resolution?.cards[s]?.suit]||'无牌自动跳过')).join('<br>')}</p>`;
  if(m.phase==='RESOLVE')pane.innerHTML+='<p role="status" aria-live="polite" data-bomb-feedback>正在逐阶攀爬与结算落脚炸弹…</p>';
- if(m.phase==='ROUND_REVIEW')pane.innerHTML+=m.reviewDeadline>Date.now()?'<p>时之回溯窗口（可撤销本轮登顶或耗尽）</p>'+m.rewindSeats.map(s=>'<button data-rewind="'+s+'">'+s+' 时之回溯 · 剩余1次</button><button data-cancel-rewind="'+s+'">取消本回合回溯</button>').join(''):m.candidate?'':action('next','下一回合');
+ if(m.phase==='ROUND_REVIEW')pane.innerHTML+=m.reviewDeadline>Date.now()?'<p>「时之回溯」窗口（可撤销本轮登顶或耗尽）</p>'+m.rewindSeats.map(s=>'<button data-rewind="'+s+'">'+s+' 「时之回溯」 · 剩余1次</button><button data-cancel-rewind="'+s+'">取消本回合回溯</button>').join(''):m.candidate?'':action('next','下一回合');
 
  }
  this.restoreSelectedCard(selectedCard);
  this.root.querySelector('.battle-history').innerHTML=`<h3>对局记录</h3><p>无牌方自动跳过，有牌方直接获胜。</p>${(m.suppressionLogs||[]).join('<br>')}${['overview','P1','P2','summit'].map(f=>`<button data-focus="${f}">${f==='overview'?'全局':f==='summit'?'山顶':f}</button>`).join('')}${this.renderRoundHistory(m)}`;
- if(m.phase==='RESOLVE'&&this.round!==m.roundNo){this.round=m.roundNo;this.animate(m);}
+ const resolutionKey=JSON.stringify([m.matchId,m.roundNo,m.attemptNo]);if(this.resolutionScope!==resolutionKey){this.animationId=(this.animationId||0)+1;this.resolutionScope=resolutionKey;this.round=null;}
+ if(m.phase==='RESOLVE'&&this.round!==resolutionKey){this.round=resolutionKey;this.animate(m);}
  else if(m.phase!=='RESOLVE')this.apply(m.positions,m.characters);
  }
  renderSkills(m){
- if(m.phase!=='ROUND_SKILLS')return m.frozenSuit?'<p>冻结牌型：'+names[m.frozenSuit]+'（仅剩该牌型时可强制出牌）</p>':'';
+ if(m.phase!=='ROUND_SKILLS')return m.frozenSuit?'<p>「冻结」牌型：'+names[m.frozenSuit]+'（仅剩该牌型时可强制出牌）</p>':'';
  if(!m.skills.length)return '<p>当前角色无主动技能。</p>';
  return '<h3>打出牌 · 专属技能</h3>'+m.skills.map(c=>{
  const disabled=c.suppressed||!c.remaining||c.id==='TimeRewind'||(c.id==='LifeReplenish'&&(m.ownHand.length>=10||!m.remaining))||(c.id==='WaterDefeatDraw'&&!m.remaining);
  let controls='';
- if(c.id==='FreezeCard')controls='<label>冻结牌型<select name="freeze-suit"><option value="rock">石头</option><option value="paper">布</option><option value="scissors">剪刀</option></select></label>';
+ if(c.id==='Alchemy')controls='<label>来源牌型<select name="alchemy-from">'+Object.entries(names).map(([s,n])=>'<option value="'+s+'">'+n+'</option>').join('')+'</select></label><label>目标牌型<select name="alchemy-to">'+Object.entries(names).map(([s,n])=>'<option value="'+s+'" '+(s==='paper'?'selected':'')+'>'+n+'</option>').join('')+'</select></label>';
+ if(c.id==='FreezeCard')controls='<label>「冻结」牌型<select name="freeze-suit"><option value="rock">石头</option><option value="paper">布</option><option value="scissors">剪刀</option></select></label>';
  if(c.id==='SpaceOperation')controls='<label>空间分支<select name="space-branch"><option value="swap">交换位置</option><option value="move">移动炸弹</option></select></label><fieldset data-space-move hidden disabled><legend>移动炸弹</legend><label>炸弹编号<select name="bomb-id">'+m.skillBombs.map(b=>'<option value="'+b.bombId+'">'+b.bombId+(b.stepIndex==null?'':' · '+b.stepIndex+'阶')+'</option>').join('')+'</select></label><label>移雷目标阶<input name="skill-target" type="number" min="1" max="39" value="1"></label></fieldset>';
  if(c.id==='DeathCardBomb')controls='<label>终焉消耗牌<select name="skill-card">'+m.ownHand.map(card=>'<option value="'+card.cardId+'">'+names[card.suit]+' '+card.cardId+'</option>').join('')+'</select></label><label>部署目标阶<input name="skill-target" type="number" min="1" max="39" value="1"></label>';
- if(c.id==='NatureRecon'&&m.recon)controls='<div class="recon-bubble"><div>翠绿洞察 · 对手最多牌型：'+(names[m.recon.suit]||'无牌')+'</div><div>前方有雷台阶：'+(m.recon.steps.length?m.recon.steps.map(step=>'前方'+(step-m.positions[m.turn])+'阶（第'+step+'阶）').join('、'):'无')+'</div></div>';
- return '<fieldset data-skill-panel="'+c.id+'" '+(disabled?'disabled':'')+'><legend>'+c.name+'</legend>'+controls+'<button data-skill="'+c.id+'" '+(disabled?'disabled':'')+'>'+c.name+' · 剩余'+c.remaining+'次'+(c.suppressed?' · 被瓦沙嘉压制':c.id==='TimeRewind'?' · 结算区释放':'')+'</button>'+(c.id==='SpaceOperation'?'<p class="skill-inline-error" data-skill-error '+(Math.abs(m.positions.P1-m.positions.P2)>5?'':'hidden')+'>阶差须不大于5</p>':'<p class="skill-inline-error" data-skill-error hidden></p>')+'</fieldset>';
+ if(c.id==='NatureRecon'&&m.recon)controls='<div class="recon-bubble"><div>「翠绿洞察」 · 对手最多牌型：'+(names[m.recon.suit]||'无牌')+'</div><div>前方有雷台阶：'+(m.recon.steps.length?m.recon.steps.map(step=>'前方'+(step-m.positions[m.turn])+'阶（第'+step+'阶）').join('、'):'无')+'</div></div>';
+ return '<fieldset data-skill-panel="'+c.id+'" '+(disabled?'disabled':'')+'><legend>'+'「'+c.name.replace(/[「」]/g,'')+'」'+'</legend>'+controls+'<button data-skill="'+c.id+'" '+(disabled?'disabled':'')+'>'+'「'+c.name.replace(/[「」]/g,'')+'」'+' · 剩余'+c.remaining+'次'+(c.suppressed?' · 被瓦沙嘉压制':c.id==='TimeRewind'?' · 结算区释放':'')+'</button>'+(c.id==='SpaceOperation'?'<p class="skill-inline-error" data-skill-error '+(Math.abs(m.positions.P1-m.positions.P2)>5?'':'hidden')+'>阶差须不大于5</p>':'<p class="skill-inline-error" data-skill-error hidden></p>')+'</fieldset>';
  }).join('');
  }
  renderRoundHistory(m){

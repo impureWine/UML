@@ -285,3 +285,38 @@ Settings随AccountProfile保存。MountainMapRenderer读取授权位置、镜头
 - 角色技能数值和约束以需求 v1.1 及本轮用户明确裁决为业务来源，冲突时以本轮裁决为准；融合压制依据 SkillComponent.sourceOrigin 精确处理。
 - 角色铭牌/信标动画、BGM乐谱、音效和性能仍是验收要求，本阶段只分析职责与边界。
 - 对象与类图只用于确认职责及关系，用户确认本阶段成果后才能进入系统设计；不得由本说明直接开始程序开发。
+
+
+## 迭代11：公网权威联机（方案B）
+FR-08/09/49：GameRoomServer 管理唯一六位码、P1房主/P2客人、双人就绪及10分钟闲置过期，房主离开解散。ServerRoomSession 在 Node.js 复用 Game 规则，客户端不能提交状态或结果。
+FR-50：选角45秒、交替取牌15秒、准备45秒、技能及出牌各45秒、回溯5秒；随机选角/取牌、准备锁定，按最多牌型（石头>布>剪刀）代出。
+FR-46：2秒Ping周期，未Pong后1秒终止，close立即判负；留存方通过 AccountManager 幂等保存有效胜局及永久解锁。关闭/刷新判负，不支持恢复。
+FR-33/NFR-02：席位投影不发送对手手牌、库存雷、暗雷坐标、秘密销毁区；技能情报仅发施法者。连接绑定席位并验证操作令牌。解锁池由本地档案申报，不属于可信云端认证；账号不跨设备同步。
+NetworkManager 使用 WebSocketAdapter 主通道（同域 /ws，HTTPS用wss）与 BroadcastChannelAdapter 同机回退；公网房间断线不得迁移本地。支持高级自定义地址。
+顺序：文档→实现→自动验证→05-process11人工验收。云平台发布由用户关联仓库完成。
+
+迭代11实现映射：
+
+| 类 | 文件 | 主要职责/方法 |
+|---|---|---|
+| GameRoomServer | server.js | rooms、wss；lobby()；绑定连接席位、建房加入、每2秒心跳、每100ms维护房间 |
+| ServerRoomSession | server.js | start()复用Game；command()白名单与本人校验；publish()席位视图；pulse()权威超时；close()断线终局 |
+| WebSocketAdapter | src/utils/NetworkManager.js | connect/enter/send/receive/save；每2秒应用ping测延迟；本地账号战绩幂等提交 |
+| NetworkManager | src/utils/NetworkManager.js | 选择WebSocket，首次失败实例化BroadcastChannelAdapter |
+| BroadcastChannelAdapter | src/utils/BroadcastChannelAdapter.js | 保留迭代10同机实现，不用于公网安全保证 |
+
+时序：建房→joined(P1)→加入→joined(P2)→双ready→服务端start→席位view→带token的command→Game规则验证→两份view。close/心跳失效→服务端FINAL→留存端save→AccountManager解锁校验。P2在大厅退出仅释放客席；房主退出/对局退出解散。详见11-network.puml。
+
+
+### 联机等待与公开选牌余量修正（2026-11-01）
+用户最新裁决：联机DRAFT期间，牌库各花色余量属于双方可见的公共信息（覆盖此前选牌期隐藏分项的规定）。ServerRoomSession.publish与BroadcastChannelAdapter.project均按此输出。对手手牌、库存雷、暗雷及秘密销毁仍按席位隔离。
+联机按固定viewerSeat操作：轮到本人直接选牌；对手回合显示持续醒目的“等待对手操作”，不出现本地“请交给P1/P2”及私密接手按钮。等待期间仍显示公共余量与倒计时，隐藏选牌及随机取牌操作；准备、技能及出牌锁定等待使用相同提示样式。本地双人保持交接屏。
+人工验收：两设备交替取牌、双方各花色数字一致并实时扣减、耗尽花色禁用、等待中无越席按钮/键盘操作、准备及出牌锁定后提示明显，本地/AI无回归。
+
+
+### AI与技能修正（2026-11-01）
+AI取牌P1直接操作、P2显示等待对手操作；本地交接保留。黄金新增GoldFirstExchange被动：首次成功牌换雷仅1牌，失败不消耗优惠；Alchemy主动2次：最多2张实际持有的来源花色改为不同目标花色，不变更实体ID/张数。融合按来源组合黄金/生命组件，冰仅压制生命。InformationProjector输出exchangeCardCost，准备UI及AI均使用该费用。回溯后BattlePanel以matchId/roundNo/attemptNo作为动画标识，取消过期动画；AIController同样按attemptNo重置本次技能决策。技能名称在日志、按钮、提示和图鉴中统一加「」。人工验收：AI等待屏、黄金两技能/失败原子性/融合压制、双方回溯后再次出牌与正常结算。
+
+
+### 联机重绘与倒计时修正（2026-11-01）
+WebSocketAdapter收到pong只更新连接延迟，不发送Game状态通知；重复view去重。GameView按setup及账号显示依赖去重开局视图，同步后立即填入倒计时且仅在文字变化时写入DOM。PreparationPanel按本人对局/席位/阶段/token/私有资源判断是否需要重建；对手操作不打断当前有效布雷弹窗、手牌勾选或镜头，己方token变化/阶段结束则使旧操作失效。状态最新快照仍更新以供后续命令使用。人工验收：保持布雷弹窗超过多个心跳周期、对手布雷期间完成己方布雷、对手锁定不清空勾选、阶段切换关闭旧弹窗、倒计时无空白闪烁。

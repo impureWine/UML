@@ -65,3 +65,16 @@ test('播放意图与静音分离，手动六曲遍历后恢复自动',()=>{
   assert.equal(a.pauseIntent,true); assert.equal(a.currentTrack,1); assert.equal(a.manualLock,true);
   a.previousTrack();assert.equal(a.currentTrack,0);a.restoreAuto();assert.equal(a.manualLock,false);assert.equal(a.pauseIntent,true);a.dispose();
 });
+
+test('公网音频下载超过7秒仍可完成，不在旧5秒阈值中止',async(t)=>{
+  t.mock.timers.enable({apis:['setTimeout']});
+  const oldFetch=globalThis.fetch;let finish,signal;
+  const bytes=new ArrayBuffer(8);
+  globalThis.fetch=async(_url,options)=>{signal=options.signal;return {ok:true,arrayBuffer:()=>new Promise(resolve=>{finish=resolve;})};};
+  try {
+    const m=new LocalMp3Source();const pending=m.prepare({decodeAudioData:async b=>b},0,'/audio/M-01.mp3');
+    await Promise.resolve();await Promise.resolve();
+    t.mock.timers.tick(7000);assert.equal(signal.aborted,false);
+    finish(bytes);assert.equal(await pending,bytes);
+  } finally {globalThis.fetch=oldFetch;t.mock.timers.reset();}
+});

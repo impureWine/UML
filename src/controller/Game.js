@@ -49,7 +49,7 @@ export class Game {
   actorDone(seat){const m=this.match;return m.phase==='PREPARATION'?!!m.locked[seat]:m.phase==='ROUND_SKILLS'?!!m.skillsDone[seat]:!!m.pending[seat]||!m.players[seat].hand.length;}
   getSnapshot(raw=false,viewerSeat='P1') {
     const snapshot = structuredClone(this.state);
-    if(this.state.page==='online'&&this.network?.code&&(this.network.seat==='P2'||this.network.transport?.server)&&this.network.remote){snapshot.setup=structuredClone(this.network.remote);return snapshot;}
+    if(this.state.page==='online'&&this.network?.code&&(this.network.seat==='P2'||this.network.transport==='websocket')&&this.network.remote){snapshot.setup=structuredClone(this.network.remote);return snapshot;}
     const m = this.match;
     if (m) {
       snapshot.setup = { matchId:m.matchId, phase:m.phase, mode:m.mode, characters:{...m.characters}, difficulty:m.difficulty,
@@ -59,13 +59,12 @@ export class Game {
         ownHand:m.phase==='DRAFT' && !m.covered ? structuredClone(m.players[m.turn].hand) : null };
     }
     if (m?.board) Object.assign(snapshot.setup, InformationProjector.preparation(this.isConcurrent()?{...m,turn:viewerSeat,covered:false}:m));
-    if(this.isConcurrent())Object.assign(snapshot.setup,{concurrent:true,viewerSeat,turn:viewerSeat,covered:false,waiting:this.actorDone(viewerSeat),token:this.actionToken(viewerSeat)});
+    if(this.isConcurrent())Object.assign(snapshot.setup,{concurrent:true,opponentBusy:!this.actorDone(viewerSeat==='P1'?'P2':'P1'),viewerSeat,turn:viewerSeat,covered:false,waiting:this.actorDone(viewerSeat),token:this.actionToken(viewerSeat)});
     if(m?.mode==='local'&&['PREPARATION','ROUND_SKILLS','CARD_LOCK'].includes(m.phase)){
       snapshot.setup.waiting=this.actorDone(m.turn);
       if(snapshot.setup.waiting)Object.assign(snapshot.setup,{ownHand:null,ownBombs:null,ownPlaced:[],skills:[],skillBombs:[],recon:null,frozenSuit:null});
     }
     if(m?.roundNo) Object.assign(snapshot.setup,{roundNo:m.roundNo,attemptNo:m.attemptNo,skillsDone:{...m.skillsDone},cardLocked:Object.fromEntries(['P1','P2'].map(s=>[s,!!m.pending?.[s]])),history:structuredClone(m.history||[]),roundResults:structuredClone(m.roundResults||[]),resolution:structuredClone(m.resolution||null),candidate:structuredClone(m.candidate||null),saveStatus:m.saveStatus,saveError:m.saveError});
-    if(m?.phase==='FINAL')Object.assign(snapshot.setup,{candidate:structuredClone(m.candidate),saveStatus:m.saveStatus});
     if(!raw&&m?.mode==='online'&&this.network?.code&&this.network.seat==='P1'&&snapshot.setup)snapshot.setup=this.network.project(snapshot.setup,'P1');
     if(!raw&&m?.mode==='ai'&&m.turn==='P2'&&m.phase==='DRAFT'&&snapshot.setup){for(const k of ['ownHand','ownBombs','recon','frozenSuit'])snapshot.setup[k]=null;for(const k of ['ownPlaced','skills','skillBombs'])snapshot.setup[k]=[];snapshot.setup.covered=true;snapshot.setup.waiting=true;}
     return snapshot;
@@ -93,7 +92,7 @@ export class Game {
     const ids=[...this.accountManager.getCurrentProfile().unlockedCharacterIds,...(this.network?.room()?.guestPool||[])];
     if(!['P1','P2'].every(seat=>ids.includes(m.characters[seat]))) throw new Error('请双方选择已解锁角色');
     m.players=Object.fromEntries(['P1','P2'].map(seat=>[seat,new (m.mode==='ai'&&seat==='P2'?AIPlayer:Player)(seat,m.characters[seat])]));
-    m.suppressionLogs=[]; for(const seat of ['P1','P2']) { const other=seat==='P1'?'P2':'P1'; if(m.players[other].character.get('DivineSuppression')) for(const c of m.players[seat].character.skillComponents) if(c.sourceOrigin==='NABERIUS'){c.isSuppressed=true;m.suppressionLogs.push(seat+' '+c.skillId+' 被瓦沙嘉压制');} }
+    m.suppressionLogs=[]; for(const seat of ['P1','P2']) { const other=seat==='P1'?'P2':'P1'; if(m.players[other].character.get('DivineSuppression')) for(const c of m.players[seat].character.skillComponents) if(c.sourceOrigin==='NABERIUS'){c.isSuppressed=true;m.suppressionLogs.push(seat+' 的「'+(c.name||'生命兑换')+'」被瓦沙嘉压制');} }
     m.deck=new CardDeck(); m.ledger=new CardLedger(m.deck.cards); m.coinChoices={P1:null,P2:null}; m.phase='COIN'; this.emit();
   }
   chooseCoinFace(seat, face) {
@@ -113,7 +112,7 @@ export class Game {
   finishCoin() {
     const m=this.match;
     if(m?.phase!=='COIN_ANIMATION') return;
-    m.phase='DRAFT'; m.turn=m.first; m.covered=true; this.emit();
+    m.phase='DRAFT'; m.turn=m.first; m.covered=m.mode!=='ai'; this.emit();
   }
   revealDraft() {
     if(this.match?.phase!=='DRAFT') return;
@@ -127,7 +126,7 @@ export class Game {
   commitDraftCard(card) {
     const m=this.match;
     m.ledger.transfer(card, 'deck', m.turn);
-    m.players[m.turn].hand.push(card); m.token++; m.turn=m.turn==='P1'?'P2':'P1'; m.covered=true;
+    m.players[m.turn].hand.push(card); m.token++; m.turn=m.turn==='P1'?'P2':'P1'; m.covered=m.mode!=='ai';
     if(Object.values(m.players).every(p=>p.hand.length===30)) { m.phase='PREPARATION'; m.preparationCompleted=false; m.turn=m.first; m.board=new MountainBoard(); m.log=new BattleLog(); m.locked={P1:false,P2:false}; m.nextBomb=1; }
   }
   quickFill() {
@@ -148,10 +147,11 @@ export class Game {
   }
   exchangeCards(seat, ids, token) {
     const m=this.requirePreparation(seat,token), p=m.players[seat];
-    if(!Array.isArray(ids) || ids.length!==2 || new Set(ids).size!==2 || ids.some(id=>!p.hand.some(c=>c.cardId===id))) throw new Error('请自主选择两张不同实体手牌');
+    const cost=p.character.get('GoldFirstExchange')&&!p.goldExchangeUsed?1:2;
+    if(!Array.isArray(ids) || ids.length!==cost || new Set(ids).size!==cost || ids.some(id=>!p.hand.some(c=>c.cardId===id))) throw new Error('请选择'+cost+'张不同实体手牌');
     if(p.bombs+m.board.getOwnedBombs(seat).length>=p.bombCapacity) throw new Error('库存与场上炸弹总数已达上限');
     const cards=p.hand.filter(c=>ids.includes(c.cardId));
-    cards.forEach(c=>m.ledger.destroySecretly(c,seat)); p.hand=p.hand.filter(c=>!ids.includes(c.cardId)); p.bombs++; this.bumpAction(seat); this.emit();
+    cards.forEach(c=>m.ledger.destroySecretly(c,seat)); p.hand=p.hand.filter(c=>!ids.includes(c.cardId)); p.bombs++; if(cost===1){p.goldExchangeUsed=true;this.announceSkill(seat,'首次炼金优惠','仅消耗一张手牌兑换炸弹');} this.bumpAction(seat); this.emit();
   }
   exchangeBomb(seat, token) {
     const m=this.requirePreparation(seat,token), p=m.players[seat];
@@ -224,7 +224,8 @@ export class Game {
     }
     if(m.phase!=='ROUND_SKILLS'||(!this.isConcurrent()&&(m.covered||m.turn!==seat))||this.actionToken(seat)!==token||m.skillsDone[seat])throw new Error('技能操作窗口已失效');
     const other=seat==='P1'?'P2':'P1',q=m.players[other];
-    if(id==='JadeShield')p.shieldUntil=m.roundNo+1;
+    if(id==='Alchemy'){const suits=['rock','paper','scissors'];if(!suits.includes(args.fromSuit)||!suits.includes(args.toSuit)||args.fromSuit===args.toSuit)throw Error('「炼金转化」请选择不同的来源与目标牌型');const cards=p.hand.filter(c=>c.suit===args.fromSuit).slice(0,2);if(!cards.length)throw Error('「炼金转化」没有来源手牌');for(const card of cards)card.suit=args.toSuit;this.announceSkill(seat,'炼金转化','转化'+cards.length+'张手牌');}
+    else if(id==='JadeShield')p.shieldUntil=m.roundNo+1;
     else if(id==='NatureRecon'){
       const counts=['rock','paper','scissors'].map(s=>[s,q.hand.filter(c=>c.suit===s).length]);counts.sort((a,b)=>b[1]-a[1]);
       m.recon={seat,steps:m.board.steps.filter(c=>c.index>p.step&&c.index<=p.step+10&&c.bombQueue.length).map(c=>c.index),suit:counts[0][1]?counts[0][0]:null};m.recons??={};m.recons[seat]=m.recon;
@@ -266,7 +267,7 @@ export class Game {
     const top=['P1','P2'].filter(s=>m.players[s].step===40),empty=Object.values(m.players).every(p=>!p.hand.length);
     m.candidate=top.length||empty?{winner:top.length===2?null:top[0]||(m.players.P1.step===m.players.P2.step?null:m.players.P1.step>m.players.P2.step?'P1':'P2'),reason:top.length?'登顶':'双方手牌耗尽'}:null;
   }
-  finishRoundAnimation(roundNo){const m=this.match;if(m?.phase!=='RESOLVE'||m.roundNo!==roundNo)return;m.phase='ROUND_REVIEW';const can=Object.values(m.players).some(p=>p.character.get('TimeRewind')?.remaining>0);if(can){m.reviewDeadline=Date.now()+(m.mode==='online'?45000:5000);const token=m.token;setTimeout(()=>{if(this.match===m&&m.token===token&&m.phase==='ROUND_REVIEW'){m.reviewDeadline=null;this.emit();if(m.candidate)this.finalizeMatch();}},m.mode==='online'?45000:5000);}this.emit();if(m.candidate&&!can)this.finalizeMatch();}
+  finishRoundAnimation(roundNo){const m=this.match;if(m?.phase!=='RESOLVE'||m.roundNo!==roundNo)return;m.phase='ROUND_REVIEW';const can=Object.values(m.players).some(p=>p.character.get('TimeRewind')?.remaining>0);if(can){m.reviewDeadline=Date.now()+(5000);const token=m.token;setTimeout(()=>{if(this.match===m&&m.token===token&&m.phase==='ROUND_REVIEW'){m.reviewDeadline=null;this.emit();if(m.candidate)this.finalizeMatch();}},5000);}this.emit();if(m.candidate&&!can)this.finalizeMatch();}
   cancelTimeRewind(seat,token){
     const m=this.match;
     if(!m||token!==m.token||m.phase!=='ROUND_REVIEW'||!(m.reviewDeadline>Date.now())||!m.players[seat]?.character.get('TimeRewind')?.remaining||m.rewindDeclined.includes(seat))throw new Error('回溯窗口已关闭');
@@ -290,7 +291,7 @@ export class Game {
     result.destroyed.forEach(id=>m.board.removeBomb(id)); m.players[seat].step=result.step;
     result.events.forEach(e=>m.log.appendPublicEvent(e)); this.emit(); return result;
   }
-  exitSetup() { if(this.network?.code){this.network.send('leave',{});if(this.network.seat==='P1'){const r=this.network.room();r.closed=true;this.network.write(r);}this.network.transport?.close();this.network.transport=null;this.network.remote=null;this.network.code=null;}this.match=null; this.state.page='home'; this.emit(); }
+  exitSetup() { if(this.network?.code){this.network.send('leave',{});if(this.network.seat==='P1'&&this.network.transport!=='websocket'){const r=this.network.room();r.closed=true;this.network.write(r);}this.network.remote=null;this.network.code=null;}this.match=null; this.state.page='home'; this.emit(); }
 
 
   subscribe(listener) {

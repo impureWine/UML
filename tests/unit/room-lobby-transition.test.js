@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { Game } from '../../src/controller/Game.js';
 import { GameView } from '../../src/view/GameView.js';
-import { NetworkManager } from '../../src/utils/NetworkManager.js';
+import { BroadcastChannelAdapter as NetworkManager } from '../../src/utils/BroadcastChannelAdapter.js';
 
 async function hostFixture(guestReady) {
   const profile={accountId:'host-account',unlockedCharacterIds:['CH-01','CH-02']};
