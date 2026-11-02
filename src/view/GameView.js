@@ -118,6 +118,11 @@ export class GameView {
     document.addEventListener('keydown', () => this.audio.resumeFromGesture(), { signal: this.events.signal });
     this.clock=setInterval(()=>this.updateStepClock(),250);
     this.bindEvents();
+    this.root.addEventListener('input', e => {
+      if (!e.target.matches('.settings-volume input[type="range"]')) return;
+      e.target.style.setProperty('--volume', e.target.value + '%');
+      e.target.closest('.settings-volume').querySelector('output').innerHTML = `${Number(e.target.value)}<small>%</small>`;
+    }, { signal: this.events.signal });
     this.root.addEventListener('change', async e=>{const k=e.target.dataset.setting;if(!k)return;try{await game.saveSettings({[k]:e.target.type==='checkbox'?e.target.checked:e.target.type==='range'?Number(e.target.value):e.target.value});}catch(err){this.main.querySelector('[data-settings-error]').textContent=err.message;}},{signal:this.events.signal});
     this.root.addEventListener('click', async e => {
       const button = e.target.closest('[data-room]');
@@ -403,11 +408,30 @@ export class GameView {
  for(const out of this.root.querySelectorAll('[data-step-clock]'))if(out.textContent!==text)out.textContent=text;
  const status=this.root.querySelector?.('[data-network-status]');if(status&&this.game?.network?.status&&status.textContent!==this.game.network.status)status.textContent=this.game.network.status;
  }
-  renderSettings(profile){
- const prefs=profile.settings;
- this.main.className='main-content opening-main';
- this.main.innerHTML='<h1>旅途设置</h1><button data-action="home">返回首页</button><output role="alert" data-settings-error></output>'+['bgmVolume','sfxVolume'].map((k,i)=>'<p><label>'+['BGM 音量','SFX 音量'][i]+' <input type="range" min="0" max="100" data-setting="'+k+'" value="'+prefs[k]+'"> '+prefs[k]+'%</label></p>').join('')+Object.entries({bgmMuted:'BGM 静音',sfxMuted:'SFX 静音',autoMusic:'自动切歌',singleLoop:'单曲循环',cameraAutoFollow:'镜头自动跟随'}).map(([k,label])=>'<p><label><input type="checkbox" data-setting="'+k+'" '+(prefs[k]?'checked':'')+'>'+label+'</label></p>').join('')+'<p><label>画质特效 <select data-setting="effectQuality">'+['low','medium','high'].map((k,i)=>'<option value="'+k+'" '+((prefs.effectQuality||'high')===k?'selected':'')+'>'+['低','中','高'][i]+'</option>').join('')+'</select></label></p><p>当前账号隐藏角色：'+(profile.unlockedCharacterIds.includes('CH-13')?'已解锁':'锁定')+'</p>';
- }
+  renderSettings(profile) {
+    const prefs = profile.settings;
+    const toggle = (key, label, showLabel = false) => `<label class="settings-switch"><input type="checkbox" data-setting="${key}" aria-label="${label}" ${prefs[key] ? 'checked' : ''}><span class="settings-toggle"></span>${showLabel ? label : ''}</label>`;
+    const unlocked = profile.unlockedCharacterIds.includes('CH-13');
+    this.main.className = 'main-content settings-main';
+    this.main.innerHTML = `
+      <div class="settings-title"><div><h1>旅途设置</h1><p>调整声音与画面，让每一段旅途都恰如所愿。</p></div><button class="settings-back" data-action="home">${icon('back')}返回首页</button></div>
+      <output role="alert" class="settings-error" data-settings-error></output>
+      <div class="settings-sheet">
+        <section class="settings-section" aria-labelledby="settings-audio-title">
+          <div class="settings-intro"><h2 id="settings-audio-title">声音与音乐</h2><p>风声、旋律与每一次落子。<br>找到属于你的旅途音量。</p></div>
+          <div><div class="settings-audio">${['bgmVolume', 'sfxVolume'].map((key, i) => {
+            const name = i ? 'SFX' : 'BGM';
+            return `<div class="settings-volume"><div class="settings-volume-label"><label for="settings-${key}">${i ? '游戏音效' : '背景音乐'} <small>/ ${name}</small></label><output for="settings-${key}">${prefs[key]}<small>%</small></output></div><input id="settings-${key}" type="range" min="0" max="100" data-setting="${key}" value="${prefs[key]}" style="--volume:${prefs[key]}%"><div class="settings-mute"><span>${name} 静音</span>${toggle(i ? 'sfxMuted' : 'bgmMuted', name + ' 静音')}</div></div>`;
+          }).join('')}</div><div class="settings-music-options">${toggle('autoMusic', '自动切歌', true)}${toggle('singleLoop', '单曲循环', true)}</div></div>
+        </section>
+        <section class="settings-section" aria-labelledby="settings-visual-title">
+          <div class="settings-intro"><h2 id="settings-visual-title">画面与镜头</h2><p>远山与云海，尽收眼底。</p></div>
+          <div><div class="settings-row"><div><span id="settings-quality-label">画质特效</span><p>调整场景中的视觉效果。</p></div><div class="settings-quality" role="radiogroup" aria-labelledby="settings-quality-label">${['low', 'medium', 'high'].map((value, i) => `<label><input type="radio" name="effectQuality" data-setting="effectQuality" value="${value}" ${(prefs.effectQuality || 'high') === value ? 'checked' : ''}><span>${['低', '中', '高'][i]}</span></label>`).join('')}</div></div>
+          <div class="settings-row"><div><span>镜头自动跟随</span><p>镜头随当前角色移动。</p></div>${toggle('cameraAutoFollow', '镜头自动跟随')}</div></div>
+        </section>
+        <section class="settings-section" aria-labelledby="settings-account-title"><div class="settings-intro"><h2 id="settings-account-title">账号内容</h2><p>与你一同启程的珍藏。</p></div><div class="settings-row"><div><span>隐藏角色</span><p>当前账号的角色解锁状态。</p></div><span class="settings-unlock ${unlocked ? 'is-unlocked' : ''}">${unlocked ? '已解锁' : '锁定'}</span></div></section>
+      </div>`;
+  }
  async handleRoomAction(action) {
    const network = this.game.ensureNetwork();
    // Network operations emit the current state. Their async completion must not

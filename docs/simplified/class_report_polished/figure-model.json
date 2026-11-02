@@ -1,0 +1,2393 @@
+{
+  "width": 680,
+  "height": 800,
+  "ops": [
+    {
+      "name": "Game-AccountManager-dash",
+      "kind": "line",
+      "a": [
+        255.0,
+        85.0
+      ],
+      "b": [
+        250.5,
+        85.0
+      ],
+      "color": "#707070",
+      "lw": 0.85
+    },
+    {
+      "name": "Game-AccountManager-dash",
+      "kind": "line",
+      "a": [
+        247.0,
+        85.0
+      ],
+      "b": [
+        242.5,
+        85.0
+      ],
+      "color": "#707070",
+      "lw": 0.85
+    },
+    {
+      "name": "Game-AccountManager-dash",
+      "kind": "line",
+      "a": [
+        239.0,
+        85.0
+      ],
+      "b": [
+        234.5,
+        85.0
+      ],
+      "color": "#707070",
+      "lw": 0.85
+    },
+    {
+      "name": "Game-AccountManager-dash",
+      "kind": "line",
+      "a": [
+        231.0,
+        85.0
+      ],
+      "b": [
+        226.5,
+        85.0
+      ],
+      "color": "#707070",
+      "lw": 0.85
+    },
+    {
+      "name": "Game-AccountManager-dash",
+      "kind": "line",
+      "a": [
+        223.0,
+        85.0
+      ],
+      "b": [
+        218.5,
+        85.0
+      ],
+      "color": "#707070",
+      "lw": 0.85
+    },
+    {
+      "name": "Game-AccountManager-dash",
+      "kind": "line",
+      "a": [
+        215.0,
+        85.0
+      ],
+      "b": [
+        210.5,
+        85.0
+      ],
+      "color": "#707070",
+      "lw": 0.85
+    },
+    {
+      "name": "Game-AccountManager-dash",
+      "kind": "line",
+      "a": [
+        207.0,
+        85.0
+      ],
+      "b": [
+        202.5,
+        85.0
+      ],
+      "color": "#707070",
+      "lw": 0.85
+    },
+    {
+      "name": "Game-AccountManager-dash",
+      "kind": "line",
+      "a": [
+        199.0,
+        85.0
+      ],
+      "b": [
+        194.5,
+        85.0
+      ],
+      "color": "#707070",
+      "lw": 0.85
+    },
+    {
+      "name": "arrowhead",
+      "kind": "line",
+      "a": [
+        192,
+        85
+      ],
+      "b": [
+        197.3219695366757,
+        82.2293249467511
+      ],
+      "color": "#707070",
+      "lw": 0.85
+    },
+    {
+      "name": "arrowhead",
+      "kind": "line",
+      "a": [
+        192,
+        85
+      ],
+      "b": [
+        197.3219695366757,
+        87.7706750532489
+      ],
+      "color": "#707070",
+      "lw": 0.85
+    },
+    {
+      "name": "label-background",
+      "kind": "rect",
+      "x": 194.0,
+      "y": 61,
+      "w": 58,
+      "h": 14,
+      "fill": "white",
+      "stroke": "white",
+      "lw": 0
+    },
+    {
+      "name": "edge-label",
+      "kind": "text",
+      "x": 194.0,
+      "y": 61,
+      "w": 58,
+      "h": 14,
+      "text": "提交结果",
+      "size": 10,
+      "color": "#555555",
+      "bold": false
+    },
+    {
+      "name": "Game-NetworkManager-0",
+      "kind": "line",
+      "a": [
+        425,
+        85
+      ],
+      "b": [
+        488,
+        85
+      ],
+      "color": "#707070",
+      "lw": 0.85
+    },
+    {
+      "name": "arrowhead",
+      "kind": "line",
+      "a": [
+        488,
+        85
+      ],
+      "b": [
+        482.6780304633243,
+        87.7706750532489
+      ],
+      "color": "#707070",
+      "lw": 0.85
+    },
+    {
+      "name": "arrowhead",
+      "kind": "line",
+      "a": [
+        488,
+        85
+      ],
+      "b": [
+        482.6780304633243,
+        82.2293249467511
+      ],
+      "color": "#707070",
+      "lw": 0.85
+    },
+    {
+      "name": "label-background",
+      "kind": "rect",
+      "x": 427.0,
+      "y": 61,
+      "w": 58,
+      "h": 14,
+      "fill": "white",
+      "stroke": "white",
+      "lw": 0
+    },
+    {
+      "name": "edge-label",
+      "kind": "text",
+      "x": 427.0,
+      "y": 61,
+      "w": 58,
+      "h": 14,
+      "text": "联机使用",
+      "size": 10,
+      "color": "#555555",
+      "bold": false
+    },
+    {
+      "name": "Game-Player-0",
+      "kind": "line",
+      "a": [
+        278,
+        152
+      ],
+      "b": [
+        278,
+        178
+      ],
+      "color": "#707070",
+      "lw": 0.85
+    },
+    {
+      "name": "Game-Player-1",
+      "kind": "line",
+      "a": [
+        278,
+        178
+      ],
+      "b": [
+        107,
+        178
+      ],
+      "color": "#707070",
+      "lw": 0.85
+    },
+    {
+      "name": "Game-Player-2",
+      "kind": "line",
+      "a": [
+        107,
+        178
+      ],
+      "b": [
+        107,
+        220
+      ],
+      "color": "#707070",
+      "lw": 0.85
+    },
+    {
+      "name": "composition-diamond",
+      "kind": "diamond",
+      "x": 274.5,
+      "y": 152,
+      "w": 7,
+      "h": 12,
+      "fill": "#707070",
+      "stroke": "#707070",
+      "lw": 0.85
+    },
+    {
+      "name": "label-background",
+      "kind": "rect",
+      "x": 115.5,
+      "y": 196,
+      "w": 15,
+      "h": 14,
+      "fill": "white",
+      "stroke": "white",
+      "lw": 0
+    },
+    {
+      "name": "edge-label",
+      "kind": "text",
+      "x": 115.5,
+      "y": 196,
+      "w": 15,
+      "h": 14,
+      "text": "2",
+      "size": 10,
+      "color": "#555555",
+      "bold": false
+    },
+    {
+      "name": "label-background",
+      "kind": "rect",
+      "x": 284.5,
+      "y": 156,
+      "w": 15,
+      "h": 14,
+      "fill": "white",
+      "stroke": "white",
+      "lw": 0
+    },
+    {
+      "name": "edge-label",
+      "kind": "text",
+      "x": 284.5,
+      "y": 156,
+      "w": 15,
+      "h": 14,
+      "text": "1",
+      "size": 10,
+      "color": "#555555",
+      "bold": false
+    },
+    {
+      "name": "Game-Board-0",
+      "kind": "line",
+      "a": [
+        402,
+        152
+      ],
+      "b": [
+        402,
+        178
+      ],
+      "color": "#707070",
+      "lw": 0.85
+    },
+    {
+      "name": "Game-Board-1",
+      "kind": "line",
+      "a": [
+        402,
+        178
+      ],
+      "b": [
+        573,
+        178
+      ],
+      "color": "#707070",
+      "lw": 0.85
+    },
+    {
+      "name": "Game-Board-2",
+      "kind": "line",
+      "a": [
+        573,
+        178
+      ],
+      "b": [
+        573,
+        220
+      ],
+      "color": "#707070",
+      "lw": 0.85
+    },
+    {
+      "name": "composition-diamond",
+      "kind": "diamond",
+      "x": 398.5,
+      "y": 152,
+      "w": 7,
+      "h": 12,
+      "fill": "#707070",
+      "stroke": "#707070",
+      "lw": 0.85
+    },
+    {
+      "name": "label-background",
+      "kind": "rect",
+      "x": 547.5,
+      "y": 196,
+      "w": 15,
+      "h": 14,
+      "fill": "white",
+      "stroke": "white",
+      "lw": 0
+    },
+    {
+      "name": "edge-label",
+      "kind": "text",
+      "x": 547.5,
+      "y": 196,
+      "w": 15,
+      "h": 14,
+      "text": "1",
+      "size": 10,
+      "color": "#555555",
+      "bold": false
+    },
+    {
+      "name": "label-background",
+      "kind": "rect",
+      "x": 380.5,
+      "y": 156,
+      "w": 15,
+      "h": 14,
+      "fill": "white",
+      "stroke": "white",
+      "lw": 0
+    },
+    {
+      "name": "edge-label",
+      "kind": "text",
+      "x": 380.5,
+      "y": 156,
+      "w": 15,
+      "h": 14,
+      "text": "1",
+      "size": 10,
+      "color": "#555555",
+      "bold": false
+    },
+    {
+      "name": "Game-Deck-0",
+      "kind": "line",
+      "a": [
+        340,
+        152
+      ],
+      "b": [
+        340,
+        220
+      ],
+      "color": "#707070",
+      "lw": 0.85
+    },
+    {
+      "name": "composition-diamond",
+      "kind": "diamond",
+      "x": 336.5,
+      "y": 152,
+      "w": 7,
+      "h": 12,
+      "fill": "#707070",
+      "stroke": "#707070",
+      "lw": 0.85
+    },
+    {
+      "name": "label-background",
+      "kind": "rect",
+      "x": 345.5,
+      "y": 159,
+      "w": 15,
+      "h": 14,
+      "fill": "white",
+      "stroke": "white",
+      "lw": 0
+    },
+    {
+      "name": "edge-label",
+      "kind": "text",
+      "x": 345.5,
+      "y": 159,
+      "w": 15,
+      "h": 14,
+      "text": "1",
+      "size": 10,
+      "color": "#555555",
+      "bold": false
+    },
+    {
+      "name": "label-background",
+      "kind": "rect",
+      "x": 345.5,
+      "y": 199,
+      "w": 15,
+      "h": 14,
+      "fill": "white",
+      "stroke": "white",
+      "lw": 0
+    },
+    {
+      "name": "edge-label",
+      "kind": "text",
+      "x": 345.5,
+      "y": 199,
+      "w": 15,
+      "h": 14,
+      "text": "1",
+      "size": 10,
+      "color": "#555555",
+      "bold": false
+    },
+    {
+      "name": "Game-Rule-0",
+      "kind": "line",
+      "a": [
+        425,
+        120
+      ],
+      "b": [
+        457,
+        120
+      ],
+      "color": "#707070",
+      "lw": 0.85
+    },
+    {
+      "name": "Game-Rule-1",
+      "kind": "line",
+      "a": [
+        457,
+        120
+      ],
+      "b": [
+        457,
+        657
+      ],
+      "color": "#707070",
+      "lw": 0.85
+    },
+    {
+      "name": "Game-Rule-2",
+      "kind": "line",
+      "a": [
+        457,
+        657
+      ],
+      "b": [
+        425,
+        657
+      ],
+      "color": "#707070",
+      "lw": 0.85
+    },
+    {
+      "name": "arrowhead",
+      "kind": "line",
+      "a": [
+        425,
+        657
+      ],
+      "b": [
+        430.3219695366757,
+        654.2293249467511
+      ],
+      "color": "#707070",
+      "lw": 0.85
+    },
+    {
+      "name": "arrowhead",
+      "kind": "line",
+      "a": [
+        425,
+        657
+      ],
+      "b": [
+        430.3219695366757,
+        659.7706750532489
+      ],
+      "color": "#707070",
+      "lw": 0.85
+    },
+    {
+      "name": "label-background",
+      "kind": "rect",
+      "x": 428.0,
+      "y": 564,
+      "w": 58,
+      "h": 14,
+      "fill": "white",
+      "stroke": "white",
+      "lw": 0
+    },
+    {
+      "name": "edge-label",
+      "kind": "text",
+      "x": 428.0,
+      "y": 564,
+      "w": 58,
+      "h": 14,
+      "text": "委托裁决",
+      "size": 10,
+      "color": "#555555",
+      "bold": false
+    },
+    {
+      "name": "Player-Character-0",
+      "kind": "line",
+      "a": [
+        107,
+        332
+      ],
+      "b": [
+        107,
+        405
+      ],
+      "color": "#707070",
+      "lw": 0.85
+    },
+    {
+      "name": "composition-diamond",
+      "kind": "diamond",
+      "x": 103.5,
+      "y": 332,
+      "w": 7,
+      "h": 12,
+      "fill": "#707070",
+      "stroke": "#707070",
+      "lw": 0.85
+    },
+    {
+      "name": "label-background",
+      "kind": "rect",
+      "x": 112.5,
+      "y": 340,
+      "w": 15,
+      "h": 14,
+      "fill": "white",
+      "stroke": "white",
+      "lw": 0
+    },
+    {
+      "name": "edge-label",
+      "kind": "text",
+      "x": 112.5,
+      "y": 340,
+      "w": 15,
+      "h": 14,
+      "text": "1",
+      "size": 10,
+      "color": "#555555",
+      "bold": false
+    },
+    {
+      "name": "label-background",
+      "kind": "rect",
+      "x": 113.0,
+      "y": 382,
+      "w": 34,
+      "h": 14,
+      "fill": "white",
+      "stroke": "white",
+      "lw": 0
+    },
+    {
+      "name": "edge-label",
+      "kind": "text",
+      "x": 113.0,
+      "y": 382,
+      "w": 34,
+      "h": 14,
+      "text": "0..1",
+      "size": 10,
+      "color": "#555555",
+      "bold": false
+    },
+    {
+      "name": "Character-Skill-0",
+      "kind": "line",
+      "a": [
+        107,
+        517
+      ],
+      "b": [
+        107,
+        605
+      ],
+      "color": "#707070",
+      "lw": 0.85
+    },
+    {
+      "name": "composition-diamond",
+      "kind": "diamond",
+      "x": 103.5,
+      "y": 517,
+      "w": 7,
+      "h": 12,
+      "fill": "#707070",
+      "stroke": "#707070",
+      "lw": 0.85
+    },
+    {
+      "name": "label-background",
+      "kind": "rect",
+      "x": 112.5,
+      "y": 526,
+      "w": 15,
+      "h": 14,
+      "fill": "white",
+      "stroke": "white",
+      "lw": 0
+    },
+    {
+      "name": "edge-label",
+      "kind": "text",
+      "x": 112.5,
+      "y": 526,
+      "w": 15,
+      "h": 14,
+      "text": "1",
+      "size": 10,
+      "color": "#555555",
+      "bold": false
+    },
+    {
+      "name": "label-background",
+      "kind": "rect",
+      "x": 114.0,
+      "y": 582,
+      "w": 36,
+      "h": 14,
+      "fill": "white",
+      "stroke": "white",
+      "lw": 0
+    },
+    {
+      "name": "edge-label",
+      "kind": "text",
+      "x": 114.0,
+      "y": 582,
+      "w": 36,
+      "h": 14,
+      "text": "1..*",
+      "size": 10,
+      "color": "#555555",
+      "bold": false
+    },
+    {
+      "name": "Player-Card-0",
+      "kind": "line",
+      "a": [
+        192,
+        285
+      ],
+      "b": [
+        221,
+        285
+      ],
+      "color": "#707070",
+      "lw": 0.85
+    },
+    {
+      "name": "Player-Card-1",
+      "kind": "line",
+      "a": [
+        221,
+        285
+      ],
+      "b": [
+        221,
+        371
+      ],
+      "color": "#707070",
+      "lw": 0.85
+    },
+    {
+      "name": "Player-Card-2",
+      "kind": "line",
+      "a": [
+        221,
+        371
+      ],
+      "b": [
+        285,
+        371
+      ],
+      "color": "#707070",
+      "lw": 0.85
+    },
+    {
+      "name": "Player-Card-3",
+      "kind": "line",
+      "a": [
+        285,
+        371
+      ],
+      "b": [
+        285,
+        405
+      ],
+      "color": "#707070",
+      "lw": 0.85
+    },
+    {
+      "name": "label-background",
+      "kind": "rect",
+      "x": 224.0,
+      "y": 293,
+      "w": 34,
+      "h": 14,
+      "fill": "white",
+      "stroke": "white",
+      "lw": 0
+    },
+    {
+      "name": "edge-label",
+      "kind": "text",
+      "x": 224.0,
+      "y": 293,
+      "w": 34,
+      "h": 14,
+      "text": "0..1",
+      "size": 10,
+      "color": "#555555",
+      "bold": false
+    },
+    {
+      "name": "label-background",
+      "kind": "rect",
+      "x": 293.0,
+      "y": 383,
+      "w": 40,
+      "h": 14,
+      "fill": "white",
+      "stroke": "white",
+      "lw": 0
+    },
+    {
+      "name": "edge-label",
+      "kind": "text",
+      "x": 293.0,
+      "y": 383,
+      "w": 40,
+      "h": 14,
+      "text": "0..90",
+      "size": 10,
+      "color": "#555555",
+      "bold": false
+    },
+    {
+      "name": "label-background",
+      "kind": "rect",
+      "x": 235.0,
+      "y": 347,
+      "w": 32,
+      "h": 14,
+      "fill": "white",
+      "stroke": "white",
+      "lw": 0
+    },
+    {
+      "name": "edge-label",
+      "kind": "text",
+      "x": 235.0,
+      "y": 347,
+      "w": 32,
+      "h": 14,
+      "text": "手牌",
+      "size": 10,
+      "color": "#555555",
+      "bold": false
+    },
+    {
+      "name": "Deck-Card-0",
+      "kind": "line",
+      "a": [
+        340,
+        332
+      ],
+      "b": [
+        340,
+        405
+      ],
+      "color": "#707070",
+      "lw": 0.85
+    },
+    {
+      "name": "label-background",
+      "kind": "rect",
+      "x": 347.0,
+      "y": 340,
+      "w": 34,
+      "h": 14,
+      "fill": "white",
+      "stroke": "white",
+      "lw": 0
+    },
+    {
+      "name": "edge-label",
+      "kind": "text",
+      "x": 347.0,
+      "y": 340,
+      "w": 34,
+      "h": 14,
+      "text": "0..1",
+      "size": 10,
+      "color": "#555555",
+      "bold": false
+    },
+    {
+      "name": "label-background",
+      "kind": "rect",
+      "x": 346.0,
+      "y": 383,
+      "w": 40,
+      "h": 14,
+      "fill": "white",
+      "stroke": "white",
+      "lw": 0
+    },
+    {
+      "name": "edge-label",
+      "kind": "text",
+      "x": 346.0,
+      "y": 383,
+      "w": 40,
+      "h": 14,
+      "text": "0..90",
+      "size": 10,
+      "color": "#555555",
+      "bold": false
+    },
+    {
+      "name": "label-background",
+      "kind": "rect",
+      "x": 350.0,
+      "y": 363,
+      "w": 32,
+      "h": 14,
+      "fill": "white",
+      "stroke": "white",
+      "lw": 0
+    },
+    {
+      "name": "edge-label",
+      "kind": "text",
+      "x": 350.0,
+      "y": 363,
+      "w": 32,
+      "h": 14,
+      "text": "库存",
+      "size": 10,
+      "color": "#555555",
+      "bold": false
+    },
+    {
+      "name": "Board-Bomb-0",
+      "kind": "line",
+      "a": [
+        573,
+        332
+      ],
+      "b": [
+        573,
+        405
+      ],
+      "color": "#707070",
+      "lw": 0.85
+    },
+    {
+      "name": "label-background",
+      "kind": "rect",
+      "x": 580.5,
+      "y": 341,
+      "w": 15,
+      "h": 14,
+      "fill": "white",
+      "stroke": "white",
+      "lw": 0
+    },
+    {
+      "name": "edge-label",
+      "kind": "text",
+      "x": 580.5,
+      "y": 341,
+      "w": 15,
+      "h": 14,
+      "text": "1",
+      "size": 10,
+      "color": "#555555",
+      "bold": false
+    },
+    {
+      "name": "label-background",
+      "kind": "rect",
+      "x": 582.0,
+      "y": 382,
+      "w": 34,
+      "h": 14,
+      "fill": "white",
+      "stroke": "white",
+      "lw": 0
+    },
+    {
+      "name": "edge-label",
+      "kind": "text",
+      "x": 582.0,
+      "y": 382,
+      "w": 34,
+      "h": 14,
+      "text": "0..*",
+      "size": 10,
+      "color": "#555555",
+      "bold": false
+    },
+    {
+      "name": "label-background",
+      "kind": "rect",
+      "x": 576.5,
+      "y": 362,
+      "w": 55,
+      "h": 14,
+      "fill": "white",
+      "stroke": "white",
+      "lw": 0
+    },
+    {
+      "name": "edge-label",
+      "kind": "text",
+      "x": 576.5,
+      "y": 362,
+      "w": 55,
+      "h": 14,
+      "text": "场上炸弹",
+      "size": 10,
+      "color": "#555555",
+      "bold": false
+    },
+    {
+      "name": "crossing-gap-1",
+      "kind": "rect",
+      "x": 103,
+      "y": 552,
+      "w": 8,
+      "h": 10,
+      "fill": "white",
+      "stroke": "white",
+      "lw": 0
+    },
+    {
+      "name": "crossing-gap-2",
+      "kind": "rect",
+      "x": 453,
+      "y": 552,
+      "w": 8,
+      "h": 10,
+      "fill": "white",
+      "stroke": "white",
+      "lw": 0
+    },
+    {
+      "name": "Bomb-Player-0",
+      "kind": "line",
+      "a": [
+        573,
+        517
+      ],
+      "b": [
+        573,
+        557
+      ],
+      "color": "#707070",
+      "lw": 0.85
+    },
+    {
+      "name": "Bomb-Player-1",
+      "kind": "line",
+      "a": [
+        573,
+        557
+      ],
+      "b": [
+        10,
+        557
+      ],
+      "color": "#707070",
+      "lw": 0.85
+    },
+    {
+      "name": "Bomb-Player-2",
+      "kind": "line",
+      "a": [
+        10,
+        557
+      ],
+      "b": [
+        10,
+        277
+      ],
+      "color": "#707070",
+      "lw": 0.85
+    },
+    {
+      "name": "Bomb-Player-3",
+      "kind": "line",
+      "a": [
+        10,
+        277
+      ],
+      "b": [
+        22,
+        277
+      ],
+      "color": "#707070",
+      "lw": 0.85
+    },
+    {
+      "name": "arrowhead",
+      "kind": "line",
+      "a": [
+        22,
+        277
+      ],
+      "b": [
+        16.678030463324294,
+        279.7706750532489
+      ],
+      "color": "#707070",
+      "lw": 0.85
+    },
+    {
+      "name": "arrowhead",
+      "kind": "line",
+      "a": [
+        22,
+        277
+      ],
+      "b": [
+        16.678030463324294,
+        274.2293249467511
+      ],
+      "color": "#707070",
+      "lw": 0.85
+    },
+    {
+      "name": "label-background",
+      "kind": "rect",
+      "x": 582.0,
+      "y": 524,
+      "w": 34,
+      "h": 14,
+      "fill": "white",
+      "stroke": "white",
+      "lw": 0
+    },
+    {
+      "name": "edge-label",
+      "kind": "text",
+      "x": 582.0,
+      "y": 524,
+      "w": 34,
+      "h": 14,
+      "text": "0..*",
+      "size": 10,
+      "color": "#555555",
+      "bold": false
+    },
+    {
+      "name": "label-background",
+      "kind": "rect",
+      "x": 21.5,
+      "y": 338,
+      "w": 15,
+      "h": 14,
+      "fill": "white",
+      "stroke": "white",
+      "lw": 0
+    },
+    {
+      "name": "edge-label",
+      "kind": "text",
+      "x": 21.5,
+      "y": 338,
+      "w": 15,
+      "h": 14,
+      "text": "1",
+      "size": 10,
+      "color": "#555555",
+      "bold": false
+    },
+    {
+      "name": "label-background",
+      "kind": "rect",
+      "x": 325.0,
+      "y": 550,
+      "w": 44,
+      "h": 14,
+      "fill": "white",
+      "stroke": "white",
+      "lw": 0
+    },
+    {
+      "name": "edge-label",
+      "kind": "text",
+      "x": 325.0,
+      "y": 550,
+      "w": 44,
+      "h": 14,
+      "text": "所有者",
+      "size": 10,
+      "color": "#555555",
+      "bold": false
+    },
+    {
+      "name": "Rule-Skill-dash",
+      "kind": "line",
+      "a": [
+        255.0,
+        657.0
+      ],
+      "b": [
+        250.5,
+        657.0
+      ],
+      "color": "#707070",
+      "lw": 0.85
+    },
+    {
+      "name": "Rule-Skill-dash",
+      "kind": "line",
+      "a": [
+        247.0,
+        657.0
+      ],
+      "b": [
+        242.5,
+        657.0
+      ],
+      "color": "#707070",
+      "lw": 0.85
+    },
+    {
+      "name": "Rule-Skill-dash",
+      "kind": "line",
+      "a": [
+        239.0,
+        657.0
+      ],
+      "b": [
+        234.5,
+        657.0
+      ],
+      "color": "#707070",
+      "lw": 0.85
+    },
+    {
+      "name": "Rule-Skill-dash",
+      "kind": "line",
+      "a": [
+        231.0,
+        657.0
+      ],
+      "b": [
+        226.5,
+        657.0
+      ],
+      "color": "#707070",
+      "lw": 0.85
+    },
+    {
+      "name": "Rule-Skill-dash",
+      "kind": "line",
+      "a": [
+        223.0,
+        657.0
+      ],
+      "b": [
+        218.5,
+        657.0
+      ],
+      "color": "#707070",
+      "lw": 0.85
+    },
+    {
+      "name": "Rule-Skill-dash",
+      "kind": "line",
+      "a": [
+        215.0,
+        657.0
+      ],
+      "b": [
+        210.5,
+        657.0
+      ],
+      "color": "#707070",
+      "lw": 0.85
+    },
+    {
+      "name": "Rule-Skill-dash",
+      "kind": "line",
+      "a": [
+        207.0,
+        657.0
+      ],
+      "b": [
+        202.5,
+        657.0
+      ],
+      "color": "#707070",
+      "lw": 0.85
+    },
+    {
+      "name": "Rule-Skill-dash",
+      "kind": "line",
+      "a": [
+        199.0,
+        657.0
+      ],
+      "b": [
+        194.5,
+        657.0
+      ],
+      "color": "#707070",
+      "lw": 0.85
+    },
+    {
+      "name": "arrowhead",
+      "kind": "line",
+      "a": [
+        192,
+        657
+      ],
+      "b": [
+        197.3219695366757,
+        654.2293249467511
+      ],
+      "color": "#707070",
+      "lw": 0.85
+    },
+    {
+      "name": "arrowhead",
+      "kind": "line",
+      "a": [
+        192,
+        657
+      ],
+      "b": [
+        197.3219695366757,
+        659.7706750532489
+      ],
+      "color": "#707070",
+      "lw": 0.85
+    },
+    {
+      "name": "label-background",
+      "kind": "rect",
+      "x": 193.5,
+      "y": 631,
+      "w": 59,
+      "h": 14,
+      "fill": "white",
+      "stroke": "white",
+      "lw": 0
+    },
+    {
+      "name": "edge-label",
+      "kind": "text",
+      "x": 193.5,
+      "y": 631,
+      "w": 59,
+      "h": 14,
+      "text": "技能效果",
+      "size": 10,
+      "color": "#555555",
+      "bold": false
+    },
+    {
+      "name": "AccountManager",
+      "kind": "rect",
+      "x": 22,
+      "y": 40,
+      "w": 170,
+      "h": 112,
+      "fill": "white",
+      "stroke": "#4E78A0",
+      "lw": 0.85
+    },
+    {
+      "name": "AccountManager-header",
+      "kind": "rect",
+      "x": 22,
+      "y": 40,
+      "w": 170,
+      "h": 44,
+      "fill": "#EAF2FA",
+      "stroke": "#4E78A0",
+      "lw": 0.85
+    },
+    {
+      "name": "AccountManager-cn",
+      "kind": "text",
+      "x": 25,
+      "y": 43,
+      "w": 164,
+      "h": 20,
+      "text": "账号管理",
+      "size": 12.5,
+      "color": "#222222",
+      "bold": true
+    },
+    {
+      "name": "AccountManager-en",
+      "kind": "text",
+      "x": 25,
+      "y": 63,
+      "w": 164,
+      "h": 18,
+      "text": "AccountManager",
+      "size": 10.5,
+      "color": "#4E78A0",
+      "bold": false
+    },
+    {
+      "name": "AccountManager-body",
+      "kind": "text",
+      "x": 26,
+      "y": 89,
+      "w": 162,
+      "h": 15,
+      "text": "+ 注册登录()",
+      "size": 11.5,
+      "color": "#222222",
+      "bold": false
+    },
+    {
+      "name": "AccountManager-body",
+      "kind": "text",
+      "x": 26,
+      "y": 104,
+      "w": 162,
+      "h": 15,
+      "text": "+ 保存战绩()",
+      "size": 11.5,
+      "color": "#222222",
+      "bold": false
+    },
+    {
+      "name": "Game",
+      "kind": "rect",
+      "x": 255,
+      "y": 40,
+      "w": 170,
+      "h": 112,
+      "fill": "white",
+      "stroke": "#4E78A0",
+      "lw": 0.85
+    },
+    {
+      "name": "Game-header",
+      "kind": "rect",
+      "x": 255,
+      "y": 40,
+      "w": 170,
+      "h": 44,
+      "fill": "#EAF2FA",
+      "stroke": "#4E78A0",
+      "lw": 0.85
+    },
+    {
+      "name": "Game-cn",
+      "kind": "text",
+      "x": 258,
+      "y": 43,
+      "w": 164,
+      "h": 20,
+      "text": "对局管理",
+      "size": 12.5,
+      "color": "#222222",
+      "bold": true
+    },
+    {
+      "name": "Game-en",
+      "kind": "text",
+      "x": 258,
+      "y": 63,
+      "w": 164,
+      "h": 18,
+      "text": "Game",
+      "size": 10.5,
+      "color": "#4E78A0",
+      "bold": false
+    },
+    {
+      "name": "Game-body",
+      "kind": "text",
+      "x": 259,
+      "y": 89,
+      "w": 162,
+      "h": 15,
+      "text": "+ 阶段与回合",
+      "size": 11.5,
+      "color": "#222222",
+      "bold": false
+    },
+    {
+      "name": "Game-body",
+      "kind": "text",
+      "x": 259,
+      "y": 104,
+      "w": 162,
+      "h": 15,
+      "text": "+ 开始对局()",
+      "size": 11.5,
+      "color": "#222222",
+      "bold": false
+    },
+    {
+      "name": "Game-body",
+      "kind": "text",
+      "x": 259,
+      "y": 119,
+      "w": 162,
+      "h": 15,
+      "text": "+ 推进回合()",
+      "size": 11.5,
+      "color": "#222222",
+      "bold": false
+    },
+    {
+      "name": "Game-body",
+      "kind": "text",
+      "x": 259,
+      "y": 134,
+      "w": 162,
+      "h": 15,
+      "text": "+ 确认结果()",
+      "size": 11.5,
+      "color": "#222222",
+      "bold": false
+    },
+    {
+      "name": "NetworkManager",
+      "kind": "rect",
+      "x": 488,
+      "y": 40,
+      "w": 170,
+      "h": 112,
+      "fill": "white",
+      "stroke": "#4E78A0",
+      "lw": 0.85
+    },
+    {
+      "name": "NetworkManager-header",
+      "kind": "rect",
+      "x": 488,
+      "y": 40,
+      "w": 170,
+      "h": 44,
+      "fill": "#EAF2FA",
+      "stroke": "#4E78A0",
+      "lw": 0.85
+    },
+    {
+      "name": "NetworkManager-cn",
+      "kind": "text",
+      "x": 491,
+      "y": 43,
+      "w": 164,
+      "h": 20,
+      "text": "联机管理",
+      "size": 12.5,
+      "color": "#222222",
+      "bold": true
+    },
+    {
+      "name": "NetworkManager-en",
+      "kind": "text",
+      "x": 491,
+      "y": 63,
+      "w": 164,
+      "h": 18,
+      "text": "NetworkManager",
+      "size": 10.5,
+      "color": "#4E78A0",
+      "bold": false
+    },
+    {
+      "name": "NetworkManager-body",
+      "kind": "text",
+      "x": 492,
+      "y": 89,
+      "w": 162,
+      "h": 15,
+      "text": "+ 创建加入房间()",
+      "size": 11.5,
+      "color": "#222222",
+      "bold": false
+    },
+    {
+      "name": "NetworkManager-body",
+      "kind": "text",
+      "x": 492,
+      "y": 104,
+      "w": 162,
+      "h": 15,
+      "text": "+ 同步与计时()",
+      "size": 11.5,
+      "color": "#222222",
+      "bold": false
+    },
+    {
+      "name": "Player",
+      "kind": "rect",
+      "x": 22,
+      "y": 220,
+      "w": 170,
+      "h": 112,
+      "fill": "white",
+      "stroke": "#4D857B",
+      "lw": 0.85
+    },
+    {
+      "name": "Player-header",
+      "kind": "rect",
+      "x": 22,
+      "y": 220,
+      "w": 170,
+      "h": 44,
+      "fill": "#EAF5F1",
+      "stroke": "#4D857B",
+      "lw": 0.85
+    },
+    {
+      "name": "Player-cn",
+      "kind": "text",
+      "x": 25,
+      "y": 223,
+      "w": 164,
+      "h": 20,
+      "text": "玩家",
+      "size": 12.5,
+      "color": "#222222",
+      "bold": true
+    },
+    {
+      "name": "Player-en",
+      "kind": "text",
+      "x": 25,
+      "y": 243,
+      "w": 164,
+      "h": 18,
+      "text": "Player",
+      "size": 10.5,
+      "color": "#4D857B",
+      "bold": false
+    },
+    {
+      "name": "Player-body",
+      "kind": "text",
+      "x": 26,
+      "y": 269,
+      "w": 162,
+      "h": 15,
+      "text": "+ 位置、手牌与库存雷",
+      "size": 11.5,
+      "color": "#222222",
+      "bold": false
+    },
+    {
+      "name": "Player-body",
+      "kind": "text",
+      "x": 26,
+      "y": 284,
+      "w": 162,
+      "h": 15,
+      "text": "+ 准备与出牌()",
+      "size": 11.5,
+      "color": "#222222",
+      "bold": false
+    },
+    {
+      "name": "CardDeck",
+      "kind": "rect",
+      "x": 255,
+      "y": 220,
+      "w": 170,
+      "h": 112,
+      "fill": "white",
+      "stroke": "#4D857B",
+      "lw": 0.85
+    },
+    {
+      "name": "CardDeck-header",
+      "kind": "rect",
+      "x": 255,
+      "y": 220,
+      "w": 170,
+      "h": 44,
+      "fill": "#EAF5F1",
+      "stroke": "#4D857B",
+      "lw": 0.85
+    },
+    {
+      "name": "CardDeck-cn",
+      "kind": "text",
+      "x": 258,
+      "y": 223,
+      "w": 164,
+      "h": 20,
+      "text": "公共牌库",
+      "size": 12.5,
+      "color": "#222222",
+      "bold": true
+    },
+    {
+      "name": "CardDeck-en",
+      "kind": "text",
+      "x": 258,
+      "y": 243,
+      "w": 164,
+      "h": 18,
+      "text": "CardDeck",
+      "size": 10.5,
+      "color": "#4D857B",
+      "bold": false
+    },
+    {
+      "name": "CardDeck-body",
+      "kind": "text",
+      "x": 259,
+      "y": 269,
+      "w": 162,
+      "h": 15,
+      "text": "+ 剩余牌",
+      "size": 11.5,
+      "color": "#222222",
+      "bold": false
+    },
+    {
+      "name": "CardDeck-body",
+      "kind": "text",
+      "x": 259,
+      "y": 284,
+      "w": 162,
+      "h": 15,
+      "text": "+ 抽牌()",
+      "size": 11.5,
+      "color": "#222222",
+      "bold": false
+    },
+    {
+      "name": "MountainBoard",
+      "kind": "rect",
+      "x": 488,
+      "y": 220,
+      "w": 170,
+      "h": 112,
+      "fill": "white",
+      "stroke": "#4D857B",
+      "lw": 0.85
+    },
+    {
+      "name": "MountainBoard-header",
+      "kind": "rect",
+      "x": 488,
+      "y": 220,
+      "w": 170,
+      "h": 44,
+      "fill": "#EAF5F1",
+      "stroke": "#4D857B",
+      "lw": 0.85
+    },
+    {
+      "name": "MountainBoard-cn",
+      "kind": "text",
+      "x": 491,
+      "y": 223,
+      "w": 164,
+      "h": 20,
+      "text": "棋盘",
+      "size": 12.5,
+      "color": "#222222",
+      "bold": true
+    },
+    {
+      "name": "MountainBoard-en",
+      "kind": "text",
+      "x": 491,
+      "y": 243,
+      "w": 164,
+      "h": 18,
+      "text": "MountainBoard",
+      "size": 10.5,
+      "color": "#4D857B",
+      "bold": false
+    },
+    {
+      "name": "MountainBoard-body",
+      "kind": "text",
+      "x": 492,
+      "y": 269,
+      "w": 162,
+      "h": 15,
+      "text": "+ 0至40阶",
+      "size": 11.5,
+      "color": "#222222",
+      "bold": false
+    },
+    {
+      "name": "MountainBoard-body",
+      "kind": "text",
+      "x": 492,
+      "y": 284,
+      "w": 162,
+      "h": 15,
+      "text": "+ 查询阶位()",
+      "size": 11.5,
+      "color": "#222222",
+      "bold": false
+    },
+    {
+      "name": "Character",
+      "kind": "rect",
+      "x": 22,
+      "y": 405,
+      "w": 170,
+      "h": 112,
+      "fill": "white",
+      "stroke": "#84719D",
+      "lw": 0.85
+    },
+    {
+      "name": "Character-header",
+      "kind": "rect",
+      "x": 22,
+      "y": 405,
+      "w": 170,
+      "h": 44,
+      "fill": "#F1EDF8",
+      "stroke": "#84719D",
+      "lw": 0.85
+    },
+    {
+      "name": "Character-cn",
+      "kind": "text",
+      "x": 25,
+      "y": 408,
+      "w": 164,
+      "h": 20,
+      "text": "角色",
+      "size": 12.5,
+      "color": "#222222",
+      "bold": true
+    },
+    {
+      "name": "Character-en",
+      "kind": "text",
+      "x": 25,
+      "y": 428,
+      "w": 164,
+      "h": 18,
+      "text": "Character",
+      "size": 10.5,
+      "color": "#84719D",
+      "bold": false
+    },
+    {
+      "name": "Character-body",
+      "kind": "text",
+      "x": 26,
+      "y": 454,
+      "w": 162,
+      "h": 15,
+      "text": "+ 名称与元素",
+      "size": 11.5,
+      "color": "#222222",
+      "bold": false
+    },
+    {
+      "name": "PlayingCard",
+      "kind": "rect",
+      "x": 255,
+      "y": 405,
+      "w": 170,
+      "h": 112,
+      "fill": "white",
+      "stroke": "#4D857B",
+      "lw": 0.85
+    },
+    {
+      "name": "PlayingCard-header",
+      "kind": "rect",
+      "x": 255,
+      "y": 405,
+      "w": 170,
+      "h": 44,
+      "fill": "#EAF5F1",
+      "stroke": "#4D857B",
+      "lw": 0.85
+    },
+    {
+      "name": "PlayingCard-cn",
+      "kind": "text",
+      "x": 258,
+      "y": 408,
+      "w": 164,
+      "h": 20,
+      "text": "实体牌",
+      "size": 12.5,
+      "color": "#222222",
+      "bold": true
+    },
+    {
+      "name": "PlayingCard-en",
+      "kind": "text",
+      "x": 258,
+      "y": 428,
+      "w": 164,
+      "h": 18,
+      "text": "PlayingCard",
+      "size": 10.5,
+      "color": "#4D857B",
+      "bold": false
+    },
+    {
+      "name": "PlayingCard-body",
+      "kind": "text",
+      "x": 259,
+      "y": 454,
+      "w": 162,
+      "h": 15,
+      "text": "+ 标识与花色",
+      "size": 11.5,
+      "color": "#222222",
+      "bold": false
+    },
+    {
+      "name": "Bomb",
+      "kind": "rect",
+      "x": 488,
+      "y": 405,
+      "w": 170,
+      "h": 112,
+      "fill": "white",
+      "stroke": "#4D857B",
+      "lw": 0.85
+    },
+    {
+      "name": "Bomb-header",
+      "kind": "rect",
+      "x": 488,
+      "y": 405,
+      "w": 170,
+      "h": 44,
+      "fill": "#EAF5F1",
+      "stroke": "#4D857B",
+      "lw": 0.85
+    },
+    {
+      "name": "Bomb-cn",
+      "kind": "text",
+      "x": 491,
+      "y": 408,
+      "w": 164,
+      "h": 20,
+      "text": "炸弹",
+      "size": 12.5,
+      "color": "#222222",
+      "bold": true
+    },
+    {
+      "name": "Bomb-en",
+      "kind": "text",
+      "x": 491,
+      "y": 428,
+      "w": 164,
+      "h": 18,
+      "text": "Bomb",
+      "size": 10.5,
+      "color": "#4D857B",
+      "bold": false
+    },
+    {
+      "name": "Bomb-body",
+      "kind": "text",
+      "x": 492,
+      "y": 454,
+      "w": 162,
+      "h": 15,
+      "text": "+ 标识",
+      "size": 11.5,
+      "color": "#222222",
+      "bold": false
+    },
+    {
+      "name": "SkillComponent",
+      "kind": "rect",
+      "x": 22,
+      "y": 605,
+      "w": 170,
+      "h": 112,
+      "fill": "white",
+      "stroke": "#84719D",
+      "lw": 0.85
+    },
+    {
+      "name": "SkillComponent-header",
+      "kind": "rect",
+      "x": 22,
+      "y": 605,
+      "w": 170,
+      "h": 44,
+      "fill": "#F1EDF8",
+      "stroke": "#84719D",
+      "lw": 0.85
+    },
+    {
+      "name": "SkillComponent-cn",
+      "kind": "text",
+      "x": 25,
+      "y": 608,
+      "w": 164,
+      "h": 20,
+      "text": "技能组件（抽象）",
+      "size": 12.5,
+      "color": "#222222",
+      "bold": true
+    },
+    {
+      "name": "SkillComponent-en",
+      "kind": "text",
+      "x": 25,
+      "y": 628,
+      "w": 164,
+      "h": 18,
+      "text": "SkillComponent",
+      "size": 10.5,
+      "color": "#84719D",
+      "bold": false
+    },
+    {
+      "name": "SkillComponent-body",
+      "kind": "text",
+      "x": 26,
+      "y": 654,
+      "w": 162,
+      "h": 15,
+      "text": "+ 来源与技能状态",
+      "size": 11.5,
+      "color": "#222222",
+      "bold": false
+    },
+    {
+      "name": "SkillComponent-body",
+      "kind": "text",
+      "x": 26,
+      "y": 669,
+      "w": 162,
+      "h": 15,
+      "text": "+ 检查条件与应用效果()",
+      "size": 11.5,
+      "color": "#222222",
+      "bold": false
+    },
+    {
+      "name": "JudgeRule",
+      "kind": "rect",
+      "x": 255,
+      "y": 605,
+      "w": 170,
+      "h": 112,
+      "fill": "white",
+      "stroke": "#84719D",
+      "lw": 0.85
+    },
+    {
+      "name": "JudgeRule-header",
+      "kind": "rect",
+      "x": 255,
+      "y": 605,
+      "w": 170,
+      "h": 44,
+      "fill": "#F1EDF8",
+      "stroke": "#84719D",
+      "lw": 0.85
+    },
+    {
+      "name": "JudgeRule-cn",
+      "kind": "text",
+      "x": 258,
+      "y": 608,
+      "w": 164,
+      "h": 20,
+      "text": "规则裁决",
+      "size": 12.5,
+      "color": "#222222",
+      "bold": true
+    },
+    {
+      "name": "JudgeRule-en",
+      "kind": "text",
+      "x": 258,
+      "y": 628,
+      "w": 164,
+      "h": 18,
+      "text": "JudgeRule",
+      "size": 10.5,
+      "color": "#84719D",
+      "bold": false
+    },
+    {
+      "name": "JudgeRule-body",
+      "kind": "text",
+      "x": 259,
+      "y": 654,
+      "w": 162,
+      "h": 15,
+      "text": "+ 判断胜负()",
+      "size": 11.5,
+      "color": "#222222",
+      "bold": false
+    },
+    {
+      "name": "JudgeRule-body",
+      "kind": "text",
+      "x": 259,
+      "y": 669,
+      "w": 162,
+      "h": 15,
+      "text": "+ 结算移动与炸弹()",
+      "size": 11.5,
+      "color": "#222222",
+      "bold": false
+    },
+    {
+      "name": "key-composition-0",
+      "kind": "line",
+      "a": [
+        70,
+        762
+      ],
+      "b": [
+        110,
+        762
+      ],
+      "color": "#707070",
+      "lw": 0.85
+    },
+    {
+      "name": "composition-diamond",
+      "kind": "diamond",
+      "x": 70,
+      "y": 758.5,
+      "w": 12,
+      "h": 7,
+      "fill": "#707070",
+      "stroke": "#707070",
+      "lw": 0.85
+    },
+    {
+      "name": "key-composition",
+      "kind": "text",
+      "x": 114,
+      "y": 753,
+      "w": 48,
+      "h": 18,
+      "text": "组合",
+      "size": 10.5,
+      "color": "#222222",
+      "bold": false
+    },
+    {
+      "name": "key-association-0",
+      "kind": "line",
+      "a": [
+        240,
+        762
+      ],
+      "b": [
+        280,
+        762
+      ],
+      "color": "#707070",
+      "lw": 0.85
+    },
+    {
+      "name": "arrowhead",
+      "kind": "line",
+      "a": [
+        280,
+        762
+      ],
+      "b": [
+        274.6780304633243,
+        764.7706750532489
+      ],
+      "color": "#707070",
+      "lw": 0.85
+    },
+    {
+      "name": "arrowhead",
+      "kind": "line",
+      "a": [
+        280,
+        762
+      ],
+      "b": [
+        274.6780304633243,
+        759.2293249467511
+      ],
+      "color": "#707070",
+      "lw": 0.85
+    },
+    {
+      "name": "key-association",
+      "kind": "text",
+      "x": 284,
+      "y": 753,
+      "w": 48,
+      "h": 18,
+      "text": "关联",
+      "size": 10.5,
+      "color": "#222222",
+      "bold": false
+    },
+    {
+      "name": "key-dependency-dash",
+      "kind": "line",
+      "a": [
+        410.0,
+        762.0
+      ],
+      "b": [
+        414.5,
+        762.0
+      ],
+      "color": "#707070",
+      "lw": 0.85
+    },
+    {
+      "name": "key-dependency-dash",
+      "kind": "line",
+      "a": [
+        418.0,
+        762.0
+      ],
+      "b": [
+        422.5,
+        762.0
+      ],
+      "color": "#707070",
+      "lw": 0.85
+    },
+    {
+      "name": "key-dependency-dash",
+      "kind": "line",
+      "a": [
+        426.0,
+        762.0
+      ],
+      "b": [
+        430.5,
+        762.0
+      ],
+      "color": "#707070",
+      "lw": 0.85
+    },
+    {
+      "name": "key-dependency-dash",
+      "kind": "line",
+      "a": [
+        434.0,
+        762.0
+      ],
+      "b": [
+        438.5,
+        762.0
+      ],
+      "color": "#707070",
+      "lw": 0.85
+    },
+    {
+      "name": "key-dependency-dash",
+      "kind": "line",
+      "a": [
+        442.0,
+        762.0
+      ],
+      "b": [
+        446.5,
+        762.0
+      ],
+      "color": "#707070",
+      "lw": 0.85
+    },
+    {
+      "name": "arrowhead",
+      "kind": "line",
+      "a": [
+        450,
+        762
+      ],
+      "b": [
+        444.6780304633243,
+        764.7706750532489
+      ],
+      "color": "#707070",
+      "lw": 0.85
+    },
+    {
+      "name": "arrowhead",
+      "kind": "line",
+      "a": [
+        450,
+        762
+      ],
+      "b": [
+        444.6780304633243,
+        759.2293249467511
+      ],
+      "color": "#707070",
+      "lw": 0.85
+    },
+    {
+      "name": "key-dependency",
+      "kind": "text",
+      "x": 454,
+      "y": 753,
+      "w": 48,
+      "h": 18,
+      "text": "依赖",
+      "size": 10.5,
+      "color": "#222222",
+      "bold": false
+    }
+  ],
+  "edges": [
+    [
+      "Game",
+      "AccountManager",
+      "..>"
+    ],
+    [
+      "Game",
+      "NetworkManager",
+      "-->"
+    ],
+    [
+      "Game",
+      "Player",
+      "*--"
+    ],
+    [
+      "Game",
+      "Board",
+      "*--"
+    ],
+    [
+      "Game",
+      "Deck",
+      "*--"
+    ],
+    [
+      "Game",
+      "Rule",
+      "-->"
+    ],
+    [
+      "Player",
+      "Character",
+      "*--"
+    ],
+    [
+      "Character",
+      "Skill",
+      "*--"
+    ],
+    [
+      "Player",
+      "Card",
+      "--"
+    ],
+    [
+      "Deck",
+      "Card",
+      "--"
+    ],
+    [
+      "Board",
+      "Bomb",
+      "--"
+    ],
+    [
+      "Bomb",
+      "Player",
+      "-->"
+    ],
+    [
+      "Rule",
+      "Skill",
+      "..>"
+    ]
+  ]
+}

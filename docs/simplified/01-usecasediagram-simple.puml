@@ -1,0 +1,66 @@
+@startuml
+title 40阶登山博弈游戏 · 简易用例图
+left to right direction
+skinparam shadowing false
+
+skinparam backgroundColor white
+skinparam defaultFontColor #22364B
+skinparam ArrowColor #8A9AAA
+skinparam ArrowThickness 1.2
+skinparam roundcorner 14
+skinparam nodesep 65
+skinparam ranksep 75
+skinparam linetype ortho
+skinparam class {
+  BackgroundColor white
+  HeaderBackgroundColor #EAF2FA
+  BorderColor #6C859D
+  FontSize 16
+}
+skinparam usecase {
+  BackgroundColor white
+  BorderColor #4E78A0
+  FontSize 16
+}
+skinparam actor {
+  BorderColor #4E78A0
+  FontColor #22364B
+}
+skinparam rectangle {
+  BackgroundColor #FAFCFE
+  BorderColor #DCE5EE
+}
+
+skinparam defaultFontName Microsoft YaHei
+actor "未登录使用者" as Visitor
+actor "账号使用者" as User
+actor "对局玩家" as Player
+rectangle "40阶登山博弈游戏" {
+  usecase "注册与登录" as Login
+  usecase "查看资料与战绩" as Profile
+  usecase "浏览规则与调整设置" as Settings
+  usecase "开始本地或AI对战" as Start
+  usecase "创建或加入联机房间" as Online
+  usecase "选角与初始选牌" as Select
+  usecase "准备：换牌与布雷" as Prepare
+  usecase "使用技能与锁定出牌" as Play
+  usecase "查看回合结算与回溯" as Round
+  usecase "查看最终结果与退出" as End
+}
+Visitor -- Login
+User -- Login
+User -- Profile
+User -- Settings
+User -- Start
+User -- Online
+Player -- Select
+Player -- Prepare
+Player -- Play
+Player -- Round
+Player -- End
+legend bottom
+  同一使用者在首页和对局中承担不同角色。
+  本地临时访客属于对局玩家；AI是系统内部对象。
+  细分操作与条件并入核心用例，连线仅表示参与关系。
+endlegend
+@enduml

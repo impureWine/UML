@@ -1,0 +1,720 @@
+{
+  "width": 680,
+  "height": 420,
+  "ops": [
+    {
+      "name": "系统边界",
+      "kind": "rect",
+      "x": 119,
+      "y": 15,
+      "w": 442,
+      "h": 389,
+      "fill": "white",
+      "stroke": "#858585",
+      "lw": 0.8
+    },
+    {
+      "name": "系统名称",
+      "kind": "text",
+      "x": 129,
+      "y": 25,
+      "w": 422,
+      "h": 23,
+      "text": "40阶登山博弈游戏",
+      "size": 14,
+      "color": "#222222",
+      "bold": true
+    },
+    {
+      "name": "账号分组",
+      "kind": "text",
+      "x": 140,
+      "y": 59,
+      "w": 180,
+      "h": 22,
+      "text": "账号与对战入口",
+      "size": 12,
+      "color": "#4E78A0",
+      "bold": true
+    },
+    {
+      "name": "对局分组",
+      "kind": "text",
+      "x": 350,
+      "y": 59,
+      "w": 180,
+      "h": 22,
+      "text": "对局核心操作",
+      "size": 12,
+      "color": "#4D857B",
+      "bold": true
+    },
+    {
+      "name": "Visitor-Login",
+      "kind": "line",
+      "a": [
+        79,
+        92
+      ],
+      "b": [
+        140,
+        110
+      ],
+      "color": "#707070",
+      "lw": 0.9
+    },
+    {
+      "name": "User-Login",
+      "kind": "line",
+      "a": [
+        79,
+        265
+      ],
+      "b": [
+        140,
+        110
+      ],
+      "color": "#707070",
+      "lw": 0.9
+    },
+    {
+      "name": "User-Profile",
+      "kind": "line",
+      "a": [
+        79,
+        265
+      ],
+      "b": [
+        140,
+        171
+      ],
+      "color": "#707070",
+      "lw": 0.9
+    },
+    {
+      "name": "User-Settings",
+      "kind": "line",
+      "a": [
+        79,
+        265
+      ],
+      "b": [
+        140,
+        232
+      ],
+      "color": "#707070",
+      "lw": 0.9
+    },
+    {
+      "name": "User-Start",
+      "kind": "line",
+      "a": [
+        79,
+        265
+      ],
+      "b": [
+        140,
+        293
+      ],
+      "color": "#707070",
+      "lw": 0.9
+    },
+    {
+      "name": "User-Online",
+      "kind": "line",
+      "a": [
+        79,
+        265
+      ],
+      "b": [
+        140,
+        354
+      ],
+      "color": "#707070",
+      "lw": 0.9
+    },
+    {
+      "name": "Player-Select",
+      "kind": "line",
+      "a": [
+        601,
+        232
+      ],
+      "b": [
+        530,
+        110
+      ],
+      "color": "#707070",
+      "lw": 0.9
+    },
+    {
+      "name": "Player-Prepare",
+      "kind": "line",
+      "a": [
+        601,
+        232
+      ],
+      "b": [
+        530,
+        171
+      ],
+      "color": "#707070",
+      "lw": 0.9
+    },
+    {
+      "name": "Player-Play",
+      "kind": "line",
+      "a": [
+        601,
+        232
+      ],
+      "b": [
+        530,
+        232
+      ],
+      "color": "#707070",
+      "lw": 0.9
+    },
+    {
+      "name": "Player-Round",
+      "kind": "line",
+      "a": [
+        601,
+        232
+      ],
+      "b": [
+        530,
+        293
+      ],
+      "color": "#707070",
+      "lw": 0.9
+    },
+    {
+      "name": "Player-End",
+      "kind": "line",
+      "a": [
+        601,
+        232
+      ],
+      "b": [
+        530,
+        354
+      ],
+      "color": "#707070",
+      "lw": 0.9
+    },
+    {
+      "name": "Login",
+      "kind": "ellipse",
+      "x": 140,
+      "y": 90,
+      "w": 180,
+      "h": 40,
+      "fill": "#F3F7FC",
+      "stroke": "#4E78A0",
+      "lw": 0.9
+    },
+    {
+      "name": "Login-label",
+      "kind": "text",
+      "x": 147,
+      "y": 96,
+      "w": 166,
+      "h": 28,
+      "text": "注册与登录",
+      "size": 12,
+      "color": "#222222",
+      "bold": false
+    },
+    {
+      "name": "Profile",
+      "kind": "ellipse",
+      "x": 140,
+      "y": 151,
+      "w": 180,
+      "h": 40,
+      "fill": "#F3F7FC",
+      "stroke": "#4E78A0",
+      "lw": 0.9
+    },
+    {
+      "name": "Profile-label",
+      "kind": "text",
+      "x": 147,
+      "y": 157,
+      "w": 166,
+      "h": 28,
+      "text": "查看资料与战绩",
+      "size": 12,
+      "color": "#222222",
+      "bold": false
+    },
+    {
+      "name": "Settings",
+      "kind": "ellipse",
+      "x": 140,
+      "y": 212,
+      "w": 180,
+      "h": 40,
+      "fill": "#F3F7FC",
+      "stroke": "#4E78A0",
+      "lw": 0.9
+    },
+    {
+      "name": "Settings-label",
+      "kind": "text",
+      "x": 147,
+      "y": 218,
+      "w": 166,
+      "h": 28,
+      "text": "浏览规则与调整设置",
+      "size": 12,
+      "color": "#222222",
+      "bold": false
+    },
+    {
+      "name": "Start",
+      "kind": "ellipse",
+      "x": 140,
+      "y": 273,
+      "w": 180,
+      "h": 40,
+      "fill": "#F3F7FC",
+      "stroke": "#4E78A0",
+      "lw": 0.9
+    },
+    {
+      "name": "Start-label",
+      "kind": "text",
+      "x": 147,
+      "y": 279,
+      "w": 166,
+      "h": 28,
+      "text": "开始本地或AI对战",
+      "size": 12,
+      "color": "#222222",
+      "bold": false
+    },
+    {
+      "name": "Online",
+      "kind": "ellipse",
+      "x": 140,
+      "y": 334,
+      "w": 180,
+      "h": 40,
+      "fill": "#F3F7FC",
+      "stroke": "#4E78A0",
+      "lw": 0.9
+    },
+    {
+      "name": "Online-label",
+      "kind": "text",
+      "x": 147,
+      "y": 340,
+      "w": 166,
+      "h": 28,
+      "text": "创建或加入联机房间",
+      "size": 12,
+      "color": "#222222",
+      "bold": false
+    },
+    {
+      "name": "Select",
+      "kind": "ellipse",
+      "x": 350,
+      "y": 90,
+      "w": 180,
+      "h": 40,
+      "fill": "#F3F8F6",
+      "stroke": "#4D857B",
+      "lw": 0.9
+    },
+    {
+      "name": "Select-label",
+      "kind": "text",
+      "x": 357,
+      "y": 96,
+      "w": 166,
+      "h": 28,
+      "text": "选角与初始选牌",
+      "size": 12,
+      "color": "#222222",
+      "bold": false
+    },
+    {
+      "name": "Prepare",
+      "kind": "ellipse",
+      "x": 350,
+      "y": 151,
+      "w": 180,
+      "h": 40,
+      "fill": "#F3F8F6",
+      "stroke": "#4D857B",
+      "lw": 0.9
+    },
+    {
+      "name": "Prepare-label",
+      "kind": "text",
+      "x": 357,
+      "y": 157,
+      "w": 166,
+      "h": 28,
+      "text": "准备：换牌与布雷",
+      "size": 12,
+      "color": "#222222",
+      "bold": false
+    },
+    {
+      "name": "Play",
+      "kind": "ellipse",
+      "x": 350,
+      "y": 212,
+      "w": 180,
+      "h": 40,
+      "fill": "#F3F8F6",
+      "stroke": "#4D857B",
+      "lw": 0.9
+    },
+    {
+      "name": "Play-label",
+      "kind": "text",
+      "x": 357,
+      "y": 218,
+      "w": 166,
+      "h": 28,
+      "text": "使用技能与锁定出牌",
+      "size": 12,
+      "color": "#222222",
+      "bold": false
+    },
+    {
+      "name": "Round",
+      "kind": "ellipse",
+      "x": 350,
+      "y": 273,
+      "w": 180,
+      "h": 40,
+      "fill": "#F3F8F6",
+      "stroke": "#4D857B",
+      "lw": 0.9
+    },
+    {
+      "name": "Round-label",
+      "kind": "text",
+      "x": 357,
+      "y": 279,
+      "w": 166,
+      "h": 28,
+      "text": "查看回合结算与回溯",
+      "size": 12,
+      "color": "#222222",
+      "bold": false
+    },
+    {
+      "name": "End",
+      "kind": "ellipse",
+      "x": 350,
+      "y": 334,
+      "w": 180,
+      "h": 40,
+      "fill": "#F3F8F6",
+      "stroke": "#4D857B",
+      "lw": 0.9
+    },
+    {
+      "name": "End-label",
+      "kind": "text",
+      "x": 357,
+      "y": 340,
+      "w": 166,
+      "h": 28,
+      "text": "查看最终结果与退出",
+      "size": 12,
+      "color": "#222222",
+      "bold": false
+    },
+    {
+      "name": "Visitor-head",
+      "kind": "ellipse",
+      "x": 52,
+      "y": 66,
+      "w": 16,
+      "h": 16,
+      "fill": "white",
+      "stroke": "#444444",
+      "lw": 0.9
+    },
+    {
+      "name": "Visitor-body",
+      "kind": "line",
+      "a": [
+        60,
+        82
+      ],
+      "b": [
+        60,
+        111
+      ],
+      "color": "#444444",
+      "lw": 0.9
+    },
+    {
+      "name": "Visitor-arms",
+      "kind": "line",
+      "a": [
+        41,
+        92
+      ],
+      "b": [
+        79,
+        92
+      ],
+      "color": "#444444",
+      "lw": 0.9
+    },
+    {
+      "name": "Visitor-leg-left",
+      "kind": "line",
+      "a": [
+        60,
+        111
+      ],
+      "b": [
+        44,
+        131
+      ],
+      "color": "#444444",
+      "lw": 0.9
+    },
+    {
+      "name": "Visitor-leg-right",
+      "kind": "line",
+      "a": [
+        60,
+        111
+      ],
+      "b": [
+        76,
+        131
+      ],
+      "color": "#444444",
+      "lw": 0.9
+    },
+    {
+      "name": "Visitor-label",
+      "kind": "text",
+      "x": 6,
+      "y": 135,
+      "w": 108,
+      "h": 23,
+      "text": "未登录使用者",
+      "size": 12,
+      "color": "#222222",
+      "bold": false
+    },
+    {
+      "name": "User-head",
+      "kind": "ellipse",
+      "x": 52,
+      "y": 239,
+      "w": 16,
+      "h": 16,
+      "fill": "white",
+      "stroke": "#444444",
+      "lw": 0.9
+    },
+    {
+      "name": "User-body",
+      "kind": "line",
+      "a": [
+        60,
+        255
+      ],
+      "b": [
+        60,
+        284
+      ],
+      "color": "#444444",
+      "lw": 0.9
+    },
+    {
+      "name": "User-arms",
+      "kind": "line",
+      "a": [
+        41,
+        265
+      ],
+      "b": [
+        79,
+        265
+      ],
+      "color": "#444444",
+      "lw": 0.9
+    },
+    {
+      "name": "User-leg-left",
+      "kind": "line",
+      "a": [
+        60,
+        284
+      ],
+      "b": [
+        44,
+        304
+      ],
+      "color": "#444444",
+      "lw": 0.9
+    },
+    {
+      "name": "User-leg-right",
+      "kind": "line",
+      "a": [
+        60,
+        284
+      ],
+      "b": [
+        76,
+        304
+      ],
+      "color": "#444444",
+      "lw": 0.9
+    },
+    {
+      "name": "User-label",
+      "kind": "text",
+      "x": 6,
+      "y": 308,
+      "w": 108,
+      "h": 23,
+      "text": "账号使用者",
+      "size": 12,
+      "color": "#222222",
+      "bold": false
+    },
+    {
+      "name": "Player-head",
+      "kind": "ellipse",
+      "x": 612,
+      "y": 206,
+      "w": 16,
+      "h": 16,
+      "fill": "white",
+      "stroke": "#444444",
+      "lw": 0.9
+    },
+    {
+      "name": "Player-body",
+      "kind": "line",
+      "a": [
+        620,
+        222
+      ],
+      "b": [
+        620,
+        251
+      ],
+      "color": "#444444",
+      "lw": 0.9
+    },
+    {
+      "name": "Player-arms",
+      "kind": "line",
+      "a": [
+        601,
+        232
+      ],
+      "b": [
+        639,
+        232
+      ],
+      "color": "#444444",
+      "lw": 0.9
+    },
+    {
+      "name": "Player-leg-left",
+      "kind": "line",
+      "a": [
+        620,
+        251
+      ],
+      "b": [
+        604,
+        271
+      ],
+      "color": "#444444",
+      "lw": 0.9
+    },
+    {
+      "name": "Player-leg-right",
+      "kind": "line",
+      "a": [
+        620,
+        251
+      ],
+      "b": [
+        636,
+        271
+      ],
+      "color": "#444444",
+      "lw": 0.9
+    },
+    {
+      "name": "Player-label",
+      "kind": "text",
+      "x": 566,
+      "y": 275,
+      "w": 108,
+      "h": 23,
+      "text": "对局玩家",
+      "size": 12,
+      "color": "#222222",
+      "bold": false
+    }
+  ],
+  "edges": [
+    [
+      "Visitor",
+      "Login"
+    ],
+    [
+      "User",
+      "Login"
+    ],
+    [
+      "User",
+      "Profile"
+    ],
+    [
+      "User",
+      "Settings"
+    ],
+    [
+      "User",
+      "Start"
+    ],
+    [
+      "User",
+      "Online"
+    ],
+    [
+      "Player",
+      "Select"
+    ],
+    [
+      "Player",
+      "Prepare"
+    ],
+    [
+      "Player",
+      "Play"
+    ],
+    [
+      "Player",
+      "Round"
+    ],
+    [
+      "Player",
+      "End"
+    ]
+  ]
+}

@@ -1,0 +1,191 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="180mm" height="211.76470588235293mm" viewBox="0 0 680 800">
+<rect width="100%" height="100%" fill="white"/>
+<line x1="255.0" y1="85.0" x2="250.5" y2="85.0" stroke="#707070" stroke-width="0.85"/>
+<line x1="247.0" y1="85.0" x2="242.5" y2="85.0" stroke="#707070" stroke-width="0.85"/>
+<line x1="239.0" y1="85.0" x2="234.5" y2="85.0" stroke="#707070" stroke-width="0.85"/>
+<line x1="231.0" y1="85.0" x2="226.5" y2="85.0" stroke="#707070" stroke-width="0.85"/>
+<line x1="223.0" y1="85.0" x2="218.5" y2="85.0" stroke="#707070" stroke-width="0.85"/>
+<line x1="215.0" y1="85.0" x2="210.5" y2="85.0" stroke="#707070" stroke-width="0.85"/>
+<line x1="207.0" y1="85.0" x2="202.5" y2="85.0" stroke="#707070" stroke-width="0.85"/>
+<line x1="199.0" y1="85.0" x2="194.5" y2="85.0" stroke="#707070" stroke-width="0.85"/>
+<line x1="192" y1="85" x2="197.3219695366757" y2="82.2293249467511" stroke="#707070" stroke-width="0.85"/>
+<line x1="192" y1="85" x2="197.3219695366757" y2="87.7706750532489" stroke="#707070" stroke-width="0.85"/>
+<rect x="194.0" y="61" width="58" height="14" fill="white" stroke="white" stroke-width="0"/>
+<text x="223.0" y="68.0" text-anchor="middle" dominant-baseline="central" font-family="Microsoft YaHei,sans-serif" font-size="10" font-weight="400" fill="#555555">提交结果</text>
+<line x1="425" y1="85" x2="488" y2="85" stroke="#707070" stroke-width="0.85"/>
+<line x1="488" y1="85" x2="482.6780304633243" y2="87.7706750532489" stroke="#707070" stroke-width="0.85"/>
+<line x1="488" y1="85" x2="482.6780304633243" y2="82.2293249467511" stroke="#707070" stroke-width="0.85"/>
+<rect x="427.0" y="61" width="58" height="14" fill="white" stroke="white" stroke-width="0"/>
+<text x="456.0" y="68.0" text-anchor="middle" dominant-baseline="central" font-family="Microsoft YaHei,sans-serif" font-size="10" font-weight="400" fill="#555555">联机使用</text>
+<line x1="278" y1="152" x2="278" y2="178" stroke="#707070" stroke-width="0.85"/>
+<line x1="278" y1="178" x2="107" y2="178" stroke="#707070" stroke-width="0.85"/>
+<line x1="107" y1="178" x2="107" y2="220" stroke="#707070" stroke-width="0.85"/>
+<polygon points="278.0,152 281.5,158.0 278.0,164 274.5,158.0" fill="#707070"/>
+<rect x="115.5" y="196" width="15" height="14" fill="white" stroke="white" stroke-width="0"/>
+<text x="123.0" y="203.0" text-anchor="middle" dominant-baseline="central" font-family="Microsoft YaHei,sans-serif" font-size="10" font-weight="400" fill="#555555">2</text>
+<rect x="284.5" y="156" width="15" height="14" fill="white" stroke="white" stroke-width="0"/>
+<text x="292.0" y="163.0" text-anchor="middle" dominant-baseline="central" font-family="Microsoft YaHei,sans-serif" font-size="10" font-weight="400" fill="#555555">1</text>
+<line x1="402" y1="152" x2="402" y2="178" stroke="#707070" stroke-width="0.85"/>
+<line x1="402" y1="178" x2="573" y2="178" stroke="#707070" stroke-width="0.85"/>
+<line x1="573" y1="178" x2="573" y2="220" stroke="#707070" stroke-width="0.85"/>
+<polygon points="402.0,152 405.5,158.0 402.0,164 398.5,158.0" fill="#707070"/>
+<rect x="547.5" y="196" width="15" height="14" fill="white" stroke="white" stroke-width="0"/>
+<text x="555.0" y="203.0" text-anchor="middle" dominant-baseline="central" font-family="Microsoft YaHei,sans-serif" font-size="10" font-weight="400" fill="#555555">1</text>
+<rect x="380.5" y="156" width="15" height="14" fill="white" stroke="white" stroke-width="0"/>
+<text x="388.0" y="163.0" text-anchor="middle" dominant-baseline="central" font-family="Microsoft YaHei,sans-serif" font-size="10" font-weight="400" fill="#555555">1</text>
+<line x1="340" y1="152" x2="340" y2="220" stroke="#707070" stroke-width="0.85"/>
+<polygon points="340.0,152 343.5,158.0 340.0,164 336.5,158.0" fill="#707070"/>
+<rect x="345.5" y="159" width="15" height="14" fill="white" stroke="white" stroke-width="0"/>
+<text x="353.0" y="166.0" text-anchor="middle" dominant-baseline="central" font-family="Microsoft YaHei,sans-serif" font-size="10" font-weight="400" fill="#555555">1</text>
+<rect x="345.5" y="199" width="15" height="14" fill="white" stroke="white" stroke-width="0"/>
+<text x="353.0" y="206.0" text-anchor="middle" dominant-baseline="central" font-family="Microsoft YaHei,sans-serif" font-size="10" font-weight="400" fill="#555555">1</text>
+<line x1="425" y1="120" x2="457" y2="120" stroke="#707070" stroke-width="0.85"/>
+<line x1="457" y1="120" x2="457" y2="657" stroke="#707070" stroke-width="0.85"/>
+<line x1="457" y1="657" x2="425" y2="657" stroke="#707070" stroke-width="0.85"/>
+<line x1="425" y1="657" x2="430.3219695366757" y2="654.2293249467511" stroke="#707070" stroke-width="0.85"/>
+<line x1="425" y1="657" x2="430.3219695366757" y2="659.7706750532489" stroke="#707070" stroke-width="0.85"/>
+<rect x="428.0" y="564" width="58" height="14" fill="white" stroke="white" stroke-width="0"/>
+<text x="457.0" y="571.0" text-anchor="middle" dominant-baseline="central" font-family="Microsoft YaHei,sans-serif" font-size="10" font-weight="400" fill="#555555">委托裁决</text>
+<line x1="107" y1="332" x2="107" y2="405" stroke="#707070" stroke-width="0.85"/>
+<polygon points="107.0,332 110.5,338.0 107.0,344 103.5,338.0" fill="#707070"/>
+<rect x="112.5" y="340" width="15" height="14" fill="white" stroke="white" stroke-width="0"/>
+<text x="120.0" y="347.0" text-anchor="middle" dominant-baseline="central" font-family="Microsoft YaHei,sans-serif" font-size="10" font-weight="400" fill="#555555">1</text>
+<rect x="113.0" y="382" width="34" height="14" fill="white" stroke="white" stroke-width="0"/>
+<text x="130.0" y="389.0" text-anchor="middle" dominant-baseline="central" font-family="Microsoft YaHei,sans-serif" font-size="10" font-weight="400" fill="#555555">0..1</text>
+<line x1="107" y1="517" x2="107" y2="605" stroke="#707070" stroke-width="0.85"/>
+<polygon points="107.0,517 110.5,523.0 107.0,529 103.5,523.0" fill="#707070"/>
+<rect x="112.5" y="526" width="15" height="14" fill="white" stroke="white" stroke-width="0"/>
+<text x="120.0" y="533.0" text-anchor="middle" dominant-baseline="central" font-family="Microsoft YaHei,sans-serif" font-size="10" font-weight="400" fill="#555555">1</text>
+<rect x="114.0" y="582" width="36" height="14" fill="white" stroke="white" stroke-width="0"/>
+<text x="132.0" y="589.0" text-anchor="middle" dominant-baseline="central" font-family="Microsoft YaHei,sans-serif" font-size="10" font-weight="400" fill="#555555">1..*</text>
+<line x1="192" y1="285" x2="221" y2="285" stroke="#707070" stroke-width="0.85"/>
+<line x1="221" y1="285" x2="221" y2="371" stroke="#707070" stroke-width="0.85"/>
+<line x1="221" y1="371" x2="285" y2="371" stroke="#707070" stroke-width="0.85"/>
+<line x1="285" y1="371" x2="285" y2="405" stroke="#707070" stroke-width="0.85"/>
+<rect x="224.0" y="293" width="34" height="14" fill="white" stroke="white" stroke-width="0"/>
+<text x="241.0" y="300.0" text-anchor="middle" dominant-baseline="central" font-family="Microsoft YaHei,sans-serif" font-size="10" font-weight="400" fill="#555555">0..1</text>
+<rect x="293.0" y="383" width="40" height="14" fill="white" stroke="white" stroke-width="0"/>
+<text x="313.0" y="390.0" text-anchor="middle" dominant-baseline="central" font-family="Microsoft YaHei,sans-serif" font-size="10" font-weight="400" fill="#555555">0..90</text>
+<rect x="235.0" y="347" width="32" height="14" fill="white" stroke="white" stroke-width="0"/>
+<text x="251.0" y="354.0" text-anchor="middle" dominant-baseline="central" font-family="Microsoft YaHei,sans-serif" font-size="10" font-weight="400" fill="#555555">手牌</text>
+<line x1="340" y1="332" x2="340" y2="405" stroke="#707070" stroke-width="0.85"/>
+<rect x="347.0" y="340" width="34" height="14" fill="white" stroke="white" stroke-width="0"/>
+<text x="364.0" y="347.0" text-anchor="middle" dominant-baseline="central" font-family="Microsoft YaHei,sans-serif" font-size="10" font-weight="400" fill="#555555">0..1</text>
+<rect x="346.0" y="383" width="40" height="14" fill="white" stroke="white" stroke-width="0"/>
+<text x="366.0" y="390.0" text-anchor="middle" dominant-baseline="central" font-family="Microsoft YaHei,sans-serif" font-size="10" font-weight="400" fill="#555555">0..90</text>
+<rect x="350.0" y="363" width="32" height="14" fill="white" stroke="white" stroke-width="0"/>
+<text x="366.0" y="370.0" text-anchor="middle" dominant-baseline="central" font-family="Microsoft YaHei,sans-serif" font-size="10" font-weight="400" fill="#555555">库存</text>
+<line x1="573" y1="332" x2="573" y2="405" stroke="#707070" stroke-width="0.85"/>
+<rect x="580.5" y="341" width="15" height="14" fill="white" stroke="white" stroke-width="0"/>
+<text x="588.0" y="348.0" text-anchor="middle" dominant-baseline="central" font-family="Microsoft YaHei,sans-serif" font-size="10" font-weight="400" fill="#555555">1</text>
+<rect x="582.0" y="382" width="34" height="14" fill="white" stroke="white" stroke-width="0"/>
+<text x="599.0" y="389.0" text-anchor="middle" dominant-baseline="central" font-family="Microsoft YaHei,sans-serif" font-size="10" font-weight="400" fill="#555555">0..*</text>
+<rect x="576.5" y="362" width="55" height="14" fill="white" stroke="white" stroke-width="0"/>
+<text x="604.0" y="369.0" text-anchor="middle" dominant-baseline="central" font-family="Microsoft YaHei,sans-serif" font-size="10" font-weight="400" fill="#555555">场上炸弹</text>
+<rect x="103" y="552" width="8" height="10" fill="white" stroke="white" stroke-width="0"/>
+<rect x="453" y="552" width="8" height="10" fill="white" stroke="white" stroke-width="0"/>
+<line x1="573" y1="517" x2="573" y2="557" stroke="#707070" stroke-width="0.85"/>
+<line x1="573" y1="557" x2="10" y2="557" stroke="#707070" stroke-width="0.85"/>
+<line x1="10" y1="557" x2="10" y2="277" stroke="#707070" stroke-width="0.85"/>
+<line x1="10" y1="277" x2="22" y2="277" stroke="#707070" stroke-width="0.85"/>
+<line x1="22" y1="277" x2="16.678030463324294" y2="279.7706750532489" stroke="#707070" stroke-width="0.85"/>
+<line x1="22" y1="277" x2="16.678030463324294" y2="274.2293249467511" stroke="#707070" stroke-width="0.85"/>
+<rect x="582.0" y="524" width="34" height="14" fill="white" stroke="white" stroke-width="0"/>
+<text x="599.0" y="531.0" text-anchor="middle" dominant-baseline="central" font-family="Microsoft YaHei,sans-serif" font-size="10" font-weight="400" fill="#555555">0..*</text>
+<rect x="21.5" y="338" width="15" height="14" fill="white" stroke="white" stroke-width="0"/>
+<text x="29.0" y="345.0" text-anchor="middle" dominant-baseline="central" font-family="Microsoft YaHei,sans-serif" font-size="10" font-weight="400" fill="#555555">1</text>
+<rect x="325.0" y="550" width="44" height="14" fill="white" stroke="white" stroke-width="0"/>
+<text x="347.0" y="557.0" text-anchor="middle" dominant-baseline="central" font-family="Microsoft YaHei,sans-serif" font-size="10" font-weight="400" fill="#555555">所有者</text>
+<line x1="255.0" y1="657.0" x2="250.5" y2="657.0" stroke="#707070" stroke-width="0.85"/>
+<line x1="247.0" y1="657.0" x2="242.5" y2="657.0" stroke="#707070" stroke-width="0.85"/>
+<line x1="239.0" y1="657.0" x2="234.5" y2="657.0" stroke="#707070" stroke-width="0.85"/>
+<line x1="231.0" y1="657.0" x2="226.5" y2="657.0" stroke="#707070" stroke-width="0.85"/>
+<line x1="223.0" y1="657.0" x2="218.5" y2="657.0" stroke="#707070" stroke-width="0.85"/>
+<line x1="215.0" y1="657.0" x2="210.5" y2="657.0" stroke="#707070" stroke-width="0.85"/>
+<line x1="207.0" y1="657.0" x2="202.5" y2="657.0" stroke="#707070" stroke-width="0.85"/>
+<line x1="199.0" y1="657.0" x2="194.5" y2="657.0" stroke="#707070" stroke-width="0.85"/>
+<line x1="192" y1="657" x2="197.3219695366757" y2="654.2293249467511" stroke="#707070" stroke-width="0.85"/>
+<line x1="192" y1="657" x2="197.3219695366757" y2="659.7706750532489" stroke="#707070" stroke-width="0.85"/>
+<rect x="193.5" y="631" width="59" height="14" fill="white" stroke="white" stroke-width="0"/>
+<text x="223.0" y="638.0" text-anchor="middle" dominant-baseline="central" font-family="Microsoft YaHei,sans-serif" font-size="10" font-weight="400" fill="#555555">技能效果</text>
+<rect x="22" y="40" width="170" height="112" fill="white" stroke="#4E78A0" stroke-width="0.85"/>
+<rect x="22" y="40" width="170" height="44" fill="#EAF2FA" stroke="#4E78A0" stroke-width="0.85"/>
+<text x="107.0" y="53.0" text-anchor="middle" dominant-baseline="central" font-family="Microsoft YaHei,sans-serif" font-size="12.5" font-weight="700" fill="#222222">账号管理</text>
+<text x="107.0" y="72.0" text-anchor="middle" dominant-baseline="central" font-family="Microsoft YaHei,sans-serif" font-size="10.5" font-weight="400" fill="#4E78A0">AccountManager</text>
+<text x="107.0" y="96.5" text-anchor="middle" dominant-baseline="central" font-family="Microsoft YaHei,sans-serif" font-size="11.5" font-weight="400" fill="#222222">+ 注册登录()</text>
+<text x="107.0" y="111.5" text-anchor="middle" dominant-baseline="central" font-family="Microsoft YaHei,sans-serif" font-size="11.5" font-weight="400" fill="#222222">+ 保存战绩()</text>
+<rect x="255" y="40" width="170" height="112" fill="white" stroke="#4E78A0" stroke-width="0.85"/>
+<rect x="255" y="40" width="170" height="44" fill="#EAF2FA" stroke="#4E78A0" stroke-width="0.85"/>
+<text x="340.0" y="53.0" text-anchor="middle" dominant-baseline="central" font-family="Microsoft YaHei,sans-serif" font-size="12.5" font-weight="700" fill="#222222">对局管理</text>
+<text x="340.0" y="72.0" text-anchor="middle" dominant-baseline="central" font-family="Microsoft YaHei,sans-serif" font-size="10.5" font-weight="400" fill="#4E78A0">Game</text>
+<text x="340.0" y="96.5" text-anchor="middle" dominant-baseline="central" font-family="Microsoft YaHei,sans-serif" font-size="11.5" font-weight="400" fill="#222222">+ 阶段与回合</text>
+<text x="340.0" y="111.5" text-anchor="middle" dominant-baseline="central" font-family="Microsoft YaHei,sans-serif" font-size="11.5" font-weight="400" fill="#222222">+ 开始对局()</text>
+<text x="340.0" y="126.5" text-anchor="middle" dominant-baseline="central" font-family="Microsoft YaHei,sans-serif" font-size="11.5" font-weight="400" fill="#222222">+ 推进回合()</text>
+<text x="340.0" y="141.5" text-anchor="middle" dominant-baseline="central" font-family="Microsoft YaHei,sans-serif" font-size="11.5" font-weight="400" fill="#222222">+ 确认结果()</text>
+<rect x="488" y="40" width="170" height="112" fill="white" stroke="#4E78A0" stroke-width="0.85"/>
+<rect x="488" y="40" width="170" height="44" fill="#EAF2FA" stroke="#4E78A0" stroke-width="0.85"/>
+<text x="573.0" y="53.0" text-anchor="middle" dominant-baseline="central" font-family="Microsoft YaHei,sans-serif" font-size="12.5" font-weight="700" fill="#222222">联机管理</text>
+<text x="573.0" y="72.0" text-anchor="middle" dominant-baseline="central" font-family="Microsoft YaHei,sans-serif" font-size="10.5" font-weight="400" fill="#4E78A0">NetworkManager</text>
+<text x="573.0" y="96.5" text-anchor="middle" dominant-baseline="central" font-family="Microsoft YaHei,sans-serif" font-size="11.5" font-weight="400" fill="#222222">+ 创建加入房间()</text>
+<text x="573.0" y="111.5" text-anchor="middle" dominant-baseline="central" font-family="Microsoft YaHei,sans-serif" font-size="11.5" font-weight="400" fill="#222222">+ 同步与计时()</text>
+<rect x="22" y="220" width="170" height="112" fill="white" stroke="#4D857B" stroke-width="0.85"/>
+<rect x="22" y="220" width="170" height="44" fill="#EAF5F1" stroke="#4D857B" stroke-width="0.85"/>
+<text x="107.0" y="233.0" text-anchor="middle" dominant-baseline="central" font-family="Microsoft YaHei,sans-serif" font-size="12.5" font-weight="700" fill="#222222">玩家</text>
+<text x="107.0" y="252.0" text-anchor="middle" dominant-baseline="central" font-family="Microsoft YaHei,sans-serif" font-size="10.5" font-weight="400" fill="#4D857B">Player</text>
+<text x="107.0" y="276.5" text-anchor="middle" dominant-baseline="central" font-family="Microsoft YaHei,sans-serif" font-size="11.5" font-weight="400" fill="#222222">+ 位置、手牌与库存雷</text>
+<text x="107.0" y="291.5" text-anchor="middle" dominant-baseline="central" font-family="Microsoft YaHei,sans-serif" font-size="11.5" font-weight="400" fill="#222222">+ 准备与出牌()</text>
+<rect x="255" y="220" width="170" height="112" fill="white" stroke="#4D857B" stroke-width="0.85"/>
+<rect x="255" y="220" width="170" height="44" fill="#EAF5F1" stroke="#4D857B" stroke-width="0.85"/>
+<text x="340.0" y="233.0" text-anchor="middle" dominant-baseline="central" font-family="Microsoft YaHei,sans-serif" font-size="12.5" font-weight="700" fill="#222222">公共牌库</text>
+<text x="340.0" y="252.0" text-anchor="middle" dominant-baseline="central" font-family="Microsoft YaHei,sans-serif" font-size="10.5" font-weight="400" fill="#4D857B">CardDeck</text>
+<text x="340.0" y="276.5" text-anchor="middle" dominant-baseline="central" font-family="Microsoft YaHei,sans-serif" font-size="11.5" font-weight="400" fill="#222222">+ 剩余牌</text>
+<text x="340.0" y="291.5" text-anchor="middle" dominant-baseline="central" font-family="Microsoft YaHei,sans-serif" font-size="11.5" font-weight="400" fill="#222222">+ 抽牌()</text>
+<rect x="488" y="220" width="170" height="112" fill="white" stroke="#4D857B" stroke-width="0.85"/>
+<rect x="488" y="220" width="170" height="44" fill="#EAF5F1" stroke="#4D857B" stroke-width="0.85"/>
+<text x="573.0" y="233.0" text-anchor="middle" dominant-baseline="central" font-family="Microsoft YaHei,sans-serif" font-size="12.5" font-weight="700" fill="#222222">棋盘</text>
+<text x="573.0" y="252.0" text-anchor="middle" dominant-baseline="central" font-family="Microsoft YaHei,sans-serif" font-size="10.5" font-weight="400" fill="#4D857B">MountainBoard</text>
+<text x="573.0" y="276.5" text-anchor="middle" dominant-baseline="central" font-family="Microsoft YaHei,sans-serif" font-size="11.5" font-weight="400" fill="#222222">+ 0至40阶</text>
+<text x="573.0" y="291.5" text-anchor="middle" dominant-baseline="central" font-family="Microsoft YaHei,sans-serif" font-size="11.5" font-weight="400" fill="#222222">+ 查询阶位()</text>
+<rect x="22" y="405" width="170" height="112" fill="white" stroke="#84719D" stroke-width="0.85"/>
+<rect x="22" y="405" width="170" height="44" fill="#F1EDF8" stroke="#84719D" stroke-width="0.85"/>
+<text x="107.0" y="418.0" text-anchor="middle" dominant-baseline="central" font-family="Microsoft YaHei,sans-serif" font-size="12.5" font-weight="700" fill="#222222">角色</text>
+<text x="107.0" y="437.0" text-anchor="middle" dominant-baseline="central" font-family="Microsoft YaHei,sans-serif" font-size="10.5" font-weight="400" fill="#84719D">Character</text>
+<text x="107.0" y="461.5" text-anchor="middle" dominant-baseline="central" font-family="Microsoft YaHei,sans-serif" font-size="11.5" font-weight="400" fill="#222222">+ 名称与元素</text>
+<rect x="255" y="405" width="170" height="112" fill="white" stroke="#4D857B" stroke-width="0.85"/>
+<rect x="255" y="405" width="170" height="44" fill="#EAF5F1" stroke="#4D857B" stroke-width="0.85"/>
+<text x="340.0" y="418.0" text-anchor="middle" dominant-baseline="central" font-family="Microsoft YaHei,sans-serif" font-size="12.5" font-weight="700" fill="#222222">实体牌</text>
+<text x="340.0" y="437.0" text-anchor="middle" dominant-baseline="central" font-family="Microsoft YaHei,sans-serif" font-size="10.5" font-weight="400" fill="#4D857B">PlayingCard</text>
+<text x="340.0" y="461.5" text-anchor="middle" dominant-baseline="central" font-family="Microsoft YaHei,sans-serif" font-size="11.5" font-weight="400" fill="#222222">+ 标识与花色</text>
+<rect x="488" y="405" width="170" height="112" fill="white" stroke="#4D857B" stroke-width="0.85"/>
+<rect x="488" y="405" width="170" height="44" fill="#EAF5F1" stroke="#4D857B" stroke-width="0.85"/>
+<text x="573.0" y="418.0" text-anchor="middle" dominant-baseline="central" font-family="Microsoft YaHei,sans-serif" font-size="12.5" font-weight="700" fill="#222222">炸弹</text>
+<text x="573.0" y="437.0" text-anchor="middle" dominant-baseline="central" font-family="Microsoft YaHei,sans-serif" font-size="10.5" font-weight="400" fill="#4D857B">Bomb</text>
+<text x="573.0" y="461.5" text-anchor="middle" dominant-baseline="central" font-family="Microsoft YaHei,sans-serif" font-size="11.5" font-weight="400" fill="#222222">+ 标识</text>
+<rect x="22" y="605" width="170" height="112" fill="white" stroke="#84719D" stroke-width="0.85"/>
+<rect x="22" y="605" width="170" height="44" fill="#F1EDF8" stroke="#84719D" stroke-width="0.85"/>
+<text x="107.0" y="618.0" text-anchor="middle" dominant-baseline="central" font-family="Microsoft YaHei,sans-serif" font-size="12.5" font-weight="700" fill="#222222">技能组件（抽象）</text>
+<text x="107.0" y="637.0" text-anchor="middle" dominant-baseline="central" font-family="Microsoft YaHei,sans-serif" font-size="10.5" font-weight="400" fill="#84719D">SkillComponent</text>
+<text x="107.0" y="661.5" text-anchor="middle" dominant-baseline="central" font-family="Microsoft YaHei,sans-serif" font-size="11.5" font-weight="400" fill="#222222">+ 来源与技能状态</text>
+<text x="107.0" y="676.5" text-anchor="middle" dominant-baseline="central" font-family="Microsoft YaHei,sans-serif" font-size="11.5" font-weight="400" fill="#222222">+ 检查条件与应用效果()</text>
+<rect x="255" y="605" width="170" height="112" fill="white" stroke="#84719D" stroke-width="0.85"/>
+<rect x="255" y="605" width="170" height="44" fill="#F1EDF8" stroke="#84719D" stroke-width="0.85"/>
+<text x="340.0" y="618.0" text-anchor="middle" dominant-baseline="central" font-family="Microsoft YaHei,sans-serif" font-size="12.5" font-weight="700" fill="#222222">规则裁决</text>
+<text x="340.0" y="637.0" text-anchor="middle" dominant-baseline="central" font-family="Microsoft YaHei,sans-serif" font-size="10.5" font-weight="400" fill="#84719D">JudgeRule</text>
+<text x="340.0" y="661.5" text-anchor="middle" dominant-baseline="central" font-family="Microsoft YaHei,sans-serif" font-size="11.5" font-weight="400" fill="#222222">+ 判断胜负()</text>
+<text x="340.0" y="676.5" text-anchor="middle" dominant-baseline="central" font-family="Microsoft YaHei,sans-serif" font-size="11.5" font-weight="400" fill="#222222">+ 结算移动与炸弹()</text>
+<line x1="70" y1="762" x2="110" y2="762" stroke="#707070" stroke-width="0.85"/>
+<polygon points="76.0,758.5 82,762.0 76.0,765.5 70,762.0" fill="#707070"/>
+<text x="138.0" y="762.0" text-anchor="middle" dominant-baseline="central" font-family="Microsoft YaHei,sans-serif" font-size="10.5" font-weight="400" fill="#222222">组合</text>
+<line x1="240" y1="762" x2="280" y2="762" stroke="#707070" stroke-width="0.85"/>
+<line x1="280" y1="762" x2="274.6780304633243" y2="764.7706750532489" stroke="#707070" stroke-width="0.85"/>
+<line x1="280" y1="762" x2="274.6780304633243" y2="759.2293249467511" stroke="#707070" stroke-width="0.85"/>
+<text x="308.0" y="762.0" text-anchor="middle" dominant-baseline="central" font-family="Microsoft YaHei,sans-serif" font-size="10.5" font-weight="400" fill="#222222">关联</text>
+<line x1="410.0" y1="762.0" x2="414.5" y2="762.0" stroke="#707070" stroke-width="0.85"/>
+<line x1="418.0" y1="762.0" x2="422.5" y2="762.0" stroke="#707070" stroke-width="0.85"/>
+<line x1="426.0" y1="762.0" x2="430.5" y2="762.0" stroke="#707070" stroke-width="0.85"/>
+<line x1="434.0" y1="762.0" x2="438.5" y2="762.0" stroke="#707070" stroke-width="0.85"/>
+<line x1="442.0" y1="762.0" x2="446.5" y2="762.0" stroke="#707070" stroke-width="0.85"/>
+<line x1="450" y1="762" x2="444.6780304633243" y2="764.7706750532489" stroke="#707070" stroke-width="0.85"/>
+<line x1="450" y1="762" x2="444.6780304633243" y2="759.2293249467511" stroke="#707070" stroke-width="0.85"/>
+<text x="478.0" y="762.0" text-anchor="middle" dominant-baseline="central" font-family="Microsoft YaHei,sans-serif" font-size="10.5" font-weight="400" fill="#222222">依赖</text>
+</svg>

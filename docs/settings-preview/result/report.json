@@ -1,0 +1,498 @@
+{
+ "url": "docs/settings-preview/index.html",
+ "at": "2026-11-01T15:44:30.194Z",
+ "allow": [],
+ "viewports": [
+  {
+   "width": 1440,
+   "height": 900,
+   "load": "load",
+   "screens": 2,
+   "filled": [
+    0.44,
+    0.5
+   ],
+   "motion": {
+    "elements": 0,
+    "css": 0,
+    "transitions": 0,
+    "scripted": 0,
+    "videos": 0,
+    "playingVideos": 0
+   },
+   "metrics": {
+    "viewport": {
+     "w": 1440,
+     "h": 900
+    },
+    "page": {
+     "height": 918,
+     "screens": 1,
+     "words": 65,
+     "img": 0,
+     "video": 0,
+     "canvas": 0,
+     "svg": 3,
+     "sections": 3,
+     "horizontalOverflow": 0,
+     "overflowCulprits": [],
+     "uiFragments": 0,
+     "uiAbuse": false,
+     "realPictures": 0,
+     "videoCount": 0,
+     "uiPictures": 0,
+     "pictureSamples": [],
+     "blendText": 0,
+     "sideScrollers": 0,
+     "brokenImages": [],
+     "emoji": [],
+     "videosNoPoster": 0
+    },
+    "hero": {
+     "text": "旅途设置",
+     "words": 1,
+     "chars": 4,
+     "lines": 1,
+     "size": 32,
+     "vw": 2.2,
+     "font": "SimSun",
+     "weight": 600,
+     "tracking": 0.09,
+     "leading": 1.2,
+     "top": 154,
+     "tag": "h1",
+     "kind": "heading",
+     "align": "left",
+     "position": "left"
+    },
+    "h1": {
+     "text": "旅途设置",
+     "words": 1,
+     "lines": 1,
+     "size": 32,
+     "font": "SimSun"
+    },
+    "headings": [
+     {
+      "text": "旅途设置",
+      "words": 1,
+      "chars": 4,
+      "lines": 1,
+      "size": 32,
+      "vw": 2.2,
+      "font": "SimSun",
+      "weight": 600,
+      "tracking": 0.094,
+      "leading": 1.2,
+      "upper": false,
+      "italic": false,
+      "mono": true,
+      "align": "left",
+      "position": "left",
+      "widthRatio": 0.18,
+      "top": 154,
+      "tag": "h1",
+      "kind": "heading"
+     }
+    ],
+    "headingSummary": {
+     "count": 1,
+     "maxLines": 1,
+     "over2Lines": 0,
+     "statements": 0,
+     "centered": 0,
+     "medianWords": null,
+     "mixedFontHeadings": 0
+    },
+    "type": {
+     "families": [
+      {
+       "family": "Microsoft YaHei",
+       "share": 0.77,
+       "mono": false
+      },
+      {
+       "family": "SimSun",
+       "share": 0.23,
+       "mono": true
+      }
+     ],
+     "familyCount": 2,
+     "sizes": [
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      22,
+      26,
+      32
+     ],
+     "sizeCount": 11,
+     "notLoaded": [],
+     "body": null,
+     "measureChars": null,
+     "max": {
+      "size": 32,
+      "vw": 2.2,
+      "font": "SimSun",
+      "text": "旅途设置"
+     },
+     "monoShare": 0.23,
+     "monoProseShare": 0.23,
+     "monoFamilies": [
+      "SimSun"
+     ],
+     "monoSamples": [
+      "云上之约",
+      "CLIMB TO THE SKY",
+      "6 5 1 0",
+      "旋曜玉帛",
+      "旅途设置",
+      "70"
+     ],
+     "microLabels": 2,
+     "microLabelShare": 0.123,
+     "microSamples": [
+      "CLIMB TO THE SKY",
+      "CELESTIAL ARCHIVE — 040"
+     ],
+     "upperShare": 0.19,
+     "centerShare": 0.03,
+     "smallText": 6
+    },
+    "eyebrows": [],
+    "numbered": [],
+    "color": {
+     "bodyBg": "#edf2ec",
+     "bodyBgHsl": {
+      "h": 110,
+      "s": 0.19,
+      "l": 0.94
+     },
+     "dark": false,
+     "sectionBgs": [
+      {
+       "color": "#fcfcf6",
+       "top": 252,
+       "hsl": {
+        "h": 60,
+        "s": 0.5,
+        "l": 0.98
+       }
+      }
+     ],
+     "textColors": [
+      {
+       "color": "#526960",
+       "share": 0.63
+      },
+      {
+       "color": "#254d58",
+       "share": 0.31
+      },
+      {
+       "color": "#7b7049",
+       "share": 0.05
+      },
+      {
+       "color": "#4d7163",
+       "share": 0.01
+      }
+     ],
+     "button": null,
+     "lowContrast": [
+      {
+       "text": "CLIMB TO THE SKY",
+       "ratio": 4.3,
+       "need": 4.5,
+       "size": 11,
+       "fg": "#7b7049",
+       "bg": "#edf2ec"
+      }
+     ]
+    },
+    "buttons": {
+     "count": 1,
+     "inHero": 1,
+     "radius": 4,
+     "height": 44,
+     "withShadow": 0,
+     "withGradient": 0,
+     "mono": 0,
+     "upper": 0,
+     "heroLabels": [
+      "← 返回首页"
+     ]
+    },
+    "surfaces": {
+     "shadowStatic": 0,
+     "shadowOverlay": 0,
+     "shadowSamples": [],
+     "gradients": 0,
+     "scrims": 0,
+     "gradientSamples": [],
+     "gradientText": 0,
+     "hairlines": 6,
+     "hairlineSamples": [
+      "header 1344px",
+      "div.musicoptions 766px",
+      "section 1006px",
+      "div.row 766px",
+      "section 1006px"
+     ],
+     "outlinedBoxes": 1,
+     "dashed": 0,
+     "blurred": 0,
+     "roundedBoxes": 1,
+     "boxRadius": 6,
+     "squareMedia": 0,
+     "roundedMedia": 0,
+     "mediaRadius": 0,
+     "textShadow": 0,
+     "cardRows": []
+    },
+    "heroMedia": [],
+    "nav": {
+     "links": 0,
+     "fixed": false,
+     "height": 112,
+     "floatingPill": false,
+     "blur": false
+    },
+    "fontsLoaded": []
+   },
+   "layout": {
+    "viewport": {
+     "w": 1440,
+     "h": 900
+    },
+    "pageH": 918,
+    "margins": {
+     "left": 48,
+     "right": 48
+    },
+    "sections": [
+     {
+      "sel": "section",
+      "tag": "section",
+      "top": 261,
+      "height": 209,
+      "words": 17,
+      "media": 0,
+      "middle": 249,
+      "heading": {
+       "text": "70",
+       "size": 22,
+       "tag": "output"
+      },
+      "left": 217,
+      "right": 226,
+      "textLeft": 217,
+      "textRight": 226,
+      "fullBleed": false,
+      "footer": false,
+      "hero": true,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "section",
+      "tag": "section",
+      "top": 469,
+      "height": 196,
+      "words": 6,
+      "media": 0,
+      "middle": 453,
+      "heading": {
+       "text": "画面与镜头",
+       "size": 17,
+       "tag": "h2"
+      },
+      "left": 217,
+      "right": 221,
+      "textLeft": 217,
+      "textRight": 851,
+      "fullBleed": false,
+      "footer": true,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     }
+    ],
+    "gaps": [],
+    "h1s": [
+     {
+      "text": "旅途设置",
+      "size": 32,
+      "top": 154,
+      "firstScreen": true
+     }
+    ],
+    "edgeText": [],
+    "edges": [
+     {
+      "x": 217,
+      "n": 3
+     },
+     {
+      "x": 180,
+      "n": 1
+     }
+    ],
+    "leftBlocks": 4,
+    "bodySize": 16,
+    "stage": false,
+    "explains": false,
+    "slivers": [],
+    "voidShare": 0.1,
+    "voidBox": {
+     "x": 0,
+     "y": 120,
+     "w": 180,
+     "h": 720
+    }
+   },
+   "app": {
+    "viewport": {
+     "w": 1440,
+     "h": 900
+    },
+    "dark": false,
+    "ground": "#edf2ec",
+    "sidebar": null,
+    "topbar": null,
+    "canvas": {
+     "left": 48,
+     "right": 48
+    },
+    "hero": {
+     "text": "旅途设置",
+     "words": 1,
+     "chars": 4,
+     "lines": 1,
+     "size": 32,
+     "vw": 2.2,
+     "font": "SimSun",
+     "weight": 600,
+     "tracking": 0.09,
+     "leading": 1.2,
+     "top": 154,
+     "tag": "h1",
+     "kind": "heading",
+     "align": "left",
+     "position": "left"
+    },
+    "charts": 0,
+    "layout": {
+     "panels": 1,
+     "firstScreen": 1,
+     "ragged": [],
+     "voids": []
+    },
+    "tiles": 0,
+    "panels": {
+     "count": 3,
+     "radii": [
+      [
+       0,
+       2
+      ],
+      [
+       6,
+       1
+      ]
+     ],
+     "heavyBorders": 0,
+     "borderSamples": [],
+     "heavyShadows": 0,
+     "softShadows": 0,
+     "shadowSamples": [],
+     "glass": 0
+    },
+    "chips": {
+     "count": 0,
+     "hues": 0,
+     "samples": []
+    },
+    "numbers": {
+     "cells": 0,
+     "leftAligned": 0,
+     "figures": 0,
+     "tabularShare": null,
+     "kpiMax": null
+    },
+    "rows": null,
+    "chartHues": 0,
+    "placeholders": [],
+    "type": {
+     "under13": 0.68,
+     "tiny": 0,
+     "tinySamples": [],
+     "sizes": [
+      11,
+      12,
+      13,
+      14,
+      16,
+      17,
+      22,
+      26,
+      32
+     ]
+    },
+    "title": {
+     "text": "旅途设置",
+     "size": 32,
+     "top": 154
+    },
+    "colourShare": 0
+   },
+   "consoleErrors": []
+  }
+ ],
+ "findings": [
+  {
+   "level": "WARN",
+   "id": "micro-label",
+   "width": 1440,
+   "message": "2 tiny uppercase letter-spaced label(s): \"CLIMB TO THE SKY\", \"CELESTIAL ARCHIVE — 040\"",
+   "fix": "Prefer sentence case at body size."
+  },
+  {
+   "level": "WARN",
+   "id": "palette-cream",
+   "width": 1440,
+   "message": "Yellow-cream background (section #fcfcf6).",
+   "fix": "Use the drawn palette. If you want warmth, take a low-chroma stone or bone, not a yellow cream."
+  },
+  {
+   "level": "WARN",
+   "id": "contrast",
+   "width": 1440,
+   "message": "Low-contrast text: \"CLIMB TO THE SKY\" 4.3:1 needs 4.5:1",
+   "fix": "Darken or lighten the text colour."
+  },
+  {
+   "level": "WARN",
+   "id": "tiny-text",
+   "width": 1440,
+   "message": "68% of the text is under 13px.",
+   "fix": "Data and labels read at 13–14px; keep 11–12px for sublines and axis ticks."
+  }
+ ],
+ "images": [
+  {
+   "viewport": "desktop",
+   "width": 1440,
+   "fold": "D:\\大学\\面向对象项目\\docs\\settings-preview\\result\\desktop-fold.jpg",
+   "pages": [
+    "D:\\大学\\面向对象项目\\docs\\settings-preview\\result\\desktop-page-01.jpg"
+   ],
+   "film": []
+  }
+ ]
+}

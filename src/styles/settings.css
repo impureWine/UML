@@ -1,0 +1,44 @@
+/* Settings content only: the shared shell and background retain their existing styles. */
+.settings-main{width:78%;max-width:1200px;margin:0 auto;padding:32px 0 46px;color:var(--ink-deep)}
+.settings-main .settings-title{display:flex;align-items:center;justify-content:space-between;gap:24px;margin-bottom:28px}
+.settings-main h1{font:600 32px/1.2 var(--serif);letter-spacing:3px;margin:0 0 10px}
+.settings-main p{font-size:13px;line-height:1.8;color:#526960}
+.settings-main .settings-back{display:flex;align-items:center;gap:12px;border:1px solid #bcc8b9;border-radius:4px;background:transparent;padding:11px 20px;font-size:13px;white-space:nowrap}
+.settings-main .settings-back .icon{width:16px;height:16px}
+.settings-main .settings-back:hover{background:#e1e9df}
+.settings-main .settings-sheet{background:#fcfcf6;border:1px solid #d8dfd0;border-radius:6px;padding:0 32px}
+.settings-main .settings-section{display:grid;grid-template-columns:210px minmax(0,1fr);gap:30px;padding:28px 0}
+.settings-main .settings-section+.settings-section{border-top:1px solid #dce3d6}
+.settings-main h2{font-size:17px;margin:0 0 8px;font-weight:600}
+.settings-main .settings-intro p{font-size:12px}
+.settings-main .settings-audio{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:28px}
+.settings-main .settings-volume-label{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:17px;font-size:14px}
+.settings-main .settings-volume-label output{font:22px var(--serif);font-variant-numeric:tabular-nums;white-space:nowrap}
+.settings-main .settings-volume-label small{font-size:12px}
+.settings-main .settings-volume input[type=range]{appearance:none;display:block;width:100%;height:5px;margin:0;border-radius:5px;cursor:pointer;background:linear-gradient(to right,#547a70 var(--volume),#dce4da var(--volume))}
+.settings-main .settings-volume input[type=range]::-webkit-slider-thumb{appearance:none;width:15px;height:15px;border:4px solid #547a70;border-radius:50%;background:#fcfcf6}
+.settings-main .settings-volume input[type=range]::-moz-range-thumb{width:7px;height:7px;border:4px solid #547a70;border-radius:50%;background:#fcfcf6}
+.settings-main .settings-mute{display:flex;align-items:center;justify-content:space-between;margin-top:20px;font-size:12px;color:#526960}
+.settings-main .settings-switch{position:relative;display:inline-flex;align-items:center;gap:10px;cursor:pointer;min-height:28px;font-size:13px}
+.settings-main .settings-switch input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;margin:0}
+.settings-main .settings-toggle{width:34px;height:19px;border-radius:20px;background:#d8dfd6;position:relative;pointer-events:none;flex:none}
+.settings-main .settings-toggle:after{content:'';position:absolute;top:3px;left:3px;width:13px;height:13px;background:white;border-radius:50%;transition:transform .15s}
+.settings-main .settings-switch input:checked+.settings-toggle{background:#547a70}
+.settings-main .settings-switch input:checked+.settings-toggle:after{transform:translateX(15px)}
+.settings-main .settings-switch input:focus-visible+.settings-toggle,.settings-main .settings-quality input:focus-visible+span{outline:2px solid var(--ink-deep);outline-offset:3px}
+.settings-main .settings-music-options{display:flex;gap:32px;border-top:1px solid #dce3d6;padding-top:18px;margin-top:22px}
+.settings-main .settings-row{display:flex;align-items:center;justify-content:space-between;gap:20px;font-size:14px}
+.settings-main .settings-row+.settings-row{margin-top:22px;padding-top:22px;border-top:1px solid #dce3d6}
+.settings-main .settings-row p{font-size:12px;margin-top:5px}
+.settings-main .settings-quality{display:flex;gap:3px;padding:4px;background:#edf0e8;border-radius:4px;flex:none}
+.settings-main .settings-quality label{position:relative;cursor:pointer}
+.settings-main .settings-quality input{position:absolute;opacity:0;inset:0;width:100%;height:100%;margin:0;cursor:pointer}
+.settings-main .settings-quality span{display:grid;place-items:center;width:57px;height:31px;border-radius:3px;font-size:13px;pointer-events:none}
+.settings-main .settings-quality input:checked+span{background:#fcfcf6;outline:1px solid #bdcbb8}
+.settings-main .settings-unlock{font-size:12px;white-space:nowrap;color:#526960}
+.settings-main .settings-unlock:before{content:'';display:inline-block;width:6px;height:6px;background:#8a978b;border-radius:50%;margin-right:7px}
+.settings-main .settings-unlock.is-unlocked:before{background:#668570}
+.settings-main .settings-error:empty{display:none}
+.settings-main .settings-error{display:block;color:#953b30;font-size:14px;margin-bottom:16px}
+@media(max-width:1100px){.settings-main{width:calc(100% - 64px)}.settings-main .settings-section{grid-template-columns:165px minmax(0,1fr);gap:24px}}
+@media(max-width:700px){.settings-main{width:calc(100% - 40px);padding-top:26px}.settings-main h1{font-size:26px}.settings-main .settings-title{gap:14px}.settings-main .settings-back{padding:10px 12px;gap:8px}.settings-main .settings-sheet{padding:0 20px}.settings-main .settings-section{grid-template-columns:1fr;gap:20px;padding:24px 0}.settings-main .settings-audio{gap:20px}.settings-main .settings-volume-label{font-size:13px}.settings-main .settings-volume-label small{font-size:11px}.settings-main .settings-volume-label output{font-size:20px}.settings-main .settings-quality span{width:35px}.settings-main .settings-music-options{gap:22px}}

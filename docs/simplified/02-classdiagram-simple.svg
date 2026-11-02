@@ -1,0 +1,138 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1580" height="1320" viewBox="0 0 1580 1320">
+<rect width="100%" height="100%" fill="white"/>
+<rect x="48" y="42" width="56" height="38" rx="7" fill="#22364B" stroke="#22364B"/>
+<text x="76" y="61" font-family="Microsoft YaHei,sans-serif" font-size="18" fill="white" text-anchor="middle" dominant-baseline="central">02</text>
+<text x="125" y="61" font-family="Microsoft YaHei,sans-serif" font-size="30" fill="#22364B" text-anchor="start" dominant-baseline="central">40阶登山博弈游戏｜简易类图</text>
+<text x="49" y="109" font-family="Microsoft YaHei,sans-serif" font-size="17" fill="#768595" text-anchor="start" dominant-baseline="central">以对局管理为中心，保留玩家、资源、规则与联机关系</text>
+<polyline points="49,143 1531,143" fill="none" stroke="#E3E9EE" stroke-width="1.5" stroke-linejoin="round"/>
+<polyline points="630,270 420,270" fill="none" stroke="#8A9AAA" stroke-width="1.5" stroke-linejoin="round" stroke-dasharray="7 5"/>
+<polyline points="429.9049181258794,265.21537912477646 420,270 429.9049181258794,274.78462087522354" fill="none" stroke="#8A9AAA" stroke-width="1.5" stroke-linejoin="round"/>
+<rect x="483.0" y="233" width="84.0" height="28" rx="4" fill="white" stroke="white"/>
+<text x="525" y="247" font-family="Microsoft YaHei,sans-serif" font-size="17" fill="#768595" text-anchor="middle" dominant-baseline="central">提交结果</text>
+<polyline points="950,270 1160,270" fill="none" stroke="#8A9AAA" stroke-width="1.5" stroke-linejoin="round"/>
+<polyline points="1150.0950818741205,274.78462087522354 1160,270 1150.0950818741205,265.21537912477646" fill="none" stroke="#8A9AAA" stroke-width="1.5" stroke-linejoin="round"/>
+<rect x="1004.5" y="233" width="101.0" height="28" rx="4" fill="white" stroke="white"/>
+<text x="1055" y="247" font-family="Microsoft YaHei,sans-serif" font-size="17" fill="#768595" text-anchor="middle" dominant-baseline="central">联机时使用</text>
+<polyline points="670,350 670,414 260,414 260,490" fill="none" stroke="#8A9AAA" stroke-width="1.5" stroke-linejoin="round"/>
+<polygon points="670,350 665.0,360.0 670.0,370.0 675.0,360.0" fill="#8A9AAA"/>
+<rect x="378.0" y="379" width="82.0" height="28" rx="4" fill="white" stroke="white"/>
+<text x="419" y="393" font-family="Microsoft YaHei,sans-serif" font-size="17" fill="#768595" text-anchor="middle" dominant-baseline="central">2 名玩家</text>
+<polyline points="790,350 790,490" fill="none" stroke="#8A9AAA" stroke-width="1.5" stroke-linejoin="round"/>
+<polygon points="790,350 785.0,360.0 790.0,370.0 795.0,360.0" fill="#8A9AAA"/>
+<rect x="811.0" y="405" width="82.0" height="28" rx="4" fill="white" stroke="white"/>
+<text x="852" y="419" font-family="Microsoft YaHei,sans-serif" font-size="17" fill="#768595" text-anchor="middle" dominant-baseline="central">1 个牌库</text>
+<polyline points="910,350 910,414 1320,414 1320,490" fill="none" stroke="#8A9AAA" stroke-width="1.5" stroke-linejoin="round"/>
+<polygon points="910,350 905.0,360.0 910.0,370.0 915.0,360.0" fill="#8A9AAA"/>
+<rect x="1082.0" y="379" width="82.0" height="28" rx="4" fill="white" stroke="white"/>
+<text x="1123" y="393" font-family="Microsoft YaHei,sans-serif" font-size="17" fill="#768595" text-anchor="middle" dominant-baseline="central">1 个棋盘</text>
+<polyline points="950,310 1050,310 1050,1110 950,1110" fill="none" stroke="#8A9AAA" stroke-width="1.5" stroke-linejoin="round"/>
+<polyline points="959.9049181258795,1105.2153791247765 950,1110 959.9049181258795,1114.7846208752235" fill="none" stroke="#8A9AAA" stroke-width="1.5" stroke-linejoin="round"/>
+<rect x="1008.0" y="976" width="84.0" height="28" rx="4" fill="white" stroke="white"/>
+<text x="1050" y="990" font-family="Microsoft YaHei,sans-serif" font-size="17" fill="#768595" text-anchor="middle" dominant-baseline="central">委托裁决</text>
+<polyline points="260,620 260,760" fill="none" stroke="#8A9AAA" stroke-width="1.5" stroke-linejoin="round"/>
+<polygon points="260,620 255.0,630.0 260.0,640.0 265.0,630.0" fill="#8A9AAA"/>
+<rect x="275.0" y="679" width="100.0" height="28" rx="4" fill="white" stroke="white"/>
+<text x="325" y="693" font-family="Microsoft YaHei,sans-serif" font-size="17" fill="#768595" text-anchor="middle" dominant-baseline="central">0..1 个角色</text>
+<polyline points="260,890 260,1030" fill="none" stroke="#8A9AAA" stroke-width="1.5" stroke-linejoin="round"/>
+<polygon points="260,890 255.0,900.0 260.0,910.0 265.0,900.0" fill="#8A9AAA"/>
+<rect x="277.0" y="946" width="98.0" height="28" rx="4" fill="white" stroke="white"/>
+<text x="326" y="960" font-family="Microsoft YaHei,sans-serif" font-size="17" fill="#768595" text-anchor="middle" dominant-baseline="central">1..* 个技能</text>
+<polyline points="790,620 790,760" fill="none" stroke="#8A9AAA" stroke-width="1.5" stroke-linejoin="round"/>
+<rect x="819.5" y="681" width="93.0" height="28" rx="4" fill="white" stroke="white"/>
+<text x="866" y="695" font-family="Microsoft YaHei,sans-serif" font-size="17" fill="#768595" text-anchor="middle" dominant-baseline="central">库存 0..90</text>
+<polyline points="420,580 520,580 520,710 690,710 690,760" fill="none" stroke="#8A9AAA" stroke-width="1.5" stroke-linejoin="round"/>
+<rect x="553.5" y="676" width="93.0" height="28" rx="4" fill="white" stroke="white"/>
+<text x="600" y="690" font-family="Microsoft YaHei,sans-serif" font-size="17" fill="#768595" text-anchor="middle" dominant-baseline="central">手牌 0..90</text>
+<polyline points="1320,620 1320,760" fill="none" stroke="#8A9AAA" stroke-width="1.5" stroke-linejoin="round"/>
+<rect x="1354.5" y="681" width="81.0" height="28" rx="4" fill="white" stroke="white"/>
+<text x="1395" y="695" font-family="Microsoft YaHei,sans-serif" font-size="17" fill="#768595" text-anchor="middle" dominant-baseline="central">场上 0..*</text>
+<polyline points="1320,890 1320,954 60,954 60,555 100,555" fill="none" stroke="#8A9AAA" stroke-width="1.5" stroke-linejoin="round"/>
+<polyline points="90.09508187412055,559.7846208752235 100,555 90.09508187412055,550.2153791247765" fill="none" stroke="#8A9AAA" stroke-width="1.5" stroke-linejoin="round"/>
+<rect x="695.5" y="940" width="189.0" height="28" rx="4" fill="white" stroke="white"/>
+<text x="790" y="954" font-family="Microsoft YaHei,sans-serif" font-size="17" fill="#768595" text-anchor="middle" dominant-baseline="central">每枚炸弹归属 1 名玩家</text>
+<polyline points="630,1110 420,1110" fill="none" stroke="#8A9AAA" stroke-width="1.5" stroke-linejoin="round" stroke-dasharray="7 5"/>
+<polyline points="429.9049181258794,1105.2153791247765 420,1110 429.9049181258794,1114.7846208752235" fill="none" stroke="#8A9AAA" stroke-width="1.5" stroke-linejoin="round"/>
+<rect x="483.0" y="1074" width="84.0" height="28" rx="4" fill="white" stroke="white"/>
+<text x="525" y="1088" font-family="Microsoft YaHei,sans-serif" font-size="17" fill="#768595" text-anchor="middle" dominant-baseline="central">技能效果</text>
+<rect x="100" y="220" width="320" height="130" rx="10" fill="white" stroke="#4E78A0"/>
+<rect x="101" y="221" width="318" height="65" rx="9" fill="#EAF2FA" stroke="#EAF2FA"/>
+<polyline points="100,287 420,287" fill="none" stroke="#4E78A0" stroke-width="1.5" stroke-linejoin="round"/>
+<text x="260" y="244" font-family="Microsoft YaHei,sans-serif" font-size="22" fill="#22364B" text-anchor="middle" dominant-baseline="central">账号管理</text>
+<text x="260" y="269" font-family="Microsoft YaHei,sans-serif" font-size="16" fill="#4E78A0" text-anchor="middle" dominant-baseline="central">AccountManager</text>
+<text x="260" y="309" font-family="Microsoft YaHei,sans-serif" font-size="17" fill="#22364B" text-anchor="middle" dominant-baseline="central">注册登录 · 保存战绩</text>
+<rect x="630" y="220" width="320" height="130" rx="10" fill="white" stroke="#4E78A0"/>
+<rect x="631" y="221" width="318" height="65" rx="9" fill="#EAF2FA" stroke="#EAF2FA"/>
+<polyline points="630,287 950,287" fill="none" stroke="#4E78A0" stroke-width="1.5" stroke-linejoin="round"/>
+<text x="790" y="244" font-family="Microsoft YaHei,sans-serif" font-size="22" fill="#22364B" text-anchor="middle" dominant-baseline="central">对局管理</text>
+<text x="790" y="269" font-family="Microsoft YaHei,sans-serif" font-size="16" fill="#4E78A0" text-anchor="middle" dominant-baseline="central">Game</text>
+<text x="790" y="309" font-family="Microsoft YaHei,sans-serif" font-size="17" fill="#22364B" text-anchor="middle" dominant-baseline="central">阶段与回合</text>
+<text x="790" y="333" font-family="Microsoft YaHei,sans-serif" font-size="17" fill="#22364B" text-anchor="middle" dominant-baseline="central">开始对局 · 推进回合 · 确认结果</text>
+<rect x="1160" y="220" width="320" height="130" rx="10" fill="white" stroke="#4E78A0"/>
+<rect x="1161" y="221" width="318" height="65" rx="9" fill="#EAF2FA" stroke="#EAF2FA"/>
+<polyline points="1160,287 1480,287" fill="none" stroke="#4E78A0" stroke-width="1.5" stroke-linejoin="round"/>
+<text x="1320" y="244" font-family="Microsoft YaHei,sans-serif" font-size="22" fill="#22364B" text-anchor="middle" dominant-baseline="central">联机管理</text>
+<text x="1320" y="269" font-family="Microsoft YaHei,sans-serif" font-size="16" fill="#4E78A0" text-anchor="middle" dominant-baseline="central">NetworkManager</text>
+<text x="1320" y="309" font-family="Microsoft YaHei,sans-serif" font-size="17" fill="#22364B" text-anchor="middle" dominant-baseline="central">创建加入房间 · 同步与计时</text>
+<rect x="100" y="490" width="320" height="130" rx="10" fill="white" stroke="#4D857B"/>
+<rect x="101" y="491" width="318" height="65" rx="9" fill="#EAF5F1" stroke="#EAF5F1"/>
+<polyline points="100,557 420,557" fill="none" stroke="#4D857B" stroke-width="1.5" stroke-linejoin="round"/>
+<text x="260" y="514" font-family="Microsoft YaHei,sans-serif" font-size="22" fill="#22364B" text-anchor="middle" dominant-baseline="central">玩家</text>
+<text x="260" y="539" font-family="Microsoft YaHei,sans-serif" font-size="16" fill="#4D857B" text-anchor="middle" dominant-baseline="central">Player</text>
+<text x="260" y="579" font-family="Microsoft YaHei,sans-serif" font-size="17" fill="#22364B" text-anchor="middle" dominant-baseline="central">位置、手牌与库存雷</text>
+<text x="260" y="603" font-family="Microsoft YaHei,sans-serif" font-size="17" fill="#22364B" text-anchor="middle" dominant-baseline="central">准备与出牌</text>
+<rect x="630" y="490" width="320" height="130" rx="10" fill="white" stroke="#4D857B"/>
+<rect x="631" y="491" width="318" height="65" rx="9" fill="#EAF5F1" stroke="#EAF5F1"/>
+<polyline points="630,557 950,557" fill="none" stroke="#4D857B" stroke-width="1.5" stroke-linejoin="round"/>
+<text x="790" y="514" font-family="Microsoft YaHei,sans-serif" font-size="22" fill="#22364B" text-anchor="middle" dominant-baseline="central">公共牌库</text>
+<text x="790" y="539" font-family="Microsoft YaHei,sans-serif" font-size="16" fill="#4D857B" text-anchor="middle" dominant-baseline="central">CardDeck</text>
+<text x="790" y="579" font-family="Microsoft YaHei,sans-serif" font-size="17" fill="#22364B" text-anchor="middle" dominant-baseline="central">剩余牌 · 抽牌</text>
+<rect x="1160" y="490" width="320" height="130" rx="10" fill="white" stroke="#4D857B"/>
+<rect x="1161" y="491" width="318" height="65" rx="9" fill="#EAF5F1" stroke="#EAF5F1"/>
+<polyline points="1160,557 1480,557" fill="none" stroke="#4D857B" stroke-width="1.5" stroke-linejoin="round"/>
+<text x="1320" y="514" font-family="Microsoft YaHei,sans-serif" font-size="22" fill="#22364B" text-anchor="middle" dominant-baseline="central">棋盘</text>
+<text x="1320" y="539" font-family="Microsoft YaHei,sans-serif" font-size="16" fill="#4D857B" text-anchor="middle" dominant-baseline="central">MountainBoard</text>
+<text x="1320" y="579" font-family="Microsoft YaHei,sans-serif" font-size="17" fill="#22364B" text-anchor="middle" dominant-baseline="central">0至40阶 · 查询阶位</text>
+<rect x="100" y="760" width="320" height="130" rx="10" fill="white" stroke="#84719D"/>
+<rect x="101" y="761" width="318" height="65" rx="9" fill="#F1EDF8" stroke="#F1EDF8"/>
+<polyline points="100,827 420,827" fill="none" stroke="#84719D" stroke-width="1.5" stroke-linejoin="round"/>
+<text x="260" y="784" font-family="Microsoft YaHei,sans-serif" font-size="22" fill="#22364B" text-anchor="middle" dominant-baseline="central">角色</text>
+<text x="260" y="809" font-family="Microsoft YaHei,sans-serif" font-size="16" fill="#84719D" text-anchor="middle" dominant-baseline="central">Character</text>
+<text x="260" y="849" font-family="Microsoft YaHei,sans-serif" font-size="17" fill="#22364B" text-anchor="middle" dominant-baseline="central">名称与元素</text>
+<rect x="630" y="760" width="320" height="130" rx="10" fill="white" stroke="#4D857B"/>
+<rect x="631" y="761" width="318" height="65" rx="9" fill="#EAF5F1" stroke="#EAF5F1"/>
+<polyline points="630,827 950,827" fill="none" stroke="#4D857B" stroke-width="1.5" stroke-linejoin="round"/>
+<text x="790" y="784" font-family="Microsoft YaHei,sans-serif" font-size="22" fill="#22364B" text-anchor="middle" dominant-baseline="central">实体牌</text>
+<text x="790" y="809" font-family="Microsoft YaHei,sans-serif" font-size="16" fill="#4D857B" text-anchor="middle" dominant-baseline="central">PlayingCard</text>
+<text x="790" y="849" font-family="Microsoft YaHei,sans-serif" font-size="17" fill="#22364B" text-anchor="middle" dominant-baseline="central">标识与花色</text>
+<rect x="1160" y="760" width="320" height="130" rx="10" fill="white" stroke="#4D857B"/>
+<rect x="1161" y="761" width="318" height="65" rx="9" fill="#EAF5F1" stroke="#EAF5F1"/>
+<polyline points="1160,827 1480,827" fill="none" stroke="#4D857B" stroke-width="1.5" stroke-linejoin="round"/>
+<text x="1320" y="784" font-family="Microsoft YaHei,sans-serif" font-size="22" fill="#22364B" text-anchor="middle" dominant-baseline="central">炸弹</text>
+<text x="1320" y="809" font-family="Microsoft YaHei,sans-serif" font-size="16" fill="#4D857B" text-anchor="middle" dominant-baseline="central">Bomb</text>
+<text x="1320" y="849" font-family="Microsoft YaHei,sans-serif" font-size="17" fill="#22364B" text-anchor="middle" dominant-baseline="central">标识</text>
+<rect x="100" y="1030" width="320" height="130" rx="10" fill="white" stroke="#84719D"/>
+<rect x="101" y="1031" width="318" height="65" rx="9" fill="#F1EDF8" stroke="#F1EDF8"/>
+<polyline points="100,1097 420,1097" fill="none" stroke="#84719D" stroke-width="1.5" stroke-linejoin="round"/>
+<text x="260" y="1054" font-family="Microsoft YaHei,sans-serif" font-size="22" fill="#22364B" text-anchor="middle" dominant-baseline="central">技能组件（抽象）</text>
+<text x="260" y="1079" font-family="Microsoft YaHei,sans-serif" font-size="16" fill="#84719D" text-anchor="middle" dominant-baseline="central">SkillComponent</text>
+<text x="260" y="1119" font-family="Microsoft YaHei,sans-serif" font-size="17" fill="#22364B" text-anchor="middle" dominant-baseline="central">来源与技能状态</text>
+<text x="260" y="1143" font-family="Microsoft YaHei,sans-serif" font-size="17" fill="#22364B" text-anchor="middle" dominant-baseline="central">检查条件与应用效果</text>
+<rect x="630" y="1030" width="320" height="130" rx="10" fill="white" stroke="#84719D"/>
+<rect x="631" y="1031" width="318" height="65" rx="9" fill="#F1EDF8" stroke="#F1EDF8"/>
+<polyline points="630,1097 950,1097" fill="none" stroke="#84719D" stroke-width="1.5" stroke-linejoin="round"/>
+<text x="790" y="1054" font-family="Microsoft YaHei,sans-serif" font-size="22" fill="#22364B" text-anchor="middle" dominant-baseline="central">规则裁决</text>
+<text x="790" y="1079" font-family="Microsoft YaHei,sans-serif" font-size="16" fill="#84719D" text-anchor="middle" dominant-baseline="central">JudgeRule</text>
+<text x="790" y="1119" font-family="Microsoft YaHei,sans-serif" font-size="17" fill="#22364B" text-anchor="middle" dominant-baseline="central">判断胜负</text>
+<text x="790" y="1143" font-family="Microsoft YaHei,sans-serif" font-size="17" fill="#22364B" text-anchor="middle" dominant-baseline="central">结算移动与炸弹</text>
+<polyline points="60,1210 1520,1210" fill="none" stroke="#E3E9EE" stroke-width="1.5" stroke-linejoin="round"/>
+<polyline points="100,1255 160,1255" fill="none" stroke="#8A9AAA" stroke-width="1.5" stroke-linejoin="round"/>
+<polygon points="100,1255 110.0,1260.0 120.0,1255.0 110.0,1250.0" fill="#8A9AAA"/>
+<text x="180" y="1255" font-family="Microsoft YaHei,sans-serif" font-size="17" fill="#768595" text-anchor="start" dominant-baseline="central">组合</text>
+<polyline points="300,1255 360,1255" fill="none" stroke="#8A9AAA" stroke-width="1.5" stroke-linejoin="round"/>
+<polyline points="350.0950818741206,1259.7846208752235 360,1255 350.0950818741206,1250.2153791247765" fill="none" stroke="#8A9AAA" stroke-width="1.5" stroke-linejoin="round"/>
+<text x="380" y="1255" font-family="Microsoft YaHei,sans-serif" font-size="17" fill="#768595" text-anchor="start" dominant-baseline="central">关联</text>
+<polyline points="500,1255 560,1255" fill="none" stroke="#8A9AAA" stroke-width="1.5" stroke-linejoin="round" stroke-dasharray="7 5"/>
+<polyline points="550.0950818741205,1259.7846208752235 560,1255 550.0950818741205,1250.2153791247765" fill="none" stroke="#8A9AAA" stroke-width="1.5" stroke-linejoin="round"/>
+<text x="580" y="1255" font-family="Microsoft YaHei,sans-serif" font-size="17" fill="#768595" text-anchor="start" dominant-baseline="central">依赖</text>
+<text x="1320" y="1255" font-family="Microsoft YaHei,sans-serif" font-size="17" fill="#768595" text-anchor="middle" dominant-baseline="central">具体技能合并为技能组件</text>
+</svg>

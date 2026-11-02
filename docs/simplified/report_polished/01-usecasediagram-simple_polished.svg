@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="180mm" height="111.17647058823529mm" viewBox="0 0 680 420">
+<rect width="100%" height="100%" fill="white"/>
+<rect x="119" y="15" width="442" height="389" fill="white" stroke="#858585" stroke-width="0.8"/>
+<text x="340.0" y="36.5" text-anchor="middle" dominant-baseline="central" font-family="Microsoft YaHei,sans-serif" font-size="14" font-weight="700" fill="#222222">40阶登山博弈游戏</text>
+<text x="230.0" y="70.0" text-anchor="middle" dominant-baseline="central" font-family="Microsoft YaHei,sans-serif" font-size="12" font-weight="700" fill="#4E78A0">账号与对战入口</text>
+<text x="440.0" y="70.0" text-anchor="middle" dominant-baseline="central" font-family="Microsoft YaHei,sans-serif" font-size="12" font-weight="700" fill="#4D857B">对局核心操作</text>
+<line x1="79" y1="92" x2="140" y2="110" stroke="#707070" stroke-width="0.9"/>
+<line x1="79" y1="265" x2="140" y2="110" stroke="#707070" stroke-width="0.9"/>
+<line x1="79" y1="265" x2="140" y2="171" stroke="#707070" stroke-width="0.9"/>
+<line x1="79" y1="265" x2="140" y2="232" stroke="#707070" stroke-width="0.9"/>
+<line x1="79" y1="265" x2="140" y2="293" stroke="#707070" stroke-width="0.9"/>
+<line x1="79" y1="265" x2="140" y2="354" stroke="#707070" stroke-width="0.9"/>
+<line x1="601" y1="232" x2="530" y2="110" stroke="#707070" stroke-width="0.9"/>
+<line x1="601" y1="232" x2="530" y2="171" stroke="#707070" stroke-width="0.9"/>
+<line x1="601" y1="232" x2="530" y2="232" stroke="#707070" stroke-width="0.9"/>
+<line x1="601" y1="232" x2="530" y2="293" stroke="#707070" stroke-width="0.9"/>
+<line x1="601" y1="232" x2="530" y2="354" stroke="#707070" stroke-width="0.9"/>
+<ellipse cx="230.0" cy="110.0" rx="90.0" ry="20.0" fill="#F3F7FC" stroke="#4E78A0" stroke-width="0.9"/>
+<text x="230.0" y="110.0" text-anchor="middle" dominant-baseline="central" font-family="Microsoft YaHei,sans-serif" font-size="12" font-weight="400" fill="#222222">注册与登录</text>
+<ellipse cx="230.0" cy="171.0" rx="90.0" ry="20.0" fill="#F3F7FC" stroke="#4E78A0" stroke-width="0.9"/>
+<text x="230.0" y="171.0" text-anchor="middle" dominant-baseline="central" font-family="Microsoft YaHei,sans-serif" font-size="12" font-weight="400" fill="#222222">查看资料与战绩</text>
+<ellipse cx="230.0" cy="232.0" rx="90.0" ry="20.0" fill="#F3F7FC" stroke="#4E78A0" stroke-width="0.9"/>
+<text x="230.0" y="232.0" text-anchor="middle" dominant-baseline="central" font-family="Microsoft YaHei,sans-serif" font-size="12" font-weight="400" fill="#222222">浏览规则与调整设置</text>
+<ellipse cx="230.0" cy="293.0" rx="90.0" ry="20.0" fill="#F3F7FC" stroke="#4E78A0" stroke-width="0.9"/>
+<text x="230.0" y="293.0" text-anchor="middle" dominant-baseline="central" font-family="Microsoft YaHei,sans-serif" font-size="12" font-weight="400" fill="#222222">开始本地或AI对战</text>
+<ellipse cx="230.0" cy="354.0" rx="90.0" ry="20.0" fill="#F3F7FC" stroke="#4E78A0" stroke-width="0.9"/>
+<text x="230.0" y="354.0" text-anchor="middle" dominant-baseline="central" font-family="Microsoft YaHei,sans-serif" font-size="12" font-weight="400" fill="#222222">创建或加入联机房间</text>
+<ellipse cx="440.0" cy="110.0" rx="90.0" ry="20.0" fill="#F3F8F6" stroke="#4D857B" stroke-width="0.9"/>
+<text x="440.0" y="110.0" text-anchor="middle" dominant-baseline="central" font-family="Microsoft YaHei,sans-serif" font-size="12" font-weight="400" fill="#222222">选角与初始选牌</text>
+<ellipse cx="440.0" cy="171.0" rx="90.0" ry="20.0" fill="#F3F8F6" stroke="#4D857B" stroke-width="0.9"/>
+<text x="440.0" y="171.0" text-anchor="middle" dominant-baseline="central" font-family="Microsoft YaHei,sans-serif" font-size="12" font-weight="400" fill="#222222">准备：换牌与布雷</text>
+<ellipse cx="440.0" cy="232.0" rx="90.0" ry="20.0" fill="#F3F8F6" stroke="#4D857B" stroke-width="0.9"/>
+<text x="440.0" y="232.0" text-anchor="middle" dominant-baseline="central" font-family="Microsoft YaHei,sans-serif" font-size="12" font-weight="400" fill="#222222">使用技能与锁定出牌</text>
+<ellipse cx="440.0" cy="293.0" rx="90.0" ry="20.0" fill="#F3F8F6" stroke="#4D857B" stroke-width="0.9"/>
+<text x="440.0" y="293.0" text-anchor="middle" dominant-baseline="central" font-family="Microsoft YaHei,sans-serif" font-size="12" font-weight="400" fill="#222222">查看回合结算与回溯</text>
+<ellipse cx="440.0" cy="354.0" rx="90.0" ry="20.0" fill="#F3F8F6" stroke="#4D857B" stroke-width="0.9"/>
+<text x="440.0" y="354.0" text-anchor="middle" dominant-baseline="central" font-family="Microsoft YaHei,sans-serif" font-size="12" font-weight="400" fill="#222222">查看最终结果与退出</text>
+<ellipse cx="60.0" cy="74.0" rx="8.0" ry="8.0" fill="white" stroke="#444444" stroke-width="0.9"/>
+<line x1="60" y1="82" x2="60" y2="111" stroke="#444444" stroke-width="0.9"/>
+<line x1="41" y1="92" x2="79" y2="92" stroke="#444444" stroke-width="0.9"/>
+<line x1="60" y1="111" x2="44" y2="131" stroke="#444444" stroke-width="0.9"/>
+<line x1="60" y1="111" x2="76" y2="131" stroke="#444444" stroke-width="0.9"/>
+<text x="60.0" y="146.5" text-anchor="middle" dominant-baseline="central" font-family="Microsoft YaHei,sans-serif" font-size="12" font-weight="400" fill="#222222">未登录使用者</text>
+<ellipse cx="60.0" cy="247.0" rx="8.0" ry="8.0" fill="white" stroke="#444444" stroke-width="0.9"/>
+<line x1="60" y1="255" x2="60" y2="284" stroke="#444444" stroke-width="0.9"/>
+<line x1="41" y1="265" x2="79" y2="265" stroke="#444444" stroke-width="0.9"/>
+<line x1="60" y1="284" x2="44" y2="304" stroke="#444444" stroke-width="0.9"/>
+<line x1="60" y1="284" x2="76" y2="304" stroke="#444444" stroke-width="0.9"/>
+<text x="60.0" y="319.5" text-anchor="middle" dominant-baseline="central" font-family="Microsoft YaHei,sans-serif" font-size="12" font-weight="400" fill="#222222">账号使用者</text>
+<ellipse cx="620.0" cy="214.0" rx="8.0" ry="8.0" fill="white" stroke="#444444" stroke-width="0.9"/>
+<line x1="620" y1="222" x2="620" y2="251" stroke="#444444" stroke-width="0.9"/>
+<line x1="601" y1="232" x2="639" y2="232" stroke="#444444" stroke-width="0.9"/>
+<line x1="620" y1="251" x2="604" y2="271" stroke="#444444" stroke-width="0.9"/>
+<line x1="620" y1="251" x2="636" y2="271" stroke="#444444" stroke-width="0.9"/>
+<text x="620.0" y="286.5" text-anchor="middle" dominant-baseline="central" font-family="Microsoft YaHei,sans-serif" font-size="12" font-weight="400" fill="#222222">对局玩家</text>
+</svg>

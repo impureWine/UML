@@ -1,0 +1,97 @@
+@startuml
+title 40阶登山博弈游戏 · 简易类图
+skinparam shadowing false
+
+skinparam backgroundColor white
+skinparam defaultFontColor #22364B
+skinparam ArrowColor #8A9AAA
+skinparam ArrowThickness 1.2
+skinparam roundcorner 14
+skinparam nodesep 65
+skinparam ranksep 75
+skinparam linetype ortho
+skinparam class {
+  BackgroundColor white
+  HeaderBackgroundColor #EAF2FA
+  BorderColor #6C859D
+  FontSize 16
+}
+skinparam usecase {
+  BackgroundColor white
+  BorderColor #4E78A0
+  FontSize 16
+}
+skinparam actor {
+  BorderColor #4E78A0
+  FontColor #22364B
+}
+skinparam rectangle {
+  BackgroundColor #FAFCFE
+  BorderColor #DCE5EE
+}
+
+skinparam defaultFontName Microsoft YaHei
+skinparam classAttributeIconSize 0
+hide empty members
+class "账号管理\nAccountManager" as AccountManager {
+  +注册登录()
+  +保存战绩()
+}
+class "对局管理\nGame" as Game {
+  +阶段与回合
+  +开始对局()
+  +推进回合()
+  +确认结果()
+}
+class "联机管理\nNetworkManager" as NetworkManager {
+  +创建加入房间()
+  +同步与计时()
+}
+class "玩家\nPlayer" as Player #EAF5F1 {
+  +位置、手牌与库存雷
+  +准备与出牌()
+}
+class "棋盘\nMountainBoard" as Board #EAF5F1 {
+  +0至40阶
+  +查询阶位()
+}
+class "规则裁决\nJudgeRule" as Rule #F1EDF8 {
+  +判断胜负()
+  +结算移动与炸弹()
+}
+class "角色\nCharacter" as Character #F1EDF8 {
+  +名称与元素
+}
+abstract class "技能组件\nSkillComponent" as Skill #F1EDF8 {
+  +来源与技能状态
+  +检查条件与应用效果()
+}
+class "公共牌库\nCardDeck" as Deck #EAF5F1 {
+  +剩余牌
+  +抽牌()
+}
+class "实体牌\nPlayingCard" as Card #EAF5F1 {
+  +标识与花色
+}
+class "炸弹\nBomb" as Bomb #EAF5F1 {
+  +标识
+}
+Game ..> AccountManager : 提交结果
+Game --> NetworkManager : 联机时使用
+Game "1" *-- "2" Player
+Game "1" *-- "1" Board
+Game "1" *-- "1" Deck
+Game --> Rule : 委托裁决
+Player "1" *-- "0..1" Character
+Character "1" *-- "1..*" Skill
+Player "0..1" -- "0..90" Card : 手牌
+Deck "0..1" -- "0..90" Card : 库存
+Board "1" -- "0..*" Bomb : 场上炸弹
+Bomb "0..*" --> "1" Player : 所有者
+Rule ..> Skill : 读取技能效果
+legend bottom
+  仅保留核心业务类；具体技能合并为技能组件。
+  账号档案、房间、账本、回溯快照及表现类省略。
+  玩家选角前可无角色；手牌与库存是实体牌的不同分区。
+endlegend
+@enduml

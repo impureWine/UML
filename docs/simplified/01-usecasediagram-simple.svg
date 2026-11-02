@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1450" height="930" viewBox="0 0 1450 930">
+<rect width="100%" height="100%" fill="white"/>
+<rect x="48" y="42" width="56" height="38" rx="7" fill="#22364B" stroke="#22364B"/>
+<text x="76" y="61" font-family="Microsoft YaHei,sans-serif" font-size="18" fill="white" text-anchor="middle" dominant-baseline="central">01</text>
+<text x="125" y="61" font-family="Microsoft YaHei,sans-serif" font-size="30" fill="#22364B" text-anchor="start" dominant-baseline="central">40阶登山博弈游戏｜简易用例图</text>
+<text x="49" y="109" font-family="Microsoft YaHei,sans-serif" font-size="17" fill="#768595" text-anchor="start" dominant-baseline="central">账号功能与对局功能分组呈现，保留核心参与关系</text>
+<polyline points="49,143 1401,143" fill="none" stroke="#E3E9EE" stroke-width="1.5" stroke-linejoin="round"/>
+<rect x="280" y="184" width="890" height="606" rx="16" fill="#FAFCFE" stroke="#DCE5EE"/>
+<text x="725" y="216" font-family="Microsoft YaHei,sans-serif" font-size="22" fill="#22364B" text-anchor="middle" dominant-baseline="central">40阶登山博弈游戏</text>
+<rect x="320" y="253" width="365" height="45" rx="8" fill="#EAF2FA" stroke="#EAF2FA"/>
+<text x="502" y="275" font-family="Microsoft YaHei,sans-serif" font-size="19" fill="#4E78A0" text-anchor="middle" dominant-baseline="central">账号与对战入口</text>
+<rect x="765" y="253" width="365" height="45" rx="8" fill="#EAF5F1" stroke="#EAF5F1"/>
+<text x="947" y="275" font-family="Microsoft YaHei,sans-serif" font-size="19" fill="#4D857B" text-anchor="middle" dominant-baseline="central">对局核心操作</text>
+<ellipse cx="135.0" cy="266.0" rx="15.0" ry="15.0" fill="white" stroke="#4E78A0" stroke-width="1.5"/>
+<polyline points="135,281 135,325" fill="none" stroke="#4E78A0" stroke-width="1.5" stroke-linejoin="round"/>
+<polyline points="107,299 163,299" fill="none" stroke="#4E78A0" stroke-width="1.5" stroke-linejoin="round"/>
+<polyline points="111,352 135,325 159,352" fill="none" stroke="#4E78A0" stroke-width="1.5" stroke-linejoin="round"/>
+<text x="135" y="382" font-family="Microsoft YaHei,sans-serif" font-size="20" fill="#22364B" text-anchor="middle" dominant-baseline="central">未登录使用者</text>
+<ellipse cx="135.0" cy="551.0" rx="15.0" ry="15.0" fill="white" stroke="#4E78A0" stroke-width="1.5"/>
+<polyline points="135,566 135,610" fill="none" stroke="#4E78A0" stroke-width="1.5" stroke-linejoin="round"/>
+<polyline points="107,584 163,584" fill="none" stroke="#4E78A0" stroke-width="1.5" stroke-linejoin="round"/>
+<polyline points="111,637 135,610 159,637" fill="none" stroke="#4E78A0" stroke-width="1.5" stroke-linejoin="round"/>
+<text x="135" y="667" font-family="Microsoft YaHei,sans-serif" font-size="20" fill="#22364B" text-anchor="middle" dominant-baseline="central">账号使用者</text>
+<ellipse cx="1315.0" cy="506.0" rx="15.0" ry="15.0" fill="white" stroke="#4D857B" stroke-width="1.5"/>
+<polyline points="1315,521 1315,565" fill="none" stroke="#4D857B" stroke-width="1.5" stroke-linejoin="round"/>
+<polyline points="1287,539 1343,539" fill="none" stroke="#4D857B" stroke-width="1.5" stroke-linejoin="round"/>
+<polyline points="1291,592 1315,565 1339,592" fill="none" stroke="#4D857B" stroke-width="1.5" stroke-linejoin="round"/>
+<text x="1315" y="622" font-family="Microsoft YaHei,sans-serif" font-size="20" fill="#22364B" text-anchor="middle" dominant-baseline="central">对局玩家</text>
+<polyline points="163,584 320,350" fill="none" stroke="#9EB3C6" stroke-width="1.5" stroke-linejoin="round"/>
+<polyline points="163,584 320,438" fill="none" stroke="#9EB3C6" stroke-width="1.5" stroke-linejoin="round"/>
+<polyline points="163,584 320,526" fill="none" stroke="#9EB3C6" stroke-width="1.5" stroke-linejoin="round"/>
+<polyline points="163,584 320,614" fill="none" stroke="#9EB3C6" stroke-width="1.5" stroke-linejoin="round"/>
+<polyline points="163,584 320,702" fill="none" stroke="#9EB3C6" stroke-width="1.5" stroke-linejoin="round"/>
+<polyline points="163,299 245,299 245,350 320,350" fill="none" stroke="#4E78A0" stroke-width="1.5" stroke-linejoin="round"/>
+<polyline points="1287,539 1130,350" fill="none" stroke="#98B7AD" stroke-width="1.5" stroke-linejoin="round"/>
+<polyline points="1287,539 1130,438" fill="none" stroke="#98B7AD" stroke-width="1.5" stroke-linejoin="round"/>
+<polyline points="1287,539 1130,526" fill="none" stroke="#98B7AD" stroke-width="1.5" stroke-linejoin="round"/>
+<polyline points="1287,539 1130,614" fill="none" stroke="#98B7AD" stroke-width="1.5" stroke-linejoin="round"/>
+<polyline points="1287,539 1130,702" fill="none" stroke="#98B7AD" stroke-width="1.5" stroke-linejoin="round"/>
+<ellipse cx="502.5" cy="350.0" rx="182.5" ry="30.0" fill="white" stroke="#4E78A0" stroke-width="1.5"/>
+<text x="502" y="350" font-family="Microsoft YaHei,sans-serif" font-size="20" fill="#22364B" text-anchor="middle" dominant-baseline="central">注册与登录</text>
+<ellipse cx="502.5" cy="438.0" rx="182.5" ry="30.0" fill="white" stroke="#4E78A0" stroke-width="1.5"/>
+<text x="502" y="438" font-family="Microsoft YaHei,sans-serif" font-size="20" fill="#22364B" text-anchor="middle" dominant-baseline="central">查看资料与战绩</text>
+<ellipse cx="502.5" cy="526.0" rx="182.5" ry="30.0" fill="white" stroke="#4E78A0" stroke-width="1.5"/>
+<text x="502" y="526" font-family="Microsoft YaHei,sans-serif" font-size="20" fill="#22364B" text-anchor="middle" dominant-baseline="central">浏览规则与调整设置</text>
+<ellipse cx="502.5" cy="614.0" rx="182.5" ry="30.0" fill="white" stroke="#4E78A0" stroke-width="1.5"/>
+<text x="502" y="614" font-family="Microsoft YaHei,sans-serif" font-size="20" fill="#22364B" text-anchor="middle" dominant-baseline="central">开始本地或AI对战</text>
+<ellipse cx="502.5" cy="702.0" rx="182.5" ry="30.0" fill="white" stroke="#4E78A0" stroke-width="1.5"/>
+<text x="502" y="702" font-family="Microsoft YaHei,sans-serif" font-size="20" fill="#22364B" text-anchor="middle" dominant-baseline="central">创建或加入联机房间</text>
+<ellipse cx="947.5" cy="350.0" rx="182.5" ry="30.0" fill="white" stroke="#4D857B" stroke-width="1.5"/>
+<text x="947" y="350" font-family="Microsoft YaHei,sans-serif" font-size="20" fill="#22364B" text-anchor="middle" dominant-baseline="central">选角与初始选牌</text>
+<ellipse cx="947.5" cy="438.0" rx="182.5" ry="30.0" fill="white" stroke="#4D857B" stroke-width="1.5"/>
+<text x="947" y="438" font-family="Microsoft YaHei,sans-serif" font-size="20" fill="#22364B" text-anchor="middle" dominant-baseline="central">准备：换牌与布雷</text>
+<ellipse cx="947.5" cy="526.0" rx="182.5" ry="30.0" fill="white" stroke="#4D857B" stroke-width="1.5"/>
+<text x="947" y="526" font-family="Microsoft YaHei,sans-serif" font-size="20" fill="#22364B" text-anchor="middle" dominant-baseline="central">使用技能与锁定出牌</text>
+<ellipse cx="947.5" cy="614.0" rx="182.5" ry="30.0" fill="white" stroke="#4D857B" stroke-width="1.5"/>
+<text x="947" y="614" font-family="Microsoft YaHei,sans-serif" font-size="20" fill="#22364B" text-anchor="middle" dominant-baseline="central">查看回合结算与回溯</text>
+<ellipse cx="947.5" cy="702.0" rx="182.5" ry="30.0" fill="white" stroke="#4D857B" stroke-width="1.5"/>
+<text x="947" y="702" font-family="Microsoft YaHei,sans-serif" font-size="20" fill="#22364B" text-anchor="middle" dominant-baseline="central">查看最终结果与退出</text>
+<text x="725" y="844" font-family="Microsoft YaHei,sans-serif" font-size="17" fill="#768595" text-anchor="middle" dominant-baseline="central">同一使用者可在首页与对局中承担不同角色；AI属于系统内部对象。</text>
+</svg>

@@ -1,0 +1,13 @@
+
+> climb40-genshin-game@0.1.0 build
+> vite build --emptyOutDir false
+
+vite v7.3.7 building client environment for production...
+transforming...
+✓ 50 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                   0.72 kB │ gzip:  0.47 kB
+dist/assets/index-vThUcVws.css   73.84 kB │ gzip: 17.36 kB
+dist/assets/index-BlWdu1cs.js   192.44 kB │ gzip: 63.72 kB
+✓ built in 1.40s
